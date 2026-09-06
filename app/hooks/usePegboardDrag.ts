@@ -158,24 +158,27 @@ export function usePegboardDrag(
     const board = boardRef.current;
     const preview = previewRef.current;
     if (!board || !preview) return;
+    const boardElement: HTMLElement = board;
+    const previewElement: HTMLDivElement = preview;
 
     const desktopQuery = window.matchMedia(DESKTOP_DRAG_QUERY);
     let active: DragState | null = null;
     let suppressedElement: HTMLElement | null = null;
     let suppressClickUntil = 0;
 
-    const draggableItems = () => Array.from(board.querySelectorAll<HTMLElement>("[data-peg-draggable]"));
+    const draggableItems = () =>
+      Array.from(boardElement.querySelectorAll<HTMLElement>("[data-peg-draggable]"));
 
     function hidePreview() {
-      preview.classList.remove("is-visible");
+      previewElement.classList.remove("is-visible");
     }
 
     function showPreview(point: Point, width: number, height: number) {
-      preview.style.left = `${point.x}px`;
-      preview.style.top = `${point.y}px`;
-      preview.style.width = `${width}px`;
-      preview.style.height = `${height}px`;
-      preview.classList.add("is-visible");
+      previewElement.style.left = `${point.x}px`;
+      previewElement.style.top = `${point.y}px`;
+      previewElement.style.width = `${width}px`;
+      previewElement.style.height = `${height}px`;
+      previewElement.classList.add("is-visible");
     }
 
     function resetArrangement() {
@@ -198,9 +201,9 @@ export function usePegboardDrag(
       const origin = event.target;
       if (!(origin instanceof Element)) return;
       const element = origin.closest<HTMLElement>("[data-peg-draggable]");
-      if (!element || !board.contains(element)) return;
+      if (!element || !boardElement.contains(element)) return;
 
-      const boardBox = board.getBoundingClientRect();
+      const boardBox = boardElement.getBoundingClientRect();
       const startRect = relativeBox(element, boardBox);
       const startOffset = {
         x: numberFromDataset(element.dataset.pegX),
@@ -240,8 +243,8 @@ export function usePegboardDrag(
         active.element.style.zIndex = "100";
       }
 
-      const boardBox = board.getBoundingClientRect();
-      const boardStyle = window.getComputedStyle(board);
+      const boardBox = boardElement.getBoundingClientRect();
+      const boardStyle = window.getComputedStyle(boardElement);
       const radius = Math.max(BOARD_PADDING, Number.parseFloat(boardStyle.borderTopLeftRadius) || 0);
       const others = draggableItems()
         .filter((item) => item !== active?.element)
@@ -279,7 +282,7 @@ export function usePegboardDrag(
 
       if (!drag.moved) return;
 
-      const boardBox = board.getBoundingClientRect();
+      const boardBox = boardElement.getBoundingClientRect();
       const currentRect = relativeBox(drag.element, boardBox);
       const currentOffset = {
         x: numberFromDataset(drag.element.dataset.pegX),
@@ -326,21 +329,21 @@ export function usePegboardDrag(
       if (!desktopQuery.matches) resetArrangement();
     }
 
-    board.addEventListener("pointerdown", onPointerDown);
-    board.addEventListener("pointermove", onPointerMove, { passive: false });
-    board.addEventListener("pointerup", finishDrag);
-    board.addEventListener("pointercancel", finishDrag);
-    board.addEventListener("click", onClickCapture, true);
-    board.addEventListener("dragstart", onDragStart);
+    boardElement.addEventListener("pointerdown", onPointerDown);
+    boardElement.addEventListener("pointermove", onPointerMove, { passive: false });
+    boardElement.addEventListener("pointerup", finishDrag);
+    boardElement.addEventListener("pointercancel", finishDrag);
+    boardElement.addEventListener("click", onClickCapture, true);
+    boardElement.addEventListener("dragstart", onDragStart);
     desktopQuery.addEventListener("change", onDesktopChange);
 
     return () => {
-      board.removeEventListener("pointerdown", onPointerDown);
-      board.removeEventListener("pointermove", onPointerMove);
-      board.removeEventListener("pointerup", finishDrag);
-      board.removeEventListener("pointercancel", finishDrag);
-      board.removeEventListener("click", onClickCapture, true);
-      board.removeEventListener("dragstart", onDragStart);
+      boardElement.removeEventListener("pointerdown", onPointerDown);
+      boardElement.removeEventListener("pointermove", onPointerMove);
+      boardElement.removeEventListener("pointerup", finishDrag);
+      boardElement.removeEventListener("pointercancel", finishDrag);
+      boardElement.removeEventListener("click", onClickCapture, true);
+      boardElement.removeEventListener("dragstart", onDragStart);
       desktopQuery.removeEventListener("change", onDesktopChange);
     };
   }, [boardRef, onPlaced, previewRef]);
