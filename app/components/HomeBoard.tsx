@@ -238,7 +238,6 @@ export function HomeBoard({ onOpenProject, projectModeActive = false }: HomeBoar
   async function toggleMusic() {
     const audio = audioRef.current;
     if (!audio) return;
-    setIsMusicCreditOpen(true);
 
     if (musicPlayingRef.current) {
       musicPlayingRef.current = false;
