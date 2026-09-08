@@ -5645,6 +5645,10 @@ body {
   font-size: 11px;
 }
 
+.archive-context-note > span {
+  font-family: "Bradley Hand", "Comic Sans MS", cursive;
+}
+
 @media (max-width: 760px) {
   .music-credit {
     bottom: 2%;
