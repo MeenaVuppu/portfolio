@@ -629,7 +629,7 @@ export function HomeBoard({ onOpenProject, projectModeActive = false }: HomeBoar
             style={{ left: archiveNotePosition.left, top: archiveNotePosition.top }}
             role="status"
           >
-            <strong>Still shaping these.</strong>
+            <strong>Still shaping these</strong>
             <span>Drafts, experiments &amp; case studies coming up.</span>
           </div>
         </div>

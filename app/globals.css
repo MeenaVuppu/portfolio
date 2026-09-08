@@ -5647,6 +5647,7 @@ body {
 
 .archive-context-note > span {
   font-family: "Bradley Hand", "Comic Sans MS", cursive;
+  text-transform: none;
 }
 
 @media (max-width: 760px) {
