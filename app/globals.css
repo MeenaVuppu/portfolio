@@ -6106,6 +6106,89 @@ body {
   line-height: 1.35;
 }
 
+.project-detail-notes {
+  align-items: start;
+  display: grid;
+  gap: clamp(22px, 3vw, 38px);
+  grid-template-columns: 1.15fr 0.9fr 1fr;
+  margin: 0 auto clamp(88px, 10vw, 132px);
+  max-width: 1080px;
+}
+
+.project-detail-note {
+  background: #fffdfa;
+  border: 1px solid rgba(98, 74, 83, 0.15);
+  box-shadow: 0 12px 22px rgba(72, 48, 57, 0.1);
+  min-height: 250px;
+  padding: 34px 26px 26px;
+  position: relative;
+}
+
+.project-detail-note:nth-child(1) {
+  transform: rotate(-0.45deg);
+}
+
+.project-detail-note:nth-child(2) {
+  transform: rotate(0.55deg) translateY(14px);
+}
+
+.project-detail-note:nth-child(3) {
+  transform: rotate(-0.3deg) translateY(4px);
+}
+
+.project-detail-note .peg-pin {
+  left: 50%;
+  top: -13px;
+  transform: translateX(-50%);
+}
+
+.project-detail-note > span {
+  color: var(--project-muted);
+  display: block;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.project-detail-note h2 {
+  font-size: clamp(19px, 2vw, 25px);
+  line-height: 1.12;
+  margin: 12px 0 16px;
+}
+
+.project-detail-note p {
+  color: var(--project-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.project-detail-note__metrics {
+  display: grid;
+  gap: 9px;
+}
+
+.project-detail-note__metrics > div {
+  align-items: baseline;
+  border-top: 1px solid rgba(86, 64, 73, 0.12);
+  display: grid;
+  gap: 2px;
+  grid-template-columns: minmax(104px, auto) 1fr;
+  padding-top: 7px;
+}
+
+.project-detail-note__metrics strong {
+  color: var(--project-pink);
+  font-size: 15px;
+  line-height: 1.1;
+}
+
+.project-detail-note__metrics small {
+  color: var(--project-muted);
+  font-size: 10px;
+}
+
 .project-board-row,
 .project-experience {
   align-items: center;
@@ -6474,6 +6557,26 @@ body {
 
   .project-board-stats > div:first-child {
     border-top: 0;
+  }
+
+  .project-detail-notes {
+    gap: 30px;
+    grid-template-columns: 1fr;
+    margin-bottom: 72px;
+  }
+
+  .project-detail-note {
+    min-height: 0;
+    padding: 32px 22px 24px;
+    width: 92%;
+  }
+
+  .project-detail-note:nth-child(2) {
+    justify-self: end;
+  }
+
+  .project-detail-note:nth-child(3) {
+    justify-self: center;
   }
 
   .project-board-row,

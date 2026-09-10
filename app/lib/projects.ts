@@ -9,6 +9,13 @@ export type ProjectDecision = {
   body: string;
 };
 
+export type ProjectDetailNote = {
+  eyebrow: string;
+  title: string;
+  body?: string;
+  items?: Array<{ value: string; label: string }>;
+};
+
 export type Project = {
   slug: string;
   pegboardTheme: {
@@ -20,15 +27,18 @@ export type Project = {
   description: string;
   metric: string;
   metricLabel: string;
+  caseStudyMetric?: string;
+  caseStudyMetricLabel?: string;
   category: string;
   headline: string;
   metadata: string[];
   stats: ProjectStat[];
+  detailNotes?: ProjectDetailNote[];
   opportunity: { title: string; body: string };
   problem: { title: string; body: string };
   decisions: ProjectDecision[];
   solution: { title: string; body: string };
-  impact: { title: string; body: string };
+  impact: { title: string; body: string; sectionLabel?: string; showMetric?: boolean };
 };
 
 export const projects: Project[] = [
@@ -41,40 +51,70 @@ export const projects: Project[] = [
       "Placeholder for a sharper story about redesigning a high-trust investment experience.",
     metric: "+32%",
     metricLabel: "impact metric placeholder",
-    category: "Digital Gold · Investment experience",
-    headline: "Redesigning digital gold around trust and clarity.",
-    metadata: ["Product designer", "Product redesign", "Fintech"],
+    category: "DIGITAL GOLD · MUTHOOT FINCORP ONE",
+    headline: "80K+ entered. Only 4.6% transacted.",
+    metadata: [
+      "Sole Product Designer",
+      "Research → Strategy → UX/UI → Prototype",
+      "Pre-launch · Awaiting validation",
+    ],
     stats: [
-      { value: "Redesign", label: "Investment experience" },
-      { value: "Muthoot", label: "Product context" },
-      { value: "[Real metric]", label: "Business / product impact" },
+      { value: "80,554", label: "Entered Digital Gold journey" },
+      { value: "10.55%", label: "Reached Buy Now · 8,502 users" },
+      { value: "4.60%", label: "Completed transaction · 3,704 users" },
+    ],
+    detailNotes: [
+      {
+        eyebrow: "30-day funnel",
+        title: "Where progression narrowed",
+        items: [
+          { value: "80,554", label: "Entered" },
+          { value: "8,502 · 10.55%", label: "Reached Buy Now" },
+          { value: "5,605 · 6.96%", label: "Proceeded to payment" },
+          { value: "3,704 · 4.60%", label: "Completed" },
+        ],
+      },
+      {
+        eyebrow: "V1 → V2 → V3",
+        title: "The direction evolved",
+        body: "Explain Digital Gold → make recurring saving easy → connect the habit to a tangible gold goal.",
+      },
+      {
+        eyebrow: "Ownership + validation",
+        title: "One design owner, multiple perspectives",
+        body: "I owned strategy, flows, interaction, UI and prototyping. Marketing and Growth shaped the inputs; goal motivation, comprehension and unassisted completion still need validation.",
+      },
     ],
     opportunity: {
-      title: "Making a high-trust product easier to understand.",
-      body: "Placeholder for the sharpest opportunity: where the existing investment experience created uncertainty and what a clearer journey needed to unlock.",
+      title: "Interest wasn’t the problem. Progression was.",
+      body: "In 30 days, 80,554 users entered the journey. 8,502 reached Buy Now, 5,605 proceeded to payment and 3,704 completed a transaction. The largest loss happened before Buy Now; the data showed where users left, not why.",
     },
     problem: {
-      title: "Trust had to be designed into every decision.",
-      body: "Placeholder for the user and business tension that made this redesign matter, expressed as one concise product problem.",
+      title: "The acquisition message and product told different stories.",
+      body: "One branch visit and 3 exploratory customer conversations exposed an expectation gap. Saving-led banners brought users in, but the product mixed investment and jewellery-purchase journeys. This was directional research, not statistically representative validation.",
     },
     decisions: [
       {
-        title: "Clarify the investment journey",
-        body: "Placeholder for the strongest information or interaction decision that reduced ambiguity.",
+        title: "Move from education to action",
+        body: "V1 explained how small investments accumulate into gold. With Marketing, V2 simplified jargon and brought recurring saving forward: Buy once, Weekly or Monthly.",
       },
       {
-        title: "Surface confidence at key moments",
-        body: "Placeholder for the decision that helped users understand value, risk, or next steps.",
+        title: "Give saving a tangible purpose",
+        body: "With Growth, V3 adapted goal-based saving to Muthoot: repeated contributions toward a gold coin or jewellery outcome redeemable in its ecosystem.",
       },
     ],
     solution: {
-      title: "A clearer path from intent to investment.",
-      body: "Placeholder for the final experience and the one product visual that best communicates the redesign.",
+      title: "From buying gold once to building a saving habit.",
+      body: "The final direction connects recurring contributions to a fixed, tangible gold goal. It aims to make larger purchases feel attainable while creating potential for repeat saving and eventual redemption—outcomes still to be validated.",
     },
     impact: {
-      title: "A stronger, more legible investment experience.",
-      body: "Impact metric placeholder. Replace this with the verified business and user outcome when available.",
+      title: "Prototype first. Engineering second.",
+      body: "The redesign is pre-launch. Next, the prototype will be validated with branch users. Success metrics to measure after launch: first-payment conversion, recurring-saving adoption, mandate creation, repeat-saving rate, journey drop-offs and gold or jewellery redemption.",
+      sectionLabel: "05 — Validation & measurement",
+      showMetric: false,
     },
+    caseStudyMetric: "4.6%",
+    caseStudyMetricLabel: "Current completion · redesign pre-launch",
   },
   {
     slug: "vyapar-plus",

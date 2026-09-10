@@ -15,6 +15,8 @@ type ProjectModeProps = {
 };
 
 export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: ProjectModeProps) {
+  const caseStudyMetric = project.caseStudyMetric ?? project.metric;
+  const caseStudyMetricLabel = project.caseStudyMetricLabel ?? project.metricLabel;
   const pegboardTheme = {
     "--project-pegboard": project.pegboardTheme.board,
     "--project-pegboard-hole": project.pegboardTheme.holes,
@@ -64,6 +66,29 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
             </div>
           </div>
 
+          {project.detailNotes && (
+            <section className="project-detail-notes project-reveal" aria-label="Digital Gold evidence and direction">
+              {project.detailNotes.map((note) => (
+                <article className="project-detail-note" key={note.title}>
+                  <PegPin />
+                  <span>{note.eyebrow}</span>
+                  <h2>{note.title}</h2>
+                  {note.body && <p>{note.body}</p>}
+                  {note.items && (
+                    <div className="project-detail-note__metrics">
+                      {note.items.map((item) => (
+                        <div key={item.label}>
+                          <strong>{item.value}</strong>
+                          <small>{item.label}</small>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              ))}
+            </section>
+          )}
+
           <section className="project-board-row project-board-row--opportunity project-reveal">
             <article className="project-paper project-paper--copy">
               <PaperClip className="project-paper__clip" />
@@ -82,8 +107,8 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
             <aside className="project-sticky-note">
               <PegPin />
               <span>02 — Why it matters</span>
-              <strong>{project.metric}</strong>
-              <small>{project.metricLabel}</small>
+              <strong>{caseStudyMetric}</strong>
+              <small>{caseStudyMetricLabel}</small>
             </aside>
             <article className="project-paper project-paper--wide">
               <h2>{project.problem.title}</h2>
@@ -121,11 +146,15 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
           </section>
 
           <section className="project-impact project-reveal">
-            <span className="section-kicker">05 — Impact</span>
+            <span className="section-kicker">{project.impact.sectionLabel ?? "05 — Impact"}</span>
             <h2>{project.impact.title}</h2>
             <p>{project.impact.body}</p>
-            <strong>{project.metric}</strong>
-            <small>{project.metricLabel}</small>
+            {project.impact.showMetric !== false && (
+              <>
+                <strong>{caseStudyMetric}</strong>
+                <small>{caseStudyMetricLabel}</small>
+              </>
+            )}
           </section>
 
           <nav className="project-elsewhere project-reveal" aria-label="Other projects">
