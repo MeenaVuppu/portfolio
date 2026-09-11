@@ -16,6 +16,18 @@ export type ProjectDetailNote = {
   items?: Array<{ value: string; label: string }>;
 };
 
+export type ProjectStoryPin = {
+  eyebrow: string;
+  title: string;
+  body?: string;
+  items?: Array<{ value: string; label: string }>;
+  flow?: string[];
+  highlight?: string;
+  footnote?: string;
+  visual?: string;
+  variant?: "wide" | "accent" | "visual";
+};
+
 export type Project = {
   slug: string;
   pegboardTheme: {
@@ -33,18 +45,23 @@ export type Project = {
   headline: string;
   metadata: string[];
   stats: ProjectStat[];
+  snapshotLabel?: string;
+  snapshotCopy?: string;
+  snapshotFootnote?: string;
+  products?: string[];
   detailNotes?: ProjectDetailNote[];
-  opportunity: { title: string; body: string };
-  problem: { title: string; body: string };
+  storyPins?: ProjectStoryPin[];
+  opportunity: { title: string; body: string; highlight?: string };
+  problem: { title: string; body: string; highlight?: string };
   decisions: ProjectDecision[];
-  solution: { title: string; body: string };
+  solution: { title: string; body: string; highlight?: string };
   impact: { title: string; body: string; sectionLabel?: string; showMetric?: boolean };
 };
 
 export const projects: Project[] = [
   {
     slug: "digital-gold",
-    pegboardTheme: { board: "#F7E8A4", holes: "#C8B96F" },
+    pegboardTheme: { board: "#FAEDB8", holes: "#CDBD78" },
     eyebrow: "Muthoot · Product redesign",
     title: "Digital Gold",
     description:
@@ -65,16 +82,6 @@ export const projects: Project[] = [
     ],
     detailNotes: [
       {
-        eyebrow: "30-day funnel",
-        title: "Where progression narrowed",
-        items: [
-          { value: "80,554", label: "Entered" },
-          { value: "8,502 · 10.55%", label: "Reached Buy Now" },
-          { value: "5,605 · 6.96%", label: "Proceeded to payment" },
-          { value: "3,704 · 4.60%", label: "Completed" },
-        ],
-      },
-      {
         eyebrow: "V1 → V2 → V3",
         title: "The direction evolved",
         body: "Explain Digital Gold → make recurring saving easy → connect the habit to a tangible gold goal.",
@@ -88,10 +95,12 @@ export const projects: Project[] = [
     opportunity: {
       title: "Interest wasn’t the problem. Progression was.",
       body: "In 30 days, 80,554 users entered the journey. 8,502 reached Buy Now, 5,605 proceeded to payment and 3,704 completed a transaction. The largest loss happened before Buy Now; the data showed where users left, not why.",
+      highlight: "89% of journey entries did not reach Buy Now.",
     },
     problem: {
       title: "The acquisition message and product told different stories.",
       body: "One branch visit and 3 exploratory customer conversations exposed an expectation gap. Saving-led banners brought users in, but the product mixed investment and jewellery-purchase journeys. This was directional research, not statistically representative validation.",
+      highlight: "The acquisition message and the in-product experience were telling two different stories.",
     },
     decisions: [
       {
@@ -106,6 +115,7 @@ export const projects: Project[] = [
     solution: {
       title: "From buying gold once to building a saving habit.",
       body: "The final direction connects recurring contributions to a fixed, tangible gold goal. It aims to make larger purchases feel attainable while creating potential for repeat saving and eventual redemption—outcomes still to be validated.",
+      highlight: "Understand → Start saving → Build a habit → Reach a tangible gold goal.",
     },
     impact: {
       title: "Prototype first. Engineering second.",
@@ -122,16 +132,90 @@ export const projects: Project[] = [
     eyebrow: "Muthoot · Kirana earning platform",
     title: "Vyapar Plus",
     description:
-      "Placeholder for a business-facing platform story led from zero to one.",
+      "I designed Vyapar Plus from 0→1 — simplifying complex financial services into an accessible platform for kirana owners to onboard, earn and serve customers from their stores.",
     metric: "0 → 1",
     metricLabel: "Sole Product Designer · impact metric placeholder",
-    category: "Vyapar Plus · Kirana fintech",
-    headline: "Designing a kirana commission platform from 0 → 1.",
-    metadata: ["Sole product designer", "0→1 product", "Fintech"],
+    category: "VYAPAR PLUS · MUTHOOT FINANCE",
+    headline: "Turning neighbourhood kiranas into Muthoot financial-service points.",
+    metadata: ["Sole Product Designer · 0→1 · Shipped Sep 2026"],
     stats: [
-      { value: "0 → 1", label: "Product built from scratch" },
-      { value: "1", label: "Sole product designer" },
-      { value: "[Real metric]", label: "Business / product impact" },
+      { value: "819", label: "Completed digital onboarding" },
+      { value: "2,282", label: "Started onboarding" },
+      { value: "35.9%", label: "End-to-end completion" },
+    ],
+    snapshotFootnote: "Sep 1–11, 2026 · Early post-launch data",
+    storyPins: [
+      {
+        eyebrow: "The opportunity",
+        title: "What if every kirana could extend Muthoot's reach?",
+        body: "Customers outside major urban centres face friction accessing everyday financial services, while kirana owners need more ways to earn. Vyapar Plus brings payments, transfers, AEPS, travel and referrals into one local platform.",
+        items: [
+          { value: "10,000 agents", label: "Target in 3 months" },
+          { value: "<10 min", label: "Target onboarding" },
+          { value: "₹10K+", label: "Target additional monthly income" },
+        ],
+        footnote: "Launch targets, not achieved outcomes.",
+        variant: "wide",
+      },
+      {
+        eyebrow: "My role",
+        title: "One designer across an entire new ecosystem.",
+        body: "As the sole Product Designer, I owned the experience from concept to launch across three connected products.",
+        items: [
+          { value: "Merchant App", label: "Onboard · Serve · Transact · Earn" },
+          { value: "Saathi App", label: "Acquire · Assist · Verify" },
+          { value: "Website", label: "Discover · Understand · Join" },
+        ],
+        highlight: "Product strategy · UX/UI · Prototyping · Implementation",
+      },
+      {
+        eyebrow: "The design challenge",
+        title: "The system was complex. The merchant experience couldn't be.",
+        body: "Each service required a different mix of identity, business, bank and compliance verification across multiple third-party systems.",
+        highlight: "Complex system underneath → simple merchant journey above it.",
+        variant: "accent",
+      },
+      {
+        eyebrow: "Designing the core journey",
+        title: "Before a kirana can earn, we have to get them successfully onboarded.",
+        body: "Instead of one long KYC flow, onboarding asks for information only when it becomes relevant to the services selected.",
+        flow: ["Register", "Choose services", "Verify identity", "Verify business", "Add bank", "Sign", "Start earning"],
+        highlight: "The journey only asks for verification relevant to the services a merchant chooses.",
+        visual: "Visual 01 · Onboarding journey",
+        variant: "visual",
+      },
+      {
+        eyebrow: "Designing around the system",
+        title: "APIs determined what was possible. UX determined how it felt.",
+        body: "Udyam or GST data prefills details the system already knows. The experience also accounts for failed verification, missing records, incorrect bank details and alternative routes.",
+        highlight: "Ask merchants for less when the system already knows more.",
+      },
+      {
+        eyebrow: "Beyond one app",
+        title: "The merchant journey doesn't end on the merchant's phone.",
+        items: [
+          { value: "Website", label: "Discover" },
+          { value: "Merchant App", label: "Join + Verify" },
+          { value: "Saathi", label: "Assist + Physical verification" },
+          { value: "Merchant App", label: "Serve customers + Earn" },
+        ],
+        highlight: "One business journey. Three connected product experiences.",
+        visual: "Visual 02 · Connected ecosystem",
+        variant: "visual",
+      },
+      {
+        eyebrow: "What comes next",
+        title: "Launch gave us the baseline. Now we learn from real usage.",
+        body: "Merchant conversations and funnel behaviour will reveal where merchants drop, what creates friction, which services get adopted and what drives repeat transactions.",
+        highlight: "Those insights will shape the next iteration as Bills, DMT and more services enter the platform.",
+      },
+      {
+        eyebrow: "From 0→1 to real merchants",
+        title: "From a business idea to a working kirana fintech ecosystem.",
+        body: "I translated financial services, compliance requirements and operational workflows into a connected product ecosystem for neighbourhood merchants.",
+        highlight: "0→1 → Shipped → serving real neighbourhood merchants.",
+        variant: "wide",
+      },
     ],
     opportunity: {
       title: "Turn a new business model into a usable product.",

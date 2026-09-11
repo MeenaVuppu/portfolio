@@ -167,10 +167,9 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
   useLayoutEffect(() => {
     const board = boardRef.current;
     if (!board) return;
-
-    const boardRect = board.getBoundingClientRect();
-    const mobile = window.matchMedia("(max-width: 760px)").matches;
-    const projectRegions = DESKTOP_PROJECT_REGIONS;
+    const mobileQuery = window.matchMedia("(max-width: 760px)");
+    let mobile = mobileQuery.matches;
+    let layoutFrame: number | null = null;
     const selectors = {
       "digital-gold": '[data-peg-draggable="digital-gold"]',
       "vyapar-plus": '[data-peg-draggable="vyapar-plus"]',
@@ -186,170 +185,214 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
       plant: '[data-peg-draggable="plant"]',
     } as const;
 
-    const elements = new Map<string, HTMLElement>();
-    for (const [id, selector] of Object.entries(selectors)) {
-      const element = board.querySelector<HTMLElement>(selector);
-      if (element) elements.set(id, element);
-    }
+    const clearCalculatedLayout = () => {
+      board.style.removeProperty("height");
+      delete board.dataset.layoutSeed;
+      delete board.dataset.shuffleReady;
 
-    const dimensions = (id: string, slots: Slot[]): ShuffleItem | null => {
-      const element = elements.get(id);
-      if (!element) return null;
-      const rect = element.getBoundingClientRect();
-      if (!mobile) {
-        return {
-          bottomOffset: rect.height,
-          element,
-          height: rect.height,
-          id,
-          leftOffset: 0,
-          rightOffset: rect.width,
-          slots,
-          topOffset: 0,
-          width: rect.width,
-        };
+      for (const selector of Object.values(selectors)) {
+        const element = board.querySelector<HTMLElement>(selector);
+        if (!element) continue;
+        element.style.removeProperty("left");
+        element.style.removeProperty("right");
+        element.style.removeProperty("top");
+        element.style.removeProperty("translate");
+        element.style.removeProperty("scale");
+        element.style.removeProperty("z-index");
+        delete element.dataset.pegX;
+        delete element.dataset.pegY;
+        delete element.dataset.shuffleSlot;
+        element.classList.remove("is-peg-dragging", "is-peg-settling");
       }
-
-      const layoutLeft = element.offsetLeft;
-      const layoutTop = element.offsetTop;
-      const visibleRects = [element, ...element.querySelectorAll<HTMLElement>("*")]
-        .filter((node) => {
-          const style = window.getComputedStyle(node);
-          const closedDetails = node.closest("details:not([open])");
-          return (!closedDetails || node.tagName === "SUMMARY")
-            && style.display !== "none"
-            && style.visibility !== "hidden"
-            && Number(style.opacity) !== 0;
-        })
-        .map((node) => node.getBoundingClientRect())
-        .filter((visibleRect) => visibleRect.width > 0 && visibleRect.height > 0);
-      const visibleLeft = Math.min(...visibleRects.map((visibleRect) => visibleRect.left)) - boardRect.left;
-      const visibleTop = Math.min(...visibleRects.map((visibleRect) => visibleRect.top)) - boardRect.top;
-      const visibleRight = Math.max(...visibleRects.map((visibleRect) => visibleRect.right)) - boardRect.left;
-      const visibleBottom = Math.max(...visibleRects.map((visibleRect) => visibleRect.bottom)) - boardRect.top;
-
-      return {
-        bottomOffset: visibleBottom - layoutTop,
-        element,
-        height: visibleBottom - visibleTop,
-        id,
-        leftOffset: visibleLeft - layoutLeft,
-        rightOffset: visibleRight - layoutLeft,
-        slots,
-        topOffset: visibleTop - layoutTop,
-        width: visibleRight - visibleLeft,
-      };
     };
 
-    const previousSignature = window.sessionStorage.getItem(PREVIOUS_LAYOUT_KEY);
-    let selected: Map<string, Slot> | null = null;
-    let selectedSignature = "";
-    let selectedSeed = 0;
-    let selectedMobileHeight = 0;
+    const applyLayout = () => {
+      const boardRect = board.getBoundingClientRect();
+      const projectRegions = DESKTOP_PROJECT_REGIONS;
 
-    for (let attempt = 0; attempt < 160 && !selected; attempt += 1) {
-      const seedBytes = new Uint32Array(1);
-      window.crypto.getRandomValues(seedBytes);
-      const seed = (seedBytes[0] + attempt) >>> 0;
-      const next = random(seed);
-      const placed: PlacedBox[] = [];
-      const assignments = new Map<string, Slot>();
-      const projectIds = shuffled(["digital-gold", "vyapar-plus", "hives"], next);
-
-      if (mobile) {
-        const secondaryIds = shuffled([
-          "photo", "headphones", "watercolor", "plant", "progress-note",
-          "resume", "contact", "linkedin", "archive",
-        ], next);
-        const sequence = [
-          ...secondaryIds.slice(0, 2), projectIds[0],
-          ...secondaryIds.slice(2, 5), projectIds[1],
-          ...secondaryIds.slice(5, 7), projectIds[2],
-          ...secondaryIds.slice(7),
-        ];
-        const items = sequence.map((id) => dimensions(id, [])).filter((item): item is ShuffleItem => item !== null);
-        const packed = compactMobileAssignments(items, boardRect.width, next);
-        const signature = [...packed.assignments.entries()]
-          .sort(([a], [b]) => a.localeCompare(b))
-          .map(([id, slot]) => `${id}:${Math.round(slot.x)},${Math.round(slot.y)}`)
-          .join("|");
-        if (signature === previousSignature) continue;
-        selected = packed.assignments;
-        selectedSignature = signature;
-        selectedSeed = seed;
-        selectedMobileHeight = packed.height;
-        break;
+      const elements = new Map<string, HTMLElement>();
+      for (const [id, selector] of Object.entries(selectors)) {
+        const element = board.querySelector<HTMLElement>(selector);
+        if (element) elements.set(id, element);
       }
 
-      let projectsValid = true;
+      const dimensions = (id: string, slots: Slot[]): ShuffleItem | null => {
+        const element = elements.get(id);
+        if (!element) return null;
+        const rect = element.getBoundingClientRect();
+        if (!mobile) {
+          return {
+            bottomOffset: rect.height,
+            element,
+            height: rect.height,
+            id,
+            leftOffset: 0,
+            rightOffset: rect.width,
+            slots,
+            topOffset: 0,
+            width: rect.width,
+          };
+        }
 
-      for (let region = 0; region < projectRegions.length; region += 1) {
-        const item = dimensions(projectIds[region], projectRegions[region]);
-        if (!item) continue;
-        const slot = shuffled(projectRegions[region], next).find((candidate) => {
-          const box = boxFor(candidate, item, boardRect.width, boardRect.height);
-          return validBox(box, placed, boardRect.width, boardRect.height, mobile ? 14 : 14, mobile ? 14 : 10);
-        });
-        if (!slot) {
-          projectsValid = false;
+        const layoutLeft = element.offsetLeft;
+        const layoutTop = element.offsetTop;
+        const visibleRects = [element, ...element.querySelectorAll<HTMLElement>("*")]
+          .filter((node) => {
+            const style = window.getComputedStyle(node);
+            const closedDetails = node.closest("details:not([open])");
+            return (!closedDetails || node.tagName === "SUMMARY")
+              && style.display !== "none"
+              && style.visibility !== "hidden"
+              && Number(style.opacity) !== 0;
+          })
+          .map((node) => node.getBoundingClientRect())
+          .filter((visibleRect) => visibleRect.width > 0 && visibleRect.height > 0);
+        const visibleLeft = Math.min(...visibleRects.map((visibleRect) => visibleRect.left)) - boardRect.left;
+        const visibleTop = Math.min(...visibleRects.map((visibleRect) => visibleRect.top)) - boardRect.top;
+        const visibleRight = Math.max(...visibleRects.map((visibleRect) => visibleRect.right)) - boardRect.left;
+        const visibleBottom = Math.max(...visibleRects.map((visibleRect) => visibleRect.bottom)) - boardRect.top;
+
+        return {
+          bottomOffset: visibleBottom - layoutTop,
+          element,
+          height: visibleBottom - visibleTop,
+          id,
+          leftOffset: visibleLeft - layoutLeft,
+          rightOffset: visibleRight - layoutLeft,
+          slots,
+          topOffset: visibleTop - layoutTop,
+          width: visibleRight - visibleLeft,
+        };
+      };
+
+      const previousSignature = window.sessionStorage.getItem(PREVIOUS_LAYOUT_KEY);
+      let selected: Map<string, Slot> | null = null;
+      let selectedSignature = "";
+      let selectedSeed = 0;
+      let selectedMobileHeight = 0;
+
+      for (let attempt = 0; attempt < 160 && !selected; attempt += 1) {
+        const seedBytes = new Uint32Array(1);
+        window.crypto.getRandomValues(seedBytes);
+        const seed = (seedBytes[0] + attempt) >>> 0;
+        const next = random(seed);
+        const placed: PlacedBox[] = [];
+        const assignments = new Map<string, Slot>();
+        const projectIds = shuffled(["digital-gold", "vyapar-plus", "hives"], next);
+
+        if (mobile) {
+          const secondaryIds = shuffled([
+            "photo", "headphones", "watercolor", "plant", "progress-note",
+            "resume", "contact", "linkedin", "archive",
+          ], next);
+          const sequence = [
+            ...secondaryIds.slice(0, 2), projectIds[0],
+            ...secondaryIds.slice(2, 5), projectIds[1],
+            ...secondaryIds.slice(5, 7), projectIds[2],
+            ...secondaryIds.slice(7),
+          ];
+          const items = sequence.map((id) => dimensions(id, [])).filter((item): item is ShuffleItem => item !== null);
+          const packed = compactMobileAssignments(items, boardRect.width, next);
+          const signature = [...packed.assignments.entries()]
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([id, slot]) => `${id}:${Math.round(slot.x)},${Math.round(slot.y)}`)
+            .join("|");
+          if (signature === previousSignature) continue;
+          selected = packed.assignments;
+          selectedSignature = signature;
+          selectedSeed = seed;
+          selectedMobileHeight = packed.height;
           break;
         }
-        assignments.set(item.id, slot);
-        placed.push(boxFor(slot, item, boardRect.width, boardRect.height));
+
+        let projectsValid = true;
+
+        for (let region = 0; region < projectRegions.length; region += 1) {
+          const item = dimensions(projectIds[region], projectRegions[region]);
+          if (!item) continue;
+          const slot = shuffled(projectRegions[region], next).find((candidate) => {
+            const box = boxFor(candidate, item, boardRect.width, boardRect.height);
+            return validBox(box, placed, boardRect.width, boardRect.height, mobile ? 14 : 14, mobile ? 14 : 10);
+          });
+          if (!slot) {
+            projectsValid = false;
+            break;
+          }
+          assignments.set(item.id, slot);
+          placed.push(boxFor(slot, item, boardRect.width, boardRect.height));
+        }
+
+        if (!projectsValid) continue;
+
+        const remaining = [
+          dimensions("resume", DESKTOP_GENERAL_SLOTS),
+          dimensions("contact", DESKTOP_GENERAL_SLOTS),
+          dimensions("linkedin", DESKTOP_GENERAL_SLOTS),
+          dimensions("plant", DESKTOP_PLANT_SLOTS),
+          dimensions("photo", DESKTOP_GENERAL_SLOTS),
+          dimensions("watercolor", DESKTOP_WATERCOLOR_SLOTS),
+          dimensions("headphones", DESKTOP_GENERAL_SLOTS),
+          dimensions("progress-note", DESKTOP_GENERAL_SLOTS),
+          dimensions("archive", DESKTOP_GENERAL_SLOTS),
+        ].filter((item): item is ShuffleItem => item !== null);
+        const rest = findAssignments(remaining, placed, boardRect.width, boardRect.height, 14, next);
+        if (!rest) continue;
+        rest.forEach((slot, id) => assignments.set(id, slot));
+
+        const signature = [...assignments.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([id, slot]) => `${id}:${slot.id}`).join("|");
+        if (signature === previousSignature) continue;
+        selected = assignments;
+        selectedSignature = signature;
+        selectedSeed = seed;
       }
 
-      if (!projectsValid) continue;
-
-      const remaining = [
-        dimensions("resume", DESKTOP_GENERAL_SLOTS),
-        dimensions("contact", DESKTOP_GENERAL_SLOTS),
-        dimensions("linkedin", DESKTOP_GENERAL_SLOTS),
-        dimensions("plant", DESKTOP_PLANT_SLOTS),
-        dimensions("photo", DESKTOP_GENERAL_SLOTS),
-        dimensions("watercolor", DESKTOP_WATERCOLOR_SLOTS),
-        dimensions("headphones", DESKTOP_GENERAL_SLOTS),
-        dimensions("progress-note", DESKTOP_GENERAL_SLOTS),
-        dimensions("archive", DESKTOP_GENERAL_SLOTS),
-      ].filter((item): item is ShuffleItem => item !== null);
-      const rest = findAssignments(remaining, placed, boardRect.width, boardRect.height, 14, next);
-      if (!rest) continue;
-      rest.forEach((slot, id) => assignments.set(id, slot));
-
-      const signature = [...assignments.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([id, slot]) => `${id}:${slot.id}`).join("|");
-      if (signature === previousSignature) continue;
-      selected = assignments;
-      selectedSignature = signature;
-      selectedSeed = seed;
-    }
-
-    if (!selected) return;
-    selected.forEach((slot, id) => {
-      const element = elements.get(id);
-      if (!element) return;
-      element.style.left = mobile ? `${slot.x}px` : `${slot.x}%`;
-      element.style.right = "auto";
-      element.style.top = mobile ? `${slot.y}px` : `${slot.y}%`;
-      element.dataset.shuffleSlot = slot.id;
-    });
-    if (mobile && selectedMobileHeight > 0) {
-      board.style.height = `${selectedMobileHeight}px`;
-      for (let pass = 0; pass < 12; pass += 1) {
-        const currentBoardRect = board.getBoundingClientRect();
-        const lowestVisibleEdge = Math.max(...[...elements.values()].flatMap((element) =>
-          [element, ...element.querySelectorAll<HTMLElement>("*")]
-            .filter((node) => {
-              const style = window.getComputedStyle(node);
-              return style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) !== 0;
-            })
-            .map((node) => node.getBoundingClientRect().bottom - currentBoardRect.top),
-        ));
-        const fittedHeight = Math.ceil(lowestVisibleEdge + 28);
-        if (Math.abs(board.getBoundingClientRect().height - fittedHeight) < 1) break;
-        board.style.height = `${fittedHeight}px`;
+      if (!selected) return;
+      selected.forEach((slot, id) => {
+        const element = elements.get(id);
+        if (!element) return;
+        element.style.left = mobile ? `${slot.x}px` : `${slot.x}%`;
+        element.style.right = "auto";
+        element.style.top = mobile ? `${slot.y}px` : `${slot.y}%`;
+        element.dataset.shuffleSlot = slot.id;
+      });
+      if (mobile && selectedMobileHeight > 0) {
+        board.style.height = `${selectedMobileHeight}px`;
+        for (let pass = 0; pass < 12; pass += 1) {
+          const currentBoardRect = board.getBoundingClientRect();
+          const lowestVisibleEdge = Math.max(...[...elements.values()].flatMap((element) =>
+            [element, ...element.querySelectorAll<HTMLElement>("*")]
+              .filter((node) => {
+                const style = window.getComputedStyle(node);
+                return style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) !== 0;
+              })
+              .map((node) => node.getBoundingClientRect().bottom - currentBoardRect.top),
+          ));
+          const fittedHeight = Math.ceil(lowestVisibleEdge + 28);
+          if (Math.abs(board.getBoundingClientRect().height - fittedHeight) < 1) break;
+          board.style.height = `${fittedHeight}px`;
+        }
       }
-    }
-    board.dataset.layoutSeed = String(selectedSeed);
-    board.dataset.shuffleReady = "true";
-    window.sessionStorage.setItem(PREVIOUS_LAYOUT_KEY, selectedSignature);
+      board.dataset.layoutSeed = String(selectedSeed);
+      board.dataset.shuffleReady = "true";
+      window.sessionStorage.setItem(PREVIOUS_LAYOUT_KEY, selectedSignature);
+    };
+
+    const handleBreakpointChange = (event: MediaQueryListEvent) => {
+      if (event.matches === mobile) return;
+      mobile = event.matches;
+      clearCalculatedLayout();
+      layoutFrame = window.requestAnimationFrame(() => {
+        layoutFrame = null;
+        applyLayout();
+      });
+    };
+
+    applyLayout();
+    mobileQuery.addEventListener("change", handleBreakpointChange);
+
+    return () => {
+      mobileQuery.removeEventListener("change", handleBreakpointChange);
+      if (layoutFrame !== null) window.cancelAnimationFrame(layoutFrame);
+    };
   }, [boardRef]);
 }

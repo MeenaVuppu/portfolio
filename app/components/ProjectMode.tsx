@@ -53,9 +53,15 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
         <section className="project-pegboard" style={pegboardTheme} aria-label={`${project.title} case study board`}>
           <div className="project-board-intro project-reveal">
             <span className="project-board-label">Project snapshot</span>
+            {project.snapshotCopy && <p className="project-board-copy">{project.snapshotCopy}</p>}
             <div className="project-board-meta">
               {project.metadata.map((item) => <span key={item}>{item}</span>)}
             </div>
+            {project.products && (
+              <div className="project-board-products">
+                {project.products.map((item) => <span key={item}>{item}</span>)}
+              </div>
+            )}
             <div className="project-board-stats">
               {project.stats.map((stat) => (
                 <div className={stat.isForecast ? "is-forecast" : ""} key={stat.label}>
@@ -64,6 +70,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
                 </div>
               ))}
             </div>
+            {project.snapshotFootnote && <small className="project-board-footnote">{project.snapshotFootnote}</small>}
           </div>
 
           {project.detailNotes && (
@@ -89,12 +96,56 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
             </section>
           )}
 
+          {project.storyPins ? (
+            <section className="project-story-board" aria-label={`${project.title} project story`}>
+              {project.storyPins.map((pin, index) => (
+                <article
+                  className={`project-story-pin project-story-pin--${pin.variant ?? "paper"} project-reveal`}
+                  key={pin.title}
+                >
+                  {index % 2 === 0 ? <PegPin /> : <PaperClip />}
+                  <span className="section-kicker">{pin.eyebrow}</span>
+                  <h2>{pin.title}</h2>
+                  {pin.body && <p>{pin.body}</p>}
+                  {pin.flow && (
+                    <div className="project-story-flow" aria-label={pin.flow.join(" then ")}>
+                      {pin.flow.map((step, stepIndex) => (
+                        <div key={step}>
+                          <strong>{step}</strong>
+                          {stepIndex < pin.flow!.length - 1 && <span aria-hidden="true">→</span>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {pin.items && (
+                    <div className="project-story-items">
+                      {pin.items.map((item) => (
+                        <div key={`${item.value}-${item.label}`}>
+                          <strong>{item.value}</strong>
+                          <span>{item.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {pin.highlight && <strong className="project-story-highlight">{pin.highlight}</strong>}
+                  {pin.visual && (
+                    <div className="project-story-visual">
+                      <span>Major product visual placeholder</span>
+                      <small>{pin.visual}</small>
+                    </div>
+                  )}
+                  {pin.footnote && <small className="project-story-footnote">{pin.footnote}</small>}
+                </article>
+              ))}
+            </section>
+          ) : <>
           <section className="project-board-row project-board-row--opportunity project-reveal">
             <article className="project-paper project-paper--copy">
               <PaperClip className="project-paper__clip" />
               <span className="section-kicker">01 — Opportunity</span>
               <h2>{project.opportunity.title}</h2>
               <p>{project.opportunity.body}</p>
+              {project.opportunity.highlight && <strong className="project-section-highlight">{project.opportunity.highlight}</strong>}
             </article>
             <div className="project-screen project-screen--pinned">
               <PegPin />
@@ -113,6 +164,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
             <article className="project-paper project-paper--wide">
               <h2>{project.problem.title}</h2>
               <p>{project.problem.body}</p>
+              {project.problem.highlight && <strong className="project-section-highlight">{project.problem.highlight}</strong>}
             </article>
           </section>
 
@@ -137,6 +189,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
               <span className="section-kicker">04 — Experience</span>
               <h2>{project.solution.title}</h2>
               <p>{project.solution.body}</p>
+              {project.solution.highlight && <strong className="project-section-highlight">{project.solution.highlight}</strong>}
             </article>
             <div className="project-screen project-screen--wide">
               <PaperClip />
@@ -156,6 +209,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
               </>
             )}
           </section>
+          </>}
 
           <nav className="project-elsewhere project-reveal" aria-label="Other projects">
             <span>The Good Stuff Continues...</span>
