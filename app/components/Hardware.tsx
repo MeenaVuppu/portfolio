@@ -11,5 +11,9 @@ export function PaperClip({ className = "" }: HardwareProps) {
 }
 
 export function BoardHook({ className = "" }: HardwareProps) {
-  return <span className={`board-hook ${className}`} aria-hidden="true" />;
+  return (
+    <span className={`board-hook ${className}`} aria-hidden="true">
+      <span className="board-hook__mount-anchor" data-headphone-mount-anchor="true" />
+    </span>
+  );
 }

@@ -5,9 +5,11 @@ import { getOtherProjects, getProject, type Project } from "../lib/projects";
 import { HomeBoard } from "./HomeBoard";
 import { PortfolioTitleHeader } from "./PortfolioTitleHeader";
 import { ProjectMode, type ProjectModePhase } from "./ProjectMode";
+import { ArchiveMode } from "./ArchiveMode";
 
 type PortfolioExperienceProps = {
   initialProject?: Project | null;
+  initialArchive?: boolean;
 };
 
 const HOME_HEADLINE = "Design is chasing a feeling";
@@ -17,13 +19,14 @@ function projectFromPathname(pathname: string) {
   return match ? getProject(match[1]) ?? null : null;
 }
 
-export function PortfolioExperience({ initialProject = null }: PortfolioExperienceProps) {
+export function PortfolioExperience({ initialProject = null, initialArchive = false }: PortfolioExperienceProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(initialProject);
-  const [phase, setPhase] = useState<ProjectModePhase>(initialProject ? "open" : "closing");
+  const [archiveOpen, setArchiveOpen] = useState(initialArchive);
+  const [phase, setPhase] = useState<ProjectModePhase>(initialProject || initialArchive ? "open" : "closing");
   const boardScrollY = useRef(0);
   const transitionTimer = useRef<number | null>(null);
   const closingFromControl = useRef(false);
-  const lastProjectTrigger = useRef<HTMLAnchorElement | null>(null);
+  const lastProjectTrigger = useRef<HTMLElement | null>(null);
 
   function clearTransitionTimer() {
     if (transitionTimer.current !== null) {
@@ -34,6 +37,7 @@ export function PortfolioExperience({ initialProject = null }: PortfolioExperien
 
   function finishOnBoard() {
     setSelectedProject(null);
+    setArchiveOpen(false);
     setPhase("closing");
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -45,7 +49,7 @@ export function PortfolioExperience({ initialProject = null }: PortfolioExperien
 
   useEffect(() => {
     history.replaceState(
-      { portfolio: true, project: initialProject?.slug ?? null, fromBoard: false },
+      { portfolio: true, project: initialProject?.slug ?? null, archive: initialArchive, fromBoard: false },
       "",
       window.location.href,
     );
@@ -53,6 +57,14 @@ export function PortfolioExperience({ initialProject = null }: PortfolioExperien
     function handlePopState() {
       clearTransitionTimer();
       const project = projectFromPathname(window.location.pathname);
+      const archive = window.location.pathname === "/archive" || window.location.pathname === "/archive/";
+      if (archive) {
+        setSelectedProject(null);
+        setArchiveOpen(true);
+        setPhase("opening");
+        transitionTimer.current = window.setTimeout(() => setPhase("open"), 420);
+        return;
+      }
       if (!project) {
         if (closingFromControl.current) {
           closingFromControl.current = false;
@@ -65,6 +77,7 @@ export function PortfolioExperience({ initialProject = null }: PortfolioExperien
       }
 
       setSelectedProject(project);
+      setArchiveOpen(false);
       setPhase("opening");
       transitionTimer.current = window.setTimeout(() => setPhase("open"), 420);
     }
@@ -74,12 +87,12 @@ export function PortfolioExperience({ initialProject = null }: PortfolioExperien
       clearTransitionTimer();
       window.removeEventListener("popstate", handlePopState);
     };
-  }, [initialProject]);
+  }, [initialArchive, initialProject]);
 
   useEffect(() => {
-    document.body.classList.toggle("portfolio-project-active", selectedProject !== null);
+    document.body.classList.toggle("portfolio-project-active", selectedProject !== null || archiveOpen);
     return () => document.body.classList.remove("portfolio-project-active");
-  }, [selectedProject]);
+  }, [archiveOpen, selectedProject]);
 
   function openProject(project: Project, trigger: HTMLAnchorElement) {
     clearTransitionTimer();
@@ -91,12 +104,24 @@ export function PortfolioExperience({ initialProject = null }: PortfolioExperien
       `/projects/${project.slug}`,
     );
     setSelectedProject(project);
+    setArchiveOpen(false);
+    setPhase("opening");
+    transitionTimer.current = window.setTimeout(() => setPhase("open"), 440);
+  }
+
+  function openArchive(trigger: HTMLElement) {
+    clearTransitionTimer();
+    lastProjectTrigger.current = trigger;
+    boardScrollY.current = window.scrollY;
+    history.pushState({ portfolio: true, project: null, archive: true, fromBoard: true }, "", "/archive");
+    setSelectedProject(null);
+    setArchiveOpen(true);
     setPhase("opening");
     transitionTimer.current = window.setTimeout(() => setPhase("open"), 440);
   }
 
   function closeProject() {
-    if (!selectedProject || phase === "closing") return;
+    if ((!selectedProject && !archiveOpen) || phase === "closing") return;
     clearTransitionTimer();
     setPhase("closing");
 
@@ -129,23 +154,24 @@ export function PortfolioExperience({ initialProject = null }: PortfolioExperien
   }
 
   return (
-    <div className={`portfolio-experience ${selectedProject ? "is-project-mode" : "is-board-mode"} project-phase-${phase}`}>
+    <div className={`portfolio-experience ${selectedProject || archiveOpen ? "is-project-mode" : "is-board-mode"} project-phase-${phase}`}>
       <PortfolioTitleHeader
-        title={selectedProject && phase !== "closing" ? selectedProject.headline : HOME_HEADLINE}
-        compactTitle={selectedProject && phase !== "closing" ? selectedProject.headline : HOME_HEADLINE}
-        onHome={selectedProject ? closeProject : undefined}
-        projectMode={selectedProject !== null}
+        title={phase !== "closing" ? (selectedProject?.headline ?? (archiveOpen ? "Archive" : HOME_HEADLINE)) : HOME_HEADLINE}
+        compactTitle={selectedProject?.headline ?? (archiveOpen ? "Archive" : HOME_HEADLINE)}
+        onHome={selectedProject || archiveOpen ? closeProject : undefined}
+        projectMode={selectedProject !== null || archiveOpen}
       />
       <div className="portfolio-state-stage">
-        <HomeBoard onOpenProject={openProject} projectModeActive={selectedProject !== null} />
+        <HomeBoard onOpenProject={openProject} onOpenArchive={openArchive} projectModeActive={selectedProject !== null || archiveOpen} />
         {selectedProject ? (
           <ProjectMode
             project={selectedProject}
-            otherProjects={getOtherProjects(selectedProject.slug)}
+            otherProjects={getOtherProjects(selectedProject.slug).filter((project) => project.slug !== "hives")}
             phase={phase}
             onSwitchProject={switchProject}
           />
         ) : null}
+        {archiveOpen ? <ArchiveMode phase={phase} /> : null}
       </div>
     </div>
   );

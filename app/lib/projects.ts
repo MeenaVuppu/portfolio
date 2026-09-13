@@ -61,7 +61,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "digital-gold",
-    pegboardTheme: { board: "#FAEDB8", holes: "#CDBD78" },
+    pegboardTheme: { board: "#FAF7F2", holes: "#C7A2AF" },
     eyebrow: "Muthoot · Product redesign",
     title: "Digital Gold",
     description:
@@ -128,7 +128,7 @@ export const projects: Project[] = [
   },
   {
     slug: "vyapar-plus",
-    pegboardTheme: { board: "#C9DCE3", holes: "#91AEB9" },
+    pegboardTheme: { board: "#FAF7F2", holes: "#C7A2AF" },
     eyebrow: "Muthoot · Kirana earning platform",
     title: "Vyapar Plus",
     description:
@@ -195,9 +195,8 @@ export const projects: Project[] = [
         title: "The merchant journey doesn't end on the merchant's phone.",
         items: [
           { value: "Website", label: "Discover" },
-          { value: "Merchant App", label: "Join + Verify" },
+          { value: "Merchant App", label: "Join + Serve customers + Earn" },
           { value: "Saathi", label: "Assist + Physical verification" },
-          { value: "Merchant App", label: "Serve customers + Earn" },
         ],
         highlight: "One business journey. Three connected product experiences.",
         visual: "Visual 02 · Connected ecosystem",
@@ -213,7 +212,7 @@ export const projects: Project[] = [
         eyebrow: "From 0→1 to real merchants",
         title: "From a business idea to a working kirana fintech ecosystem.",
         body: "I translated financial services, compliance requirements and operational workflows into a connected product ecosystem for neighbourhood merchants.",
-        highlight: "0→1 → Shipped → serving real neighbourhood merchants.",
+        highlight: "0→1 · Shipped · serving real neighbourhood merchants.",
         variant: "wide",
       },
     ],
@@ -245,8 +244,51 @@ export const projects: Project[] = [
     },
   },
   {
+    slug: "fixed-deposit",
+    pegboardTheme: { board: "#FAF7F2", holes: "#C7A2AF" },
+    eyebrow: "Fintech · Savings experience",
+    title: "Fixed Deposit",
+    description: "Temporary project description. Content will be updated soon.",
+    metric: "+18%",
+    metricLabel: "placeholder impact metric",
+    category: "FIXED DEPOSIT · SAVINGS EXPERIENCE",
+    headline: "Designing a clearer fixed-deposit experience.",
+    metadata: ["Product design", "Savings experience", "Case study in progress"],
+    stats: [
+      { value: "+18%", label: "Placeholder impact metric" },
+      { value: "Overview", label: "Temporary project description" },
+      { value: "Soon", label: "Content update" },
+    ],
+    opportunity: {
+      title: "Make fixed deposits easier to understand.",
+      body: "Placeholder content for the product opportunity and the customer need behind the experience.",
+    },
+    problem: {
+      title: "A savings decision should feel clear and dependable.",
+      body: "Placeholder content for the key product challenge that shaped the project direction.",
+    },
+    decisions: [
+      {
+        title: "Clarify the decision",
+        body: "Placeholder content for the first major product decision.",
+      },
+      {
+        title: "Support confident completion",
+        body: "Placeholder content for the second major product decision.",
+      },
+    ],
+    solution: {
+      title: "A clearer fixed-deposit experience.",
+      body: "Placeholder content for the final approach and product experience.",
+    },
+    impact: {
+      title: "Outcome to be updated.",
+      body: "Placeholder content for the project outcome and future success measures.",
+    },
+  },
+  {
     slug: "hives",
-    pegboardTheme: { board: "#CDD9C5", holes: "#97AA8D" },
+    pegboardTheme: { board: "#FAF7F2", holes: "#C7A2AF" },
     eyebrow: "Bumble · Concept feature",
     title: "Hives",
     description:

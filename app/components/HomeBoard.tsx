@@ -7,9 +7,11 @@ import { ProjectFile } from "./ProjectFile";
 import { projects, type Project } from "../lib/projects";
 import { usePegboardDrag } from "../hooks/usePegboardDrag";
 import { usePegboardShuffle } from "../hooks/usePegboardShuffle";
+import { snapElementToNearestHole } from "../lib/headphoneMount";
 
 type HomeBoardProps = {
   onOpenProject?: (project: Project, trigger: HTMLAnchorElement) => void;
+  onOpenArchive?: (trigger: HTMLElement) => void;
   projectModeActive?: boolean;
 };
 
@@ -138,19 +140,16 @@ function MoneyPlant() {
   );
 }
 
-export function HomeBoard({ onOpenProject, projectModeActive = false }: HomeBoardProps) {
+export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = false }: HomeBoardProps) {
   const [noteBurst, setNoteBurst] = useState(0);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [isEmailCopied, setIsEmailCopied] = useState(false);
   const [isArtworkOpen, setIsArtworkOpen] = useState(false);
   const [isArtworkPositioned, setIsArtworkPositioned] = useState(false);
-  const [isArchiveNoteOpen, setIsArchiveNoteOpen] = useState(false);
   const [isMusicCreditOpen, setIsMusicCreditOpen] = useState(false);
   const [artworkPositions, setArtworkPositions] = useState<ArtworkPosition[]>([]);
   const [selectedArtwork, setSelectedArtwork] = useState<number | null>(null);
   const boardRef = useRef<HTMLElement>(null);
-  const archiveRef = useRef<HTMLDivElement>(null);
-  const archiveNoteRef = useRef<HTMLDivElement>(null);
   const brushesRef = useRef<HTMLDivElement>(null);
   const brushHitareaRef = useRef<HTMLButtonElement>(null);
   const artworkRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -178,7 +177,54 @@ export function HomeBoard({ onOpenProject, projectModeActive = false }: HomeBoar
   usePegboardDrag(boardRef, dragPreviewRef, playPlacementSound);
   usePegboardShuffle(boardRef);
 
-  const archiveNotePosition = useSafeContextNote(isArchiveNoteOpen, archiveRef, archiveNoteRef, boardRef);
+  useLayoutEffect(() => {
+    const board = boardRef.current;
+    if (!board) return;
+
+    let frame: number | null = null;
+    const alignElements = (ids: string[]) => {
+      ids.forEach((id) => {
+        const element = board.querySelector<HTMLElement>(`[data-peg-draggable="${id}"]`);
+        if (element) snapElementToNearestHole(board, element);
+      });
+    };
+    const scheduleAlignment = () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        frame = null;
+        alignElements([
+          "digital-gold",
+          "vyapar-plus",
+          "photo",
+          "contact",
+          "archive",
+          "headphones",
+        ]);
+        // These two cards use their visible attachment hardware as the final snap anchor.
+        // Resolve them after the rest of the initial board has settled.
+        alignElements(["resume"]);
+      });
+    };
+    const observer = new MutationObserver(scheduleAlignment);
+    const resizeObserver = new ResizeObserver(scheduleAlignment);
+
+    observer.observe(board, { attributes: true, attributeFilter: ["data-shuffle-ready"] });
+    resizeObserver.observe(board);
+    board.querySelectorAll<HTMLElement>("[data-peg-draggable]").forEach((element) => resizeObserver.observe(element));
+    window.addEventListener("load", scheduleAlignment);
+    window.addEventListener("resize", scheduleAlignment);
+    alignElements(["resume"]);
+    scheduleAlignment();
+
+    return () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      observer.disconnect();
+      resizeObserver.disconnect();
+      window.removeEventListener("load", scheduleAlignment);
+      window.removeEventListener("resize", scheduleAlignment);
+    };
+  }, []);
+
   const musicCreditPosition = useSafeContextNote(isMusicCreditOpen, headphonesRef, musicCreditNoteRef, boardRef, musicCreditRef);
 
   async function copyEmailAddress() {
@@ -300,19 +346,18 @@ export function HomeBoard({ onOpenProject, projectModeActive = false }: HomeBoar
   }, [isArtworkOpen]);
 
   useEffect(() => {
-    if (!isArchiveNoteOpen && !isMusicCreditOpen) return;
+    if (!isMusicCreditOpen) return;
 
     function closeContextNotes(event: PointerEvent) {
       const target = event.target;
       if (!(target instanceof Node)) return;
-      if (archiveRef.current?.contains(target) || musicCreditRef.current?.contains(target)) return;
-      setIsArchiveNoteOpen(false);
+      if (musicCreditRef.current?.contains(target)) return;
       setIsMusicCreditOpen(false);
     }
 
     document.addEventListener("pointerdown", closeContextNotes, true);
     return () => document.removeEventListener("pointerdown", closeContextNotes, true);
-  }, [isArchiveNoteOpen, isMusicCreditOpen]);
+  }, [isMusicCreditOpen]);
 
   useLayoutEffect(() => {
     if (!isArtworkOpen) return;
@@ -505,6 +550,8 @@ export function HomeBoard({ onOpenProject, projectModeActive = false }: HomeBoar
 
         <ProjectFile project={projects[1]} className="board-object p2" onOpenProject={onOpenProject} pegboardDragId="vyapar-plus" />
 
+        <ProjectFile project={projects[2]} className="board-object p3" onOpenProject={onOpenProject} pegboardDragId="fixed-deposit" />
+
         <a
           className="resume-object board-object"
           data-peg-draggable="resume"
@@ -544,8 +591,6 @@ export function HomeBoard({ onOpenProject, projectModeActive = false }: HomeBoar
         >
           <strong>Connect on LinkedIn</strong>
         </a>
-
-        <ProjectFile project={projects[2]} className="board-object p3" onOpenProject={onOpenProject} pegboardDragId="hives" />
 
         <div
           ref={brushesRef}
@@ -603,35 +648,21 @@ export function HomeBoard({ onOpenProject, projectModeActive = false }: HomeBoar
         </div>
 
         <div
-          ref={archiveRef}
-          className={isArchiveNoteOpen ? "archive-object board-object is-context-open" : "archive-object board-object"}
+          className="archive-object board-object"
           data-peg-draggable="archive"
           role="button"
           tabIndex={0}
-          aria-expanded={isArchiveNoteOpen}
-          onClick={() => setIsArchiveNoteOpen(true)}
+          onClick={(event) => onOpenArchive?.(event.currentTarget)}
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
-              setIsArchiveNoteOpen(true);
+              onOpenArchive?.(event.currentTarget);
             }
-          }}
-          onPointerLeave={(event) => {
-            if (event.pointerType === "mouse") setIsArchiveNoteOpen(false);
           }}
         >
           <PegPin />
           <span>Archive</span>
           <strong>More work</strong>
-          <div
-            ref={archiveNoteRef}
-            className={isArchiveNoteOpen ? "archive-context-note is-open" : "archive-context-note"}
-            style={{ left: archiveNotePosition.left, top: archiveNotePosition.top }}
-            role="status"
-          >
-            <strong>Still shaping these</strong>
-            <span>Drafts, experiments &amp; case studies coming up.</span>
-          </div>
         </div>
 
         <div

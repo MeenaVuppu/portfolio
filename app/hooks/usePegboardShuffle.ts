@@ -118,7 +118,7 @@ function compactMobileAssignments(items: ShuffleItem[], boardWidth: number, next
     const left = edge - item.leftOffset;
     const right = boardWidth - edge - item.rightOffset;
     const center = (boardWidth - item.width) / 2 - item.leftOffset;
-    const horizontalCandidates = item.id === "digital-gold" || item.id === "vyapar-plus" || item.id === "hives"
+    const horizontalCandidates = item.id === "digital-gold" || item.id === "vyapar-plus" || item.id === "fixed-deposit"
       ? shuffled([left, right, center], next)
       : shuffled([left, right], next);
 
@@ -173,7 +173,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
     const selectors = {
       "digital-gold": '[data-peg-draggable="digital-gold"]',
       "vyapar-plus": '[data-peg-draggable="vyapar-plus"]',
-      hives: '[data-peg-draggable="hives"]',
+      "fixed-deposit": '[data-peg-draggable="fixed-deposit"]',
       photo: '[data-peg-draggable="photo"]',
       headphones: '[data-peg-draggable="headphones"]',
       watercolor: '.brushes-object',
@@ -278,7 +278,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
         const next = random(seed);
         const placed: PlacedBox[] = [];
         const assignments = new Map<string, Slot>();
-        const projectIds = shuffled(["digital-gold", "vyapar-plus", "hives"], next);
+        const projectIds = shuffled(["digital-gold", "vyapar-plus", "fixed-deposit"], next);
 
         if (mobile) {
           const secondaryIds = shuffled([

@@ -2,6 +2,8 @@
 
 import { type RefObject, useEffect } from "react";
 
+import { snapElementToNearestHole } from "../lib/headphoneMount";
+
 type Box = {
   bottom: number;
   height: number;
@@ -294,15 +296,28 @@ export function usePegboardDrag(
             y: currentOffset.y + drag.candidate.y - currentRect.top,
           }
         : drag.startOffset;
+      const shouldSnapToPeg = [
+        "digital-gold",
+        "vyapar-plus",
+        "fixed-deposit",
+        "photo",
+        "contact",
+        "resume",
+        "archive",
+        "headphones",
+      ].includes(drag.element.dataset.pegDraggable ?? "");
+      const finalDestination = shouldSnapToPeg
+        ? snapElementToNearestHole(boardElement, drag.element, destination) ?? drag.startOffset
+        : destination;
       const placedInNewPosition = Boolean(
-        drag.candidate && Math.hypot(destination.x - drag.startOffset.x, destination.y - drag.startOffset.y) > 1,
+        drag.candidate && Math.hypot(finalDestination.x - drag.startOffset.x, finalDestination.y - drag.startOffset.y) > 1,
       );
 
       drag.element.classList.remove("is-peg-dragging");
       drag.element.classList.add("is-peg-settling");
       drag.element.removeAttribute("aria-grabbed");
       drag.element.style.zIndex = drag.zIndex;
-      setOffset(drag.element, destination);
+      setOffset(drag.element, finalDestination);
       if (placedInNewPosition && onPlaced) window.setTimeout(onPlaced, 240);
       window.setTimeout(() => drag.element.classList.remove("is-peg-settling"), 260);
 
