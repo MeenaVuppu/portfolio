@@ -18,6 +18,16 @@ type ShuffleItem = {
 
 const PREVIOUS_LAYOUT_KEY = "portfolio-home-layout-signature";
 
+type RuntimeLayout = {
+  assignments: Array<[string, Slot]>;
+  mobileHeight: number;
+  seed: number;
+  signature: string;
+};
+
+// Survives client-side project navigation, but intentionally resets on refresh.
+const runtimeLayouts = new Map<"desktop" | "mobile", RuntimeLayout>();
+
 const DESKTOP_PROJECT_REGIONS: Slot[][] = [
   [{ id: "project-left-high", x: 3, y: 24 }, { id: "project-left-low", x: 4, y: 57 }],
   [{ id: "project-center-high", x: 38, y: 4 }, { id: "project-center-low", x: 38, y: 58 }],
@@ -266,10 +276,11 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
       };
 
       const previousSignature = window.sessionStorage.getItem(PREVIOUS_LAYOUT_KEY);
-      let selected: Map<string, Slot> | null = null;
-      let selectedSignature = "";
-      let selectedSeed = 0;
-      let selectedMobileHeight = 0;
+      const runtimeLayout = runtimeLayouts.get(mobile ? "mobile" : "desktop");
+      let selected: Map<string, Slot> | null = runtimeLayout ? new Map(runtimeLayout.assignments) : null;
+      let selectedSignature = runtimeLayout?.signature ?? "";
+      let selectedSeed = runtimeLayout?.seed ?? 0;
+      let selectedMobileHeight = runtimeLayout?.mobileHeight ?? 0;
 
       for (let attempt = 0; attempt < 160 && !selected; attempt += 1) {
         const seedBytes = new Uint32Array(1);
@@ -347,6 +358,12 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
       }
 
       if (!selected) return;
+      runtimeLayouts.set(mobile ? "mobile" : "desktop", {
+        assignments: [...selected.entries()],
+        mobileHeight: selectedMobileHeight,
+        seed: selectedSeed,
+        signature: selectedSignature,
+      });
       selected.forEach((slot, id) => {
         const element = elements.get(id);
         if (!element) return;
