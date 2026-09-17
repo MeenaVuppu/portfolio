@@ -4131,7 +4131,7 @@ body {
 
 .fixed-landing {
   --landing-ink: #2a2025;
-  background: #ffffff;
+  background: var(--project-shell);
   color: var(--landing-ink);
   display: grid;
   gap: clamp(6px, 1vh, 12px);
@@ -4936,6 +4936,10 @@ body {
 .fixed-landing > .portfolio-title-header {
   margin-left: calc(-1 * clamp(32px, 3.2vw, 48px));
   width: calc(100% + 2 * clamp(32px, 3.2vw, 48px));
+}
+
+.portfolio-experience.is-board-mode > .portfolio-title-header {
+  background: var(--project-shell);
 }
 
 .portfolio-title-header {
