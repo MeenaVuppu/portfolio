@@ -6429,6 +6429,44 @@ body {
   text-transform: uppercase;
 }
 
+.project-story-visual--phones {
+  aspect-ratio: auto;
+  padding: 28px 18px 38px;
+}
+
+.project-phone-sequence {
+  align-items: flex-start;
+  display: flex;
+  gap: clamp(12px, 2vw, 24px);
+  justify-content: center;
+  width: 100%;
+}
+
+.project-phone {
+  background: #101010;
+  border: 5px solid #191718;
+  border-radius: 23px;
+  box-shadow: 0 9px 16px rgba(41, 28, 33, 0.16);
+  margin: 0;
+  max-width: 150px;
+  overflow: hidden;
+  width: 30%;
+}
+
+.project-phone img {
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.project-view--fixed-deposit .project-board-stats > div:nth-child(2) strong {
+  color: var(--project-pink);
+}
+
+.project-view--fixed-deposit .project-board-stats > div:nth-child(3) strong {
+  color: var(--project-ink);
+}
+
 .project-story-footnote {
   color: var(--project-muted);
   display: block;
@@ -7748,5 +7786,19 @@ body:has(.archive-mode) {
     box-sizing: border-box;
     min-height: 0;
     width: 100%;
+  }
+
+  .project-story-visual--phones {
+    padding: 18px 8px 34px;
+  }
+
+  .project-phone-sequence {
+    gap: 7px;
+  }
+
+  .project-phone {
+    border-width: 3px;
+    border-radius: 15px;
+    width: 31%;
   }
 }

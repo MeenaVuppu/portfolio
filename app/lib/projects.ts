@@ -25,6 +25,7 @@ export type ProjectStoryPin = {
   highlight?: string;
   footnote?: string;
   visual?: string;
+  screens?: Array<{ src: string; alt: string }>;
   variant?: "wide" | "accent" | "visual";
 };
 
@@ -251,13 +252,61 @@ export const projects: Project[] = [
     description: "Temporary project description. Content will be updated soon.",
     metric: "+18%",
     metricLabel: "placeholder impact metric",
-    category: "FIXED DEPOSIT · SAVINGS EXPERIENCE",
-    headline: "Designing a clearer fixed-deposit experience.",
-    metadata: ["Product design", "Savings experience", "Case study in progress"],
+    category: "FIXED DEPOSIT · INVESTMENT EXPERIENCE",
+    headline: "Redesigning Fixed Deposits around informed investment decisions.",
+    metadata: ["Product Designer", "Under review · Not yet shipped", "Measurement planned post-launch"],
     stats: [
-      { value: "+18%", label: "Placeholder impact metric" },
-      { value: "Overview", label: "Temporary project description" },
-      { value: "Soon", label: "Content update" },
+      { value: "25,275", label: "Reached the FD experience" },
+      { value: "5.6%", label: "Selected Mahindra Finance" },
+      { value: "19.1%", label: "Of those users clicked Book Now" },
+    ],
+    storyPins: [
+      {
+        eyebrow: "THE PROBLEM",
+        title: "Commitment came before confidence.",
+        body: "The journey pushed users toward Book Now while tenure, returns and investment value were fragmented across the experience.",
+        highlight: "25,275 users arrived, but only 5.6% selected Mahindra Finance.",
+      },
+      {
+        eyebrow: "BEFORE",
+        title: "The old journey split the decision across disconnected steps.",
+        body: "Users had to piece together the product, tenure and investment outcome before they could invest.",
+        visual: "Existing journey · selected screens",
+        screens: [
+          { src: "/fixed-deposit/before-overview.png", alt: "Existing Fixed Deposit product overview" },
+          { src: "/fixed-deposit/before-tenure.png", alt: "Existing tenure and plan selection" },
+          { src: "/fixed-deposit/before-investment.png", alt: "Existing investment amount step" },
+        ],
+        variant: "visual",
+      },
+      {
+        eyebrow: "DESIGN DIRECTION",
+        title: "Make the investment decision understandable before commitment.",
+        body: "The under-review direction brings tenure, interest rate, maturity value and gains into one guided decision path.",
+        flow: ["Understand the FD", "Choose tenure", "Enter investment", "Review returns", "Continue"],
+        highlight: "The decision is the journey — not just the Book Now action.",
+        variant: "accent",
+      },
+      {
+        eyebrow: "AFTER · UNDER REVIEW",
+        title: "A clearer path from tenure to expected returns.",
+        body: "The redesign helps users choose a tenure, enter an amount and understand maturity value and gains before continuing.",
+        visual: "Current under-review direction · selected screens",
+        screens: [
+          { src: "/fixed-deposit/after-tenure.png", alt: "Redesigned tenure selection" },
+          { src: "/fixed-deposit/after-investment.png", alt: "Redesigned investment amount with maturity value and gains" },
+          { src: "/fixed-deposit/after-review.png", alt: "Redesigned maturity action review" },
+        ],
+        variant: "visual",
+      },
+      {
+        eyebrow: "SUCCESS METRIC",
+        title: "Measure whether clearer decisions improve progression.",
+        body: "After launch, success will be measured from FD product view to partner or plan selection, then onward toward investment initiation.",
+        highlight: "Current Mahindra selection baseline: 5.6%.",
+        footnote: "Under review · Not yet shipped · Impact measurement planned post-launch",
+        variant: "wide",
+      },
     ],
     opportunity: {
       title: "Make fixed deposits easier to understand.",

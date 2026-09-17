@@ -128,7 +128,18 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
                     </div>
                   )}
                   {pin.highlight && <strong className="project-story-highlight">{pin.highlight}</strong>}
-                  {pin.visual && (
+                  {pin.screens ? (
+                    <div className="project-story-visual project-story-visual--phones">
+                      <div className="project-phone-sequence">
+                        {pin.screens.map((screen) => (
+                          <figure className="project-phone" key={screen.src}>
+                            <img src={screen.src} alt={screen.alt} />
+                          </figure>
+                        ))}
+                      </div>
+                      {pin.visual && <small>{pin.visual}</small>}
+                    </div>
+                  ) : pin.visual && (
                     <div className="project-story-visual">
                       <span>Major product visual placeholder</span>
                       <small>{pin.visual}</small>
