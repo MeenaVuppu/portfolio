@@ -33,8 +33,6 @@ export function ProjectFile({ project, className = "", compact, disabled = false
     event.preventDefault();
     if (isOpening) return;
 
-    playPageFlipSound();
-
     const element = event.currentTarget;
     const board = element.closest(".fixed-board, .project-pegboard") as HTMLElement | null;
     if (board) {
@@ -55,15 +53,16 @@ export function ProjectFile({ project, className = "", compact, disabled = false
     document.body.classList.add("project-opening");
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.setTimeout(playPageFlipSound, reducedMotion ? 0 : 80);
     if (onOpenProject) {
       window.setTimeout(
         () => onOpenProject(project, element),
-        reducedMotion ? 0 : board?.classList.contains("fixed-board") ? 240 : 0,
+        reducedMotion ? 0 : board?.classList.contains("fixed-board") ? 500 : 0,
       );
       window.setTimeout(() => {
         setIsOpening(false);
         document.body.classList.remove("project-opening");
-      }, reducedMotion ? 0 : 620);
+      }, reducedMotion ? 0 : 720);
     } else {
       window.setTimeout(() => router.push(href), reducedMotion ? 0 : 420);
     }

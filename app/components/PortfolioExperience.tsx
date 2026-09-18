@@ -23,6 +23,7 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
   const [selectedProject, setSelectedProject] = useState<Project | null>(initialProject);
   const [archiveOpen, setArchiveOpen] = useState(initialArchive);
   const [phase, setPhase] = useState<ProjectModePhase>(initialProject || initialArchive ? "open" : "closing");
+  const [projectSwitching, setProjectSwitching] = useState(false);
   const boardScrollY = useRef(0);
   const transitionTimer = useRef<number | null>(null);
   const closingFromControl = useRef(false);
@@ -139,6 +140,7 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
   function switchProject(project: Project) {
     if (!selectedProject || selectedProject.slug === project.slug) return;
     clearTransitionTimer();
+    setProjectSwitching(true);
     setPhase("switching");
 
     transitionTimer.current = window.setTimeout(() => {
@@ -149,12 +151,15 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
       );
       setSelectedProject(project);
       setPhase("opening");
-      transitionTimer.current = window.setTimeout(() => setPhase("open"), 360);
+      transitionTimer.current = window.setTimeout(() => {
+        setPhase("open");
+        setProjectSwitching(false);
+      }, 320);
     }, 180);
   }
 
   return (
-    <div className={`portfolio-experience ${selectedProject || archiveOpen ? "is-project-mode" : "is-board-mode"} project-phase-${phase}`}>
+    <div className={`portfolio-experience ${selectedProject || archiveOpen ? "is-project-mode" : "is-board-mode"} project-phase-${phase} ${projectSwitching ? "is-project-switch" : ""}`}>
       <PortfolioTitleHeader
         title={phase !== "closing" ? (selectedProject?.headline ?? (archiveOpen ? "Archive" : HOME_HEADLINE)) : HOME_HEADLINE}
         compactTitle={selectedProject?.headline ?? (archiveOpen ? "Archive" : HOME_HEADLINE)}
