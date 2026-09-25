@@ -217,6 +217,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
     };
 
     const applyLayout = () => {
+      if (window.getComputedStyle(board.firstElementChild as Element).visibility === "hidden") return;
       const boardRect = board.getBoundingClientRect();
       const projectRegions = DESKTOP_PROJECT_REGIONS;
 

@@ -11,6 +11,48 @@
   --edge: #d5c8b7;
 }
 
+/* Layer 1: wall-only landing stage. */
+html:has(.fixed-landing),
+body:has(.fixed-landing),
+body:has(.fixed-landing) .fixed-landing {
+  background: #fbf9f6 !important;
+  height: 100dvh;
+  margin: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  width: 100vw;
+}
+
+body:has(.fixed-landing) .portfolio-title-header {
+  display: none !important;
+}
+
+body:has(.fixed-landing) .fixed-board {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+body:has(.fixed-landing) .fixed-board::before,
+body:has(.fixed-landing) .fixed-board::after {
+  display: none !important;
+}
+
+body:has(.fixed-landing) .fixed-board > * {
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+/* Layer 1 must remain viewport-bound despite legacy landing rules below. */
+body:has(.fixed-landing) .fixed-landing {
+  bottom: 0 !important;
+  height: 100dvh !important;
+  inset: 0 !important;
+  min-height: 100dvh !important;
+  position: fixed !important;
+}
+
 @theme inline {
   --color-background: var(--page);
   --color-foreground: var(--ink);
@@ -1479,22 +1521,43 @@ body {
 }
 
 .fixed-landing {
-  background: #ffffff;
+  background-color: #fbf9f6;
+  background-image:
+    radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.2), transparent 48%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(220, 211, 200, 0.03));
   display: block;
-  height: auto;
-  min-height: 100dvh;
-  overflow: visible;
-  padding: 0 clamp(32px, 3.2vw, 48px) clamp(24px, 3vh, 36px);
+  height: 100dvh;
+  inset: 0;
+  overflow: hidden;
+  padding: 0;
+  position: fixed;
+  width: 100vw;
 }
 
 .fixed-landing > .portfolio-title-header {
-  margin-left: calc(-1 * clamp(32px, 3.2vw, 48px));
-  width: calc(100% + 2 * clamp(32px, 3.2vw, 48px));
+  display: none;
 }
 
 .fixed-board {
-  height: clamp(540px, calc(100dvh - 220px), 720px);
-  margin-top: clamp(18px, 2.5vh, 28px);
+  background: transparent !important;
+  box-shadow: none !important;
+  height: 90dvh;
+  left: 50%;
+  margin: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 95vw;
+}
+
+body:has(.fixed-landing) {
+  overflow: hidden;
+}
+
+.fixed-board > * {
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
 .fixed-board__header,
