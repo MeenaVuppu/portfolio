@@ -202,6 +202,7 @@ export function usePegboardDrag(
 
       const origin = event.target;
       if (!(origin instanceof Element)) return;
+      if (origin.closest(".music-credit")) return;
       const element = origin.closest<HTMLElement>("[data-peg-draggable]");
       if (!element || !boardElement.contains(element)) return;
 

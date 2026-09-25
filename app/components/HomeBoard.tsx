@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { BoardHook, PegPin } from "./Hardware";
+import { PegPin } from "./Hardware";
 import { ProjectFile } from "./ProjectFile";
 import { projects, type Project } from "../lib/projects";
 import { usePegboardDrag } from "../hooks/usePegboardDrag";
@@ -490,23 +490,18 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
             if (event.pointerType === "mouse") setIsMusicCreditOpen(false);
           }}
         >
-          <button
-            type="button"
-            className="headphones-button"
-            onClick={toggleMusic}
-            aria-label={isMusicPlaying ? "Pause background music" : "Play background music"}
-            aria-pressed={isMusicPlaying}
-          >
-            <BoardHook />
-            <Image
+          <div className="headphones-button">
+            <img
               className="airpods-image"
-              src="/airpods-max-lavender.png"
-              alt="Lavender AirPods Max"
-              width={2892}
-              height={2960}
-              unoptimized
+              src="/headphones-layer.png"
+              alt="Ivory headphones"
             />
-          </button>
+            <span
+              className="headphones-pin-anchor"
+              data-headphone-mount-anchor="true"
+              aria-hidden="true"
+            />
+          </div>
           {noteBurst > 0 ? (
             <span className="music-notes" key={noteBurst} aria-hidden="true">
               <i>♪</i>
@@ -524,7 +519,10 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
               className="music-credit__trigger"
               aria-label="Music credit"
               aria-expanded={isMusicCreditOpen}
-              onClick={() => setIsMusicCreditOpen((open) => !open)}
+              onClick={() => {
+                void toggleMusic();
+                setIsMusicCreditOpen((open) => !open);
+              }}
             >♪</button>
             <div
               ref={musicCreditNoteRef}
@@ -684,6 +682,23 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
 
         <MoneyPlant />
         <div ref={dragPreviewRef} className="peg-drag-preview" aria-hidden="true" />
+      <img
+        className="landing-board-asset"
+        src="/landing-pegboard.png"
+        alt=""
+        width={1594}
+        height={754}
+        aria-hidden="true"
+      />
+      <img
+        className="landing-money-plant"
+        src="/money-plant-layer.png"
+        alt=""
+        aria-hidden="true"
+      />
+      <div className="landing-books-brush-shelf" aria-hidden="true">
+        <img src="/books-brush-shelf.png" alt="" />
+      </div>
       </section>
     </main>
   );

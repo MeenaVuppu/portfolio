@@ -91,8 +91,12 @@ function pegboardHoles(board: HTMLElement): Point[] {
         { x: 43.7, y: 59.6, stepX: 48, stepY: 80 },
       ]
     : [
-        { x: 21.7, y: 19.6, stepX: 56, stepY: 84 },
-        { x: 49.7, y: 61.6, stepX: 56, stepY: 84 },
+        {
+          x: boardRect.width * 0.030113,
+          y: boardRect.height * 0.06167,
+          stepX: boardRect.width * 0.03234,
+          stepY: boardRect.height * 0.06777,
+        },
       ];
   const holes: Point[] = [];
 
@@ -135,7 +139,9 @@ export function snapElementToNearestHole(board: HTMLElement, element: HTMLElemen
   };
   const assembly = shifted(visibleBounds(element), targetShift.x, targetShift.y);
   const otherBounds = Array.from(board.querySelectorAll<HTMLElement>("[data-peg-draggable]"))
-    .filter((candidate) => candidate !== element)
+    .filter(
+      (candidate) => candidate !== element && window.getComputedStyle(candidate).visibility !== "hidden",
+    )
     .map((candidate) => candidate.getBoundingClientRect());
   const radius = Number.parseFloat(window.getComputedStyle(board).borderTopLeftRadius) || 0;
   const candidates = pegboardHoles(board).sort(
