@@ -81,18 +81,126 @@ export const projects: Project[] = [
       { value: "10.55%", label: "Reached Buy Now · 8,502 users" },
       { value: "4.60%", label: "Completed transaction · 3,704 users" },
     ],
-    detailNotes: [
+    storyPins: [
       {
-        eyebrow: "V1 → V2 → V3",
-        title: "The direction evolved",
-        body: "Explain Digital Gold → make recurring saving easy → connect the habit to a tangible gold goal.",
+            "eyebrow": "The problem · Existing 30-day funnel",
+            "title": "Interest wasn’t the problem. Progression was.",
+            "body": "80,554 entered the journey; 8,502 reached Buy Now, 5,605 proceeded to payment and 3,704 completed. The largest loss happened before Buy Now. The funnel showed where users left, not why.",
+            "highlight": "4.60% completed a transaction.",
+            "footnote": "Old-journey baseline, not redesign impact."
       },
       {
-        eyebrow: "Ownership + validation",
-        title: "One design owner, multiple perspectives",
-        body: "I owned strategy, flows, interaction, UI and prototyping. Marketing and Growth shaped the inputs; goal motivation, comprehension and unassisted completion still need validation.",
+            "eyebrow": "Talking to real users · Exploratory branch research",
+            "title": "The promise of saving met a different product story.",
+            "body": "I visited one branch and spoke with three customers. The existing research account describes an expectation gap: saving-led banners brought people in, while the product mixed investment and jewellery-purchase journeys.",
+            "items": [
+                  {
+                        "value": "Observation",
+                        "label": "A mismatch between the acquisition message and the experience."
+                  },
+                  {
+                        "value": "Interpretation",
+                        "label": "A saving intention needed a clearer path inside the product."
+                  },
+                  {
+                        "value": "Design response",
+                        "label": "Bring recurring saving forward, while retaining one-time buying."
+                  }
+            ],
+            "footnote": "Directional evidence from the existing project account. Interview transcripts and verbatim quotes are not available in the repository; these conversations do not establish prevalence."
       },
-    ],
+      {
+            "eyebrow": "Research → design principle",
+            "title": "Make the first choice match the reason for arriving.",
+            "body": "The recorded expectation gap informed a saving-led entry point. Monthly, weekly and one-time routes make the intended action explicit instead of asking users to interpret SIP terminology first.",
+            "highlight": "Lead with the saving intention.",
+            "footnote": "Design hypothesis: clearer choices may help users find the relevant path. Comprehension and completion still need testing."
+      },
+      {
+            "eyebrow": "Before → after · Landing, top",
+            "title": "Give saving its own front door.",
+            "body": "Before, balance, price, a chart and the purchase form lead the experience. After, the saving proposition leads into Save Monthly, Save Weekly and Buy Gold, followed by a short explanation of the process.",
+            "screens": [
+                  {
+                        "src": "/dg-evidence/before-top.png",
+                        "alt": "BEFORE — TOP"
+                  },
+                  {
+                        "src": "/dg-evidence/after-top.png",
+                        "alt": "AFTER — TOP"
+                  }
+            ],
+            "variant": "visual",
+            "footnote": "Consecutive landing captures continue in the next pin. Scroll within a phone to inspect the full section."
+      },
+      {
+            "eyebrow": "Before → after · Landing, continued",
+            "title": "Connect the habit to a tangible gold outcome.",
+            "body": "The old landing continues through jewellery shopping, FAQs and articles. The redesign explains accumulation and then connects gold savings to coins and jewellery. This supports the goal-saving direction recorded with Growth; it does not demonstrate a complete goal-setting flow.",
+            "screens": [
+                  {
+                        "src": "/dg-evidence/before-continued.png",
+                        "alt": "BEFORE — CONTINUED"
+                  },
+                  {
+                        "src": "/dg-evidence/after-continued.png",
+                        "alt": "AFTER — CONTINUED"
+                  }
+            ],
+            "variant": "visual",
+            "footnote": "Each image starts exactly where its top section ends. Illustrative growth values and trust claims are supplied UI copy, not validated portfolio results."
+      },
+      {
+            "eyebrow": "Design decision · From intention to setup",
+            "title": "Make recurring saving a concrete action.",
+            "body": "With Marketing, the direction moved from explaining gold to making recurring saving explicit. The supplied setup screen exposes amount, monthly or weekly frequency, and the investment date before payment.",
+            "screens": [
+                  {
+                        "src": "/dg-evidence/recurring.png",
+                        "alt": "AFTER — RECURRING SAVING"
+                  }
+            ],
+            "variant": "visual",
+            "footnote": "This screen demonstrates the design response. It does not prove recurring-saving adoption or mandate completion."
+      },
+      {
+            "eyebrow": "V1 → V2 → V3",
+            "title": "The direction evolved through the work.",
+            "items": [
+                  {
+                        "value": "V1 · Explain",
+                        "label": "Show how small investments accumulate into gold."
+                  },
+                  {
+                        "value": "V2 · Act",
+                        "label": "With Marketing, simplify jargon and foreground recurring saving."
+                  },
+                  {
+                        "value": "V3 · Purpose",
+                        "label": "With Growth, connect repeated contributions to a tangible gold goal."
+                  }
+            ],
+            "footnote": "Evolution documented in the existing case study; the supplied files do not establish a dated version history."
+      },
+      {
+            "eyebrow": "Ownership",
+            "title": "One design owner, multiple perspectives.",
+            "body": "As sole Product Designer, I owned strategy, flows, interaction, UI and prototyping. Branch conversations informed the problem; Marketing and Growth shaped the recurring-saving and goal directions."
+      },
+      {
+            "eyebrow": "Learning · What the evidence supports",
+            "title": "The funnel located the gap. Conversations gave it context.",
+            "body": "The baseline establishes a progression problem. The exploratory conversations suggest an expectation mismatch. The redesign translates that interpretation into saving-led choices and recurring setup—not a proven conversion improvement.",
+            "highlight": "Evidence → interpretation → a testable design response."
+      },
+      {
+            "eyebrow": "Validation & measurement · Pre-launch",
+            "title": "Prototype first. Engineering second.",
+            "body": "Validate the prototype with branch users: do they understand the choices, see a meaningful goal and complete setup without assistance? After launch, measure first-payment conversion, recurring-saving adoption, mandate creation, repeat saving, journey drop-offs and gold or jewellery redemption.",
+            "footnote": "Awaiting validation. No measured redesign impact is available.",
+            "variant": "wide"
+      }
+],
     opportunity: {
       title: "Interest wasn’t the problem. Progression was.",
       body: "In 30 days, 80,554 users entered the journey. 8,502 reached Buy Now, 5,605 proceeded to payment and 3,704 completed a transaction. The largest loss happened before Buy Now; the data showed where users left, not why.",
@@ -137,86 +245,166 @@ export const projects: Project[] = [
     metric: "0 → 1",
     metricLabel: "Sole Product Designer · impact metric placeholder",
     category: "VYAPAR PLUS · MUTHOOT FINANCE",
-    headline: "Turning neighbourhood kiranas into Muthoot financial-service points.",
-    metadata: ["Sole Product Designer · 0→1 · Shipped Sep 2026"],
-    stats: [
-      { value: "819", label: "Completed digital onboarding" },
-      { value: "2,282", label: "Started onboarding" },
-      { value: "35.9%", label: "End-to-end completion" },
-    ],
+    headline: "Turning neighbourhood kiranas into financial-service distribution points.",
+    metadata: ["Sole Product Designer", "0→1", "Shipped Sep 2026"],
+    stats: [{ value: "819", label: "Completed digital onboarding" }, { value: "2,282", label: "Started onboarding" }, { value: "35.9%", label: "End-to-end completion" }],
     snapshotFootnote: "Sep 1–11, 2026 · Early post-launch data",
     storyPins: [
       {
-        eyebrow: "The opportunity",
-        title: "What if every kirana could extend Muthoot's reach?",
-        body: "Customers outside major urban centres face friction accessing everyday financial services, while kirana owners need more ways to earn. Vyapar Plus brings payments, transfers, AEPS, travel and referrals into one local platform.",
-        items: [
-          { value: "10,000 agents", label: "Target in 3 months" },
-          { value: "<10 min", label: "Target onboarding" },
-          { value: "₹10K+", label: "Target additional monthly income" },
-        ],
-        footnote: "Launch targets, not achieved outcomes.",
-        variant: "wide",
+            "eyebrow": "The opportunity",
+            "title": "Turn trusted neighbourhood kiranas into financial-service touchpoints.",
+            "body": "Kiranas already have local reach and customer trust. The opportunity was to formalize that network into a digital distribution channel — helping Muthoot extend financial services into semi-urban and rural communities while creating an additional income stream for merchants.",
+            "items": [
+                  {
+                        "value": "10,000",
+                        "label": "Kiranas onboarded · 3-month target"
+                  },
+                  {
+                        "value": "80%",
+                        "label": "Monthly active agents · Target"
+                  },
+                  {
+                        "value": "₹10K+",
+                        "label": "Avg. revenue / kirana / month · Target"
+                  }
+            ],
+            "footnote": "BRD success metrics · Business targets, not achieved results."
       },
       {
-        eyebrow: "My role",
-        title: "One designer across an entire new ecosystem.",
-        body: "As the sole Product Designer, I owned the experience from concept to launch across three connected products.",
-        items: [
-          { value: "Merchant App", label: "Onboard · Serve · Transact · Earn" },
-          { value: "Saathi App", label: "Acquire · Assist · Verify" },
-          { value: "Website", label: "Discover · Understand · Join" },
-        ],
-        highlight: "Product strategy · UX/UI · Prototyping · Implementation",
+            "eyebrow": "My role · Sole Product Designer",
+            "title": "One designer across the ecosystem.",
+            "body": "I worked across the merchant experience and the operational journey that takes merchant-generated opportunities toward conversion.",
+            "items": [
+                  {
+                        "value": "Merchant experience",
+                        "label": "Onboarding · Dashboard · Transactions · Wallet · Earnings · AEPS · Leads · Payouts"
+                  },
+                  {
+                        "value": "Operational / BDE experience",
+                        "label": "Lead visibility · Assignment · Verification · Fulfilment"
+                  }
+            ]
       },
       {
-        eyebrow: "The design challenge",
-        title: "The system was complex. The merchant experience couldn't be.",
-        body: "Each service required a different mix of identity, business, bank and compliance verification across multiple third-party systems.",
-        highlight: "Complex system underneath → simple merchant journey above it.",
-        variant: "accent",
+            "eyebrow": "Early product evidence",
+            "title": "Acquisition was only the start.",
+            "body": "The early funnel showed that acquisition alone wasn’t enough. Getting merchants through onboarding and into meaningful product usage was the next problem to solve."
       },
       {
-        eyebrow: "Designing the core journey",
-        title: "Before a kirana can earn, we have to get them successfully onboarded.",
-        body: "Instead of one long KYC flow, onboarding asks for information only when it becomes relevant to the services selected.",
-        flow: ["Register", "Choose services", "Verify identity", "Verify business", "Add bank", "Sign", "Start earning"],
-        highlight: "The journey only asks for verification relevant to the services a merchant chooses.",
-        visual: "Visual 01 · Onboarding journey",
-        variant: "visual",
+            "eyebrow": "Onboarding · Designing around the system",
+            "title": "Ask for less when the system knows more.",
+            "body": "Udyam or GST data could prefill information already available to the system. The journey also had to handle failed verification, missing records, incorrect bank details and alternate routes.",
+            "highlight": "Reduce merchant effort without hiding system complexity."
       },
       {
-        eyebrow: "Designing around the system",
-        title: "APIs determined what was possible. UX determined how it felt.",
-        body: "Udyam or GST data prefills details the system already knows. The experience also accounts for failed verification, missing records, incorrect bank details and alternative routes.",
-        highlight: "Ask merchants for less when the system already knows more.",
+            "eyebrow": "The dashboard",
+            "title": "From app home to business home.",
+            "body": "Once onboarded, merchants needed more than a catalogue of services. I brought transactions, earnings, payouts and leads closer together to make their business understandable.",
+            "footnote": "What happened? What did I earn? What needs my attention? What happened to my leads?",
+            "screens": [
+                  {
+                        "src": "/vp-android/dashboard.png",
+                        "alt": "Supplied Vyapar Plus dashboard with earnings, transactions, payouts and leads"
+                  }
+            ],
+            "variant": "visual"
       },
       {
-        eyebrow: "Beyond one app",
-        title: "The merchant journey doesn't end on the merchant's phone.",
-        items: [
-          { value: "Website", label: "Discover" },
-          { value: "Merchant App", label: "Join + Serve customers + Earn" },
-          { value: "Saathi", label: "Assist + Physical verification" },
-        ],
-        highlight: "One business journey. Three connected product experiences.",
-        visual: "Visual 02 · Connected ecosystem",
-        variant: "visual",
+            "eyebrow": "A connected money story",
+            "title": "A transaction isn’t the end of the story.",
+            "body": "Completing a transaction is only one step. Merchants also need to understand where the money went and what they earned.",
+            "flow": [
+                  "Activity",
+                  "Money movement",
+                  "Earnings"
+            ],
+            "screens": [
+                  {
+                        "src": "/vp-android/transaction-history.png",
+                        "alt": "Supplied customer Transaction History within Beneficiary Details"
+                  },
+                  {
+                        "src": "/vp-android/wallet-ledger.png",
+                        "alt": "Supplied Vyapar Plus Wallet / Ledger"
+                  },
+                  {
+                        "src": "/vp-android/earnings-breakdown.png",
+                        "alt": "Supplied Earnings Summary and earnings by service"
+                  }
+            ],
+            "visual": "Transaction history · Wallet / ledger · Earnings breakdown",
+            "variant": "visual"
       },
       {
-        eyebrow: "What comes next",
-        title: "Launch gave us the baseline. Now we learn from real usage.",
-        body: "Merchant conversations and funnel behaviour will reveal where merchants drop, what creates friction, which services get adopted and what drives repeat transactions.",
-        highlight: "Those insights will shape the next iteration as Bills, DMT and more services enter the platform.",
+            "eyebrow": "The product expands",
+            "title": "The bigger opportunity was already in the store.",
+            "body": "Kirana owners already had trusted customer relationships. Instead of fulfilling an entire financial-product journey, merchants could identify an opportunity and submit the customer as a lead.",
+            "highlight": "This turned the merchant app from a transaction tool into an acquisition channel."
       },
       {
-        eyebrow: "From 0→1 to real merchants",
-        title: "From a business idea to a working kirana fintech ecosystem.",
-        body: "I translated financial services, compliance requirements and operational workflows into a connected product ecosystem for neighbourhood merchants.",
-        highlight: "0→1 · Shipped · serving real neighbourhood merchants.",
-        variant: "wide",
+            "eyebrow": "Merchant → BDE · From referral to conversion",
+            "title": "Submission wasn’t the finish line.",
+            "body": "Submitted opportunities moved into the BDE workflow for follow-up and verification, connecting merchant acquisition with field execution.",
+            "flow": [
+                  "Lead submitted",
+                  "Assigned",
+                  "Verified",
+                  "Converted"
+            ],
+            "screens": [
+                  {
+                        "src": "/vp-android/lead-submitted.png",
+                        "alt": "Merchant confirmation of gold-loan lead submission"
+                  },
+                  {
+                        "src": "/vp-android/bde-assigned.png",
+                        "alt": "Supplied BDE Leads Assigned dashboard showing retailer verification work"
+                  },
+                  {
+                        "src": "/vp-android/bde-verification.png",
+                        "alt": "Supplied BDE Physical Verification directory"
+                  }
+            ],
+            "visual": "Merchant submission · BDE work queue · Physical verification",
+            "footnote": "Screens show submission and field execution; conversion is evidenced by the early results below.",
+            "variant": "visual"
       },
-    ],
+      {
+            "eyebrow": "Actual early results",
+            "title": "First two weeks",
+            "items": [
+                  {
+                        "value": "2,500+",
+                        "label": "Kirana merchants onboarded"
+                  },
+                  {
+                        "value": "1,000+",
+                        "label": "Loan leads submitted"
+                  },
+                  {
+                        "value": "600+",
+                        "label": "Gold Loan + VM loan leads converted"
+                  }
+            ]
+      },
+      {
+            "eyebrow": "Product decision / reflection",
+            "title": "Designing for the business, not just the feature.",
+            "body": "An early dashboard direction brought transactions, earnings, payouts and leads into one business view. Initially challenged, the direction became clearer as the product evolved.",
+            "highlight": "A merchant shouldn’t have to reconstruct their business from separate features."
+      },
+      {
+            "eyebrow": "The bigger picture",
+            "title": "What started as an app became a distribution workflow.",
+            "flow": [
+                  "Merchant activity",
+                  "Financial opportunity",
+                  "Field execution",
+                  "Conversion"
+            ],
+            "body": "The product connected merchant activity with downstream execution, turning kirana relationships into a measurable financial-services channel."
+      }
+],
     opportunity: {
       title: "Turn a new business model into a usable product.",
       body: "Placeholder for the market and product opportunity behind the kirana commission platform, kept focused on the reason the product needed to exist.",
@@ -262,52 +450,77 @@ export const projects: Project[] = [
     ],
     storyPins: [
       {
-        eyebrow: "THE PROBLEM",
-        title: "Commitment came before confidence.",
-        body: "The journey pushed users toward Book Now while tenure, returns and investment value were fragmented across the experience.",
-        highlight: "25,275 users arrived, but only 5.6% selected Mahindra Finance.",
+            "eyebrow": "The problem",
+            "title": "Commitment came before confidence.",
+            "body": "The old selection screen offered multiple rate cards with Book Now actions. Investment amount, maturity value and gains appeared in a later step.",
+            "highlight": "5.6% selected Mahindra Finance.",
+            "footnote": "Existing funnel baseline. This identifies a progression gap; it does not establish why users left."
       },
       {
-        eyebrow: "BEFORE",
-        title: "The old journey split the decision across disconnected steps.",
-        body: "Users had to piece together the product, tenure and investment outcome before they could invest.",
-        visual: "Existing journey · selected screens",
-        screens: [
-          { src: "/fixed-deposit/before-overview.png", alt: "Existing Fixed Deposit product overview" },
-          { src: "/fixed-deposit/before-tenure.png", alt: "Existing tenure and plan selection" },
-          { src: "/fixed-deposit/before-investment.png", alt: "Existing investment amount step" },
-        ],
-        variant: "visual",
+            "eyebrow": "Design direction",
+            "title": "Make the investment decision understandable before commitment.",
+            "body": "Bring the selected scheme, investment amount and expected returns into one decision view, with a focused sheet for changing tenure.",
+            "highlight": "The decision is the journey — not just the Book Now action."
       },
       {
-        eyebrow: "DESIGN DIRECTION",
-        title: "Make the investment decision understandable before commitment.",
-        body: "The under-review direction brings tenure, interest rate, maturity value and gains into one guided decision path.",
-        flow: ["Understand the FD", "Choose tenure", "Enter investment", "Review returns", "Continue"],
-        highlight: "The decision is the journey — not just the Book Now action.",
-        variant: "accent",
+            "eyebrow": "Before → After · Under review",
+            "title": "Understand the product before starting.",
+            "body": "Retain benefits, rates and key terms before Start Investing. The revised discovery screen adds a women-specific rate row and makes lock-in and interest-payout options explicit.",
+            "screens": [
+                  {
+                        "src": "/fd-iphone/before-landing.png",
+                        "alt": "Before: Understand the product before starting."
+                  },
+                  {
+                        "src": "/fd-iphone/after-landing.png",
+                        "alt": "After: Understand the product before starting."
+                  }
+            ],
+            "variant": "visual",
+            "footnote": "Full-length supplied captures, shown uncropped. The FAQ text is placeholder content in both designs."
       },
       {
-        eyebrow: "AFTER · UNDER REVIEW",
-        title: "A clearer path from tenure to expected returns.",
-        body: "The redesign helps users choose a tenure, enter an amount and understand maturity value and gains before continuing.",
-        visual: "Current under-review direction · selected screens",
-        screens: [
-          { src: "/fixed-deposit/after-tenure.png", alt: "Redesigned tenure selection" },
-          { src: "/fixed-deposit/after-investment.png", alt: "Redesigned investment amount with maturity value and gains" },
-          { src: "/fixed-deposit/after-review.png", alt: "Redesigned maturity action review" },
-        ],
-        variant: "visual",
+            "eyebrow": "Before → After · Under review",
+            "title": "Bring the scheme and its outcome together.",
+            "body": "Replace several rate cards and Book Now actions with one selected scheme. Interest rate, tenure, investment amount, maturity amount, total gains, maturity action and interest payout are visible together before Continue.",
+            "screens": [
+                  {
+                        "src": "/fd-iphone/before-schemes.png",
+                        "alt": "Before: Bring the scheme and its outcome together."
+                  },
+                  {
+                        "src": "/fd-iphone/after-scheme.png",
+                        "alt": "After: Bring the scheme and its outcome together."
+                  }
+            ],
+            "variant": "visual",
+            "footnote": "The old amount step already showed maturity value and gains. The change consolidates that information rather than introducing it."
       },
       {
-        eyebrow: "SUCCESS METRIC",
-        title: "Measure whether clearer decisions improve progression.",
-        body: "After launch, success will be measured from FD product view to partner or plan selection, then onward toward investment initiation.",
-        highlight: "Current Mahindra selection baseline: 5.6%.",
-        footnote: "Under review · Not yet shipped · Impact measurement planned post-launch",
-        variant: "wide",
+            "eyebrow": "Before → After · Under review",
+            "title": "Make changing tenure a focused decision.",
+            "body": "Move tenure and rate selection into one sheet. Each row pairs a tenure with its interest rate; eligibility toggles remain available and Apply confirms the selection.",
+            "screens": [
+                  {
+                        "src": "/fd-iphone/before-schemes.png",
+                        "alt": "Before: Make changing tenure a focused decision."
+                  },
+                  {
+                        "src": "/fd-iphone/after-tenure.png",
+                        "alt": "After: Make changing tenure a focused decision."
+                  }
+            ],
+            "variant": "visual",
+            "footnote": "Design intent: reduce the need to interpret several scheme cards. A usability improvement has not yet been measured."
       },
-    ],
+      {
+            "eyebrow": "Success metric · Measurement planned",
+            "title": "Measure whether clearer decisions improve progression.",
+            "body": "After launch, measure FD product view → partner or plan selection → investment initiation. Compare progression against the existing baseline; no redesign uplift is claimed.",
+            "footnote": "Under review · Not yet shipped · Impact measurement planned post-launch",
+            "variant": "wide"
+      }
+],
     opportunity: {
       title: "Make fixed deposits easier to understand.",
       body: "Placeholder content for the product opportunity and the customer need behind the experience.",

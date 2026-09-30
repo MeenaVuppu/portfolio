@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { PegPin } from "./Hardware";
+import { BoardHook, PegPin } from "./Hardware";
 import { ProjectFile } from "./ProjectFile";
 import { projects, type Project } from "../lib/projects";
 import { usePegboardDrag } from "../hooks/usePegboardDrag";
@@ -121,20 +121,7 @@ function MoneyPlant() {
       aria-hidden="true"
     >
       <div className="money-plant__hover">
-        <span className="money-plant__pot">
-          <Image src="/money-plant-clean.png" alt="" width={1254} height={1254} unoptimized />
-        </span>
-        <span className="money-plant__leaves">
-          <span className="money-plant__leaf money-plant__leaf--a">
-            <Image src="/money-plant-clean.png" alt="" width={1254} height={1254} unoptimized />
-          </span>
-          <span className="money-plant__leaf money-plant__leaf--b">
-            <Image src="/money-plant-clean.png" alt="" width={1254} height={1254} unoptimized />
-          </span>
-          <span className="money-plant__leaf money-plant__leaf--c">
-            <Image src="/money-plant-clean.png" alt="" width={1254} height={1254} unoptimized />
-          </span>
-        </span>
+        <Image src="/money-plant-layer.png" alt="" width={1254} height={1881} unoptimized />
       </div>
     </div>
   );
@@ -162,7 +149,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const fadeFrameRef = useRef<number | null>(null);
   const emailFeedbackTimerRef = useRef<number | null>(null);
   const musicPlayingRef = useRef(false);
-
   const playPlacementSound = useCallback(() => {
     const audio = placementAudioRef.current;
     if (!audio) return;
@@ -268,7 +254,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     function tick(now: number) {
       const progress = Math.min(1, (now - startedAt) / duration);
       const eased = 1 - (1 - progress) ** 3;
-      audio.volume = startVolume + (targetVolume - startVolume) * eased;
+      audio.volume = Math.min(1, Math.max(0, startVolume + (targetVolume - startVolume) * eased));
 
       if (progress < 1) {
         fadeFrameRef.current = window.requestAnimationFrame(tick);
@@ -490,18 +476,23 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
             if (event.pointerType === "mouse") setIsMusicCreditOpen(false);
           }}
         >
-          <div className="headphones-button">
-            <img
+          <button
+            type="button"
+            className="headphones-button"
+            onClick={toggleMusic}
+            aria-label={isMusicPlaying ? "Pause background music" : "Play background music"}
+            aria-pressed={isMusicPlaying}
+          >
+            <BoardHook />
+            <Image
               className="airpods-image"
-              src="/headphones-layer.png"
-              alt="Ivory headphones"
+              src="/airpods-max-lavender.png"
+              alt="Lavender AirPods Max"
+              width={2892}
+              height={2960}
+              unoptimized
             />
-            <span
-              className="headphones-pin-anchor"
-              data-headphone-mount-anchor="true"
-              aria-hidden="true"
-            />
-          </div>
+          </button>
           {noteBurst > 0 ? (
             <span className="music-notes" key={noteBurst} aria-hidden="true">
               <i>♪</i>
@@ -519,10 +510,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
               className="music-credit__trigger"
               aria-label="Music credit"
               aria-expanded={isMusicCreditOpen}
-              onClick={() => {
-                void toggleMusic();
-                setIsMusicCreditOpen((open) => !open);
-              }}
+              onClick={() => setIsMusicCreditOpen((open) => !open)}
             >♪</button>
             <div
               ref={musicCreditNoteRef}
@@ -596,14 +584,17 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
           data-peg-draggable={isArtworkOpen ? undefined : "watercolor"}
           data-peg-bounds="0.19,0.15,0.19,0.16"
         >
-          <div className="brush-holder">
+          <div
+            className="brush-holder"
+          >
             <div className="brush-holder__hover">
               <Image
                 className="brush-holder__image"
-                src="/ceramic-watercolor-holder-clean.png"
-                alt="Watercolor brushes in a handmade ceramic holder"
-                width={1024}
-                height={1536}
+                src="/books-brush-shelf-replacement.png"
+                style={{ aspectRatio: "3 / 1", objectFit: "contain" }}
+                alt="Design books and paintbrushes on a small shelf"
+                width={1920}
+                height={684}
                 unoptimized
               />
             </div>
@@ -682,23 +673,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
 
         <MoneyPlant />
         <div ref={dragPreviewRef} className="peg-drag-preview" aria-hidden="true" />
-      <img
-        className="landing-board-asset"
-        src="/landing-pegboard.png"
-        alt=""
-        width={1594}
-        height={754}
-        aria-hidden="true"
-      />
-      <img
-        className="landing-money-plant"
-        src="/money-plant-layer.png"
-        alt=""
-        aria-hidden="true"
-      />
-      <div className="landing-books-brush-shelf" aria-hidden="true">
-        <img src="/books-brush-shelf.png" alt="" />
-      </div>
       </section>
     </main>
   );

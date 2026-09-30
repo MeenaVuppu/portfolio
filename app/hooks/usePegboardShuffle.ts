@@ -3,7 +3,7 @@
 import { type RefObject, useLayoutEffect } from "react";
 
 type Slot = { id: string; x: number; y: number };
-type PlacedBox = { bottom: number; left: number; right: number; top: number };
+type PlacedBox = { bottom: number; id?: string; left: number; right: number; top: number };
 type ShuffleItem = {
   bottomOffset: number;
   element: HTMLElement;
@@ -120,17 +120,15 @@ function findAssignments(items: ShuffleItem[], placed: PlacedBox[], boardWidth: 
 
 function compactMobileAssignments(items: ShuffleItem[], boardWidth: number, next: () => number) {
   const edge = 14;
-  const gap = 16;
   const placed: PlacedBox[] = [];
   const assignments = new Map<string, Slot>();
+  const isLarge = (id?: string) => id === "digital-gold" || id === "vyapar-plus" || id === "fixed-deposit" || id === "plant";
 
   for (const item of items) {
     const left = edge - item.leftOffset;
     const right = boardWidth - edge - item.rightOffset;
     const center = (boardWidth - item.width) / 2 - item.leftOffset;
-    const horizontalCandidates = item.id === "digital-gold" || item.id === "vyapar-plus" || item.id === "fixed-deposit"
-      ? shuffled([left, right, center], next)
-      : shuffled([left, right], next);
+    const horizontalCandidates = shuffled([left, center, right], next);
 
     const candidates = horizontalCandidates.map((anchorLeft) => {
       let anchorTop = edge - item.topOffset;
@@ -141,9 +139,9 @@ function compactMobileAssignments(items: ShuffleItem[], boardWidth: number, next
           right: anchorLeft + item.rightOffset,
           top: anchorTop + item.topOffset,
         };
-        const blockers = placed.filter((other) => overlaps(candidate, other, gap));
+        const blockers = placed.filter((other) => overlaps(candidate, other, isLarge(item.id) || isLarge(other.id) ? 32 : 24));
         if (blockers.length === 0) return { anchorLeft, anchorTop, box: candidate };
-        anchorTop = Math.max(...blockers.map((blocker) => blocker.bottom)) + gap - item.topOffset;
+        anchorTop = Math.max(...blockers.map((blocker) => blocker.bottom + (isLarge(item.id) || isLarge(blocker.id) ? 32 : 24))) - item.topOffset;
       }
 
       const box = {
@@ -159,7 +157,7 @@ function compactMobileAssignments(items: ShuffleItem[], boardWidth: number, next
     const selected = earliest[Math.floor(next() * earliest.length)];
     const side = Math.abs(selected.box.left - edge) < 2 ? "left" : Math.abs(selected.box.right - (boardWidth - edge)) < 2 ? "right" : "center";
 
-    placed.push(selected.box);
+    placed.push({ ...selected.box, id: item.id });
     assignments.set(item.id, {
       id: `mobile-packed-${side}-${Math.round(selected.anchorTop)}`,
       x: selected.anchorLeft,
@@ -171,6 +169,42 @@ function compactMobileAssignments(items: ShuffleItem[], boardWidth: number, next
     assignments,
     height: Math.ceil(Math.max(...placed.map((box) => box.bottom)) + 28),
   };
+}
+
+// Short desktop windows can exhaust the curated slots. Pack the same objects
+// into available space instead of leaving the overlapping CSS fallback visible.
+function packDesktop(items: ShuffleItem[], width: number, height: number, next: () => number) {
+  const gap = 18;
+  let free = [{ left: 22, top: 22, right: width - 22, bottom: height - 22 }];
+  const result = new Map<string, Slot>();
+  const ordered = items.map(item => ({ item, rank: Math.max(item.width, item.height) * (0.8 + next() * 0.4) }))
+    .sort((a, b) => b.rank - a.rank).map(entry => entry.item);
+  for (const item of ordered) {
+    const choices = free.filter(r => r.right - r.left >= item.width && r.bottom - r.top >= item.height);
+    choices.sort((a, b) =>
+      Math.min(a.right - a.left - item.width, a.bottom - a.top - item.height) -
+      Math.min(b.right - b.left - item.width, b.bottom - b.top - item.height));
+    const space = choices[0];
+    if (!space) return null;
+    const box = { left: space.left, top: space.top, right: space.left + item.width, bottom: space.top + item.height };
+    result.set(item.id, {
+      id: `packed-${item.id}`,
+      x: (box.left - item.leftOffset) / width * 100,
+      y: (box.top - item.topOffset) / height * 100,
+    });
+    const split: typeof free = [];
+    for (const r of free) {
+      if (!overlaps(box, r, gap)) { split.push(r); continue; }
+      if (box.left - gap > r.left) split.push({ ...r, right: box.left - gap });
+      if (box.right + gap < r.right) split.push({ ...r, left: box.right + gap });
+      if (box.top - gap > r.top) split.push({ ...r, bottom: box.top - gap });
+      if (box.bottom + gap < r.bottom) split.push({ ...r, top: box.bottom + gap });
+    }
+    free = split.filter((r, i) => !split.some((other, j) => j !== i &&
+      other.left <= r.left && other.top <= r.top && other.right >= r.right && other.bottom >= r.bottom &&
+      (j < i || other.left < r.left || other.top < r.top || other.right > r.right || other.bottom > r.bottom)));
+  }
+  return result;
 }
 
 export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
@@ -258,6 +292,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
           })
           .map((node) => node.getBoundingClientRect())
           .filter((visibleRect) => visibleRect.width > 0 && visibleRect.height > 0);
+        if (visibleRects.length === 0) return null;
         const visibleLeft = Math.min(...visibleRects.map((visibleRect) => visibleRect.left)) - boardRect.left;
         const visibleTop = Math.min(...visibleRects.map((visibleRect) => visibleRect.top)) - boardRect.top;
         const visibleRight = Math.max(...visibleRects.map((visibleRect) => visibleRect.right)) - boardRect.left;
@@ -358,6 +393,18 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
         selectedSeed = seed;
       }
 
+      if (!selected && !mobile) {
+        const seedBytes = new Uint32Array(1);
+        window.crypto.getRandomValues(seedBytes);
+        selectedSeed = seedBytes[0];
+        const next = random(selectedSeed);
+        const items = Object.keys(selectors).map(id => dimensions(id, []))
+          .filter((item): item is ShuffleItem => item !== null);
+        for (let attempt = 0; attempt < 32 && !selected; attempt += 1) {
+          selected = packDesktop(items, boardRect.width, boardRect.height, next);
+        }
+        if (selected) selectedSignature = [...selected].map(([id, slot]) => `${id}:${slot.x},${slot.y}`).join("|");
+      }
       if (!selected) return;
       runtimeLayouts.set(mobile ? "mobile" : "desktop", {
         assignments: [...selected.entries()],

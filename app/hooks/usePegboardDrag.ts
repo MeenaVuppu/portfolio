@@ -31,8 +31,6 @@ const DESKTOP_DRAG_QUERY = "(min-width: 1100px) and (hover: hover) and (pointer:
 const DRAG_THRESHOLD = 6;
 const COLLISION_GAP = 16;
 const BOARD_PADDING = 22;
-const ANCHOR_STEP_X = 29;
-const ANCHOR_STEP_Y = 27;
 
 function numberFromDataset(value: string | undefined) {
   const parsed = Number(value);
@@ -128,8 +126,14 @@ function nearestAnchor(
   const maxX = boardSize.width - BOARD_PADDING - itemSize.width;
   const maxY = boardSize.height - BOARD_PADDING - itemSize.height;
 
-  for (let y = BOARD_PADDING; y <= maxY; y += ANCHOR_STEP_Y) {
-    for (let x = BOARD_PADDING; x <= maxX; x += ANCHOR_STEP_X) {
+  // Consider actual free-space edges, not an unrelated coarse grid that can
+  // miss every valid position for a large folder in a narrow gap.
+  const xs = [desired.x, BOARD_PADDING, maxX, ...others.flatMap(box =>
+    [box.right + COLLISION_GAP, box.left - itemSize.width - COLLISION_GAP])];
+  const ys = [desired.y, BOARD_PADDING, maxY, ...others.flatMap(box =>
+    [box.bottom + COLLISION_GAP, box.top - itemSize.height - COLLISION_GAP])];
+  for (const y of ys) {
+    for (const x of xs) {
       candidates.push({ x, y, distance: (x - desired.x) ** 2 + (y - desired.y) ** 2 });
     }
   }
@@ -203,6 +207,7 @@ export function usePegboardDrag(
       const origin = event.target;
       if (!(origin instanceof Element)) return;
       if (origin.closest(".music-credit")) return;
+      if (origin.closest(".brush-holder__hitarea")) return;
       const element = origin.closest<HTMLElement>("[data-peg-draggable]");
       if (!element || !boardElement.contains(element)) return;
 
@@ -265,7 +270,7 @@ export function usePegboardDrag(
       else hidePreview();
 
       const directBox = boxAt(desired, itemSize.width, itemSize.height);
-      if (isValid(directBox, others, boardSize.width, boardSize.height, radius)) {
+      if (fitsBoard(directBox, boardSize.width, boardSize.height, radius)) {
         const nextOffset = { x: active.startOffset.x + delta.x, y: active.startOffset.y + delta.y };
         active.lastSafeOffset = nextOffset;
         setOffset(active.element, nextOffset);
@@ -306,6 +311,7 @@ export function usePegboardDrag(
         "resume",
         "archive",
         "headphones",
+        "watercolor",
       ].includes(drag.element.dataset.pegDraggable ?? "");
       const finalDestination = shouldSnapToPeg
         ? snapElementToNearestHole(boardElement, drag.element, destination) ?? drag.startOffset

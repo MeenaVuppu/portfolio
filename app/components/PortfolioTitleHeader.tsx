@@ -85,7 +85,7 @@ export function PortfolioTitleHeader({
   const brand = projectMode && onHome ? (
     <button type="button" onClick={onHome}>← Board</button>
   ) : (
-    <Link href="/">Meena Vuppu</Link>
+    <Link href="/">Meena Vuppu’s Portfolio</Link>
   );
 
   return (

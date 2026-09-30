@@ -68,17 +68,7 @@ export function ProjectFile({ project, className = "", compact, disabled = false
     }
   }
 
-  const projectContent = project.slug === "vyapar-plus" ? (
-    <>
-      <img className="project-file__rendered-folder" src="/vyapar-folder-layer.png" alt="" aria-hidden="true" />
-      <span className="project-file__rendered-copy">
-        <span className="project-file__title">{project.title}</span>
-        <span className="project-file__tagline">Empowering kirana stores<br />to do more</span>
-      </span>
-      <span className="project-file__mount project-file__mount--left" aria-hidden="true" />
-      <span className="project-file__mount project-file__mount--right" aria-hidden="true" />
-    </>
-  ) : (
+  const projectContent = (
     <>
       <span className="project-file__back-sheet" aria-hidden="true" />
       <span className="project-file__document">

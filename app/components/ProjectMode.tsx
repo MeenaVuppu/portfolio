@@ -51,6 +51,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
     <main className={`project-mode project-mode--${phase}`} aria-label={`${project.title} project`} aria-live="polite">
       <div className={`project-view project-view--${project.slug}`}>
         <section className="project-pegboard" style={pegboardTheme} aria-label={`${project.title} case study board`}>
+          <div className="project-title-pin"><PegPin />{project.title}</div>
           <div className="project-board-intro project-reveal">
             <span className="project-board-label">Project snapshot</span>
             {project.snapshotCopy && <p className="project-board-copy">{project.snapshotCopy}</p>}
@@ -131,9 +132,28 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
                   {pin.screens ? (
                     <div className="project-story-visual project-story-visual--phones">
                       <div className="project-phone-sequence">
-                        {pin.screens.map((screen) => (
+                        {pin.screens.map((screen, screenIndex) => (
                           <figure className="project-phone" key={screen.src}>
-                            <img src={screen.src} alt={screen.alt} />
+                            {project.slug === "fixed-deposit" ? (
+                              <>
+                                <figcaption className="fd-phone-label">{screenIndex === 0 ? "BEFORE" : "AFTER"}</figcaption>
+                                <div className="fd-phone-device">
+                                  <div className="fd-phone-display" tabIndex={0} role="region" aria-label={`${screen.alt} — scroll to view full screen`}>
+                                    <img src={screen.src} alt={screen.alt} />
+                                  </div>
+                                  <span className="fd-phone-pill" aria-hidden="true" />
+                                </div>
+                              </>
+                             ) : project.slug === "digital-gold" ? (
+                              <>
+                                <figcaption className="dg-phone-label">{screen.alt}</figcaption>
+                                <div className="dg-phone-device">
+                                  <div className="dg-phone-display" tabIndex={0} role="region" aria-label={`${screen.alt} — scroll to view full section`}>
+                                    <img src={screen.src} alt={screen.alt} />
+                                  </div>
+                                </div>
+                              </>
+                            ) : <img src={screen.src} alt={screen.alt} />}
                           </figure>
                         ))}
                       </div>
