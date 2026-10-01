@@ -84,10 +84,9 @@ export const projects: Project[] = [
     storyPins: [
       {
             "eyebrow": "The problem · Existing 30-day funnel",
-            "title": "Interest wasn’t the problem. Progression was.",
-            "body": "80,554 entered the journey; 8,502 reached Buy Now, 5,605 proceeded to payment and 3,704 completed. The largest loss happened before Buy Now. The funnel showed where users left, not why.",
-            "highlight": "4.60% completed a transaction.",
-            "footnote": "Old-journey baseline, not redesign impact."
+            "title": "The largest gap came before Buy Now.",
+            "body": "Digital Gold lets customers buy and accumulate gold digitally. The existing 30-day funnel lost most users before Buy Now; 5,605 then proceeded to payment. That located the problem, but did not explain whether expectations, comprehension or another barrier caused it.",
+            "footnote": "The opening snapshot shows the observed funnel. It is a baseline, not evidence of redesign impact."
       },
       {
             "eyebrow": "Talking to real users · Exploratory branch research",
@@ -95,8 +94,8 @@ export const projects: Project[] = [
             "body": "I visited one branch and spoke with three customers. The existing research account describes an expectation gap: saving-led banners brought people in, while the product mixed investment and jewellery-purchase journeys.",
             "items": [
                   {
-                        "value": "Observation",
-                        "label": "A mismatch between the acquisition message and the experience."
+                        "value": "Reported pattern",
+                        "label": "Saving-led acquisition and the mixed investment/jewellery journey set different expectations."
                   },
                   {
                         "value": "Interpretation",
@@ -112,14 +111,14 @@ export const projects: Project[] = [
       {
             "eyebrow": "Research → design principle",
             "title": "Make the first choice match the reason for arriving.",
-            "body": "The recorded expectation gap informed a saving-led entry point. Monthly, weekly and one-time routes make the intended action explicit instead of asking users to interpret SIP terminology first.",
+            "body": "The branch conversations suggested a saving intention that the entry experience did not foreground. I made monthly, weekly and one-time routes explicit, while keeping buying available. The landing comparison below shows that response.",
             "highlight": "Lead with the saving intention.",
             "footnote": "Design hypothesis: clearer choices may help users find the relevant path. Comprehension and completion still need testing."
       },
       {
             "eyebrow": "Before → after · Landing, top",
             "title": "Give saving its own front door.",
-            "body": "Before, balance, price, a chart and the purchase form lead the experience. After, the saving proposition leads into Save Monthly, Save Weekly and Buy Gold, followed by a short explanation of the process.",
+            "body": "To respond to the reported expectation gap, I moved the saving proposition and Save Monthly / Save Weekly / Buy Gold choices ahead of the transaction flow. The old entry led with balance, price, a chart and the purchase form. The redesign also explains how recurring saving works before setup.",
             "screens": [
                   {
                         "src": "/dg-evidence/before-top.png",
@@ -153,7 +152,7 @@ export const projects: Project[] = [
       {
             "eyebrow": "Design decision · From intention to setup",
             "title": "Make recurring saving a concrete action.",
-            "body": "With Marketing, the direction moved from explaining gold to making recurring saving explicit. The supplied setup screen exposes amount, monthly or weekly frequency, and the investment date before payment.",
+            "body": "Choosing a saving route needs to lead to a usable plan. With Marketing, I moved from explaining gold to exposing amount, frequency and investment date before payment. Monthly and weekly choices support recurrence without removing the one-time path shown on the landing.",
             "screens": [
                   {
                         "src": "/dg-evidence/recurring.png",
@@ -190,8 +189,8 @@ export const projects: Project[] = [
       {
             "eyebrow": "Learning · What the evidence supports",
             "title": "The funnel located the gap. Conversations gave it context.",
-            "body": "The baseline establishes a progression problem. The exploratory conversations suggest an expectation mismatch. The redesign translates that interpretation into saving-led choices and recurring setup—not a proven conversion improvement.",
-            "highlight": "Evidence → interpretation → a testable design response."
+            "body": "Analytics located the progression gap; three exploratory conversations suggested an expectation mismatch. I translated that interpretation into saving-led choices and recurring setup. The small research sample and pre-launch status limit what can be concluded about comprehension or conversion.",
+            "highlight": "A directional finding became a testable product decision."
       },
       {
             "eyebrow": "Validation & measurement · Pre-launch",
@@ -273,14 +272,14 @@ export const projects: Project[] = [
       {
             "eyebrow": "My role · Sole Product Designer",
             "title": "One designer across the ecosystem.",
-            "body": "I worked across the merchant experience and the operational journey that takes merchant-generated opportunities toward conversion.",
+            "body": "As sole Product Designer on this 0→1 Android / B2B fintech product, I connected discovery, merchant activity and field execution. The system spans Website — Discover; Merchant App — Join, serve customers and earn; Saathi — Assist and physical verification.",
             "items": [
                   {
                         "value": "Merchant experience",
                         "label": "Onboarding · Dashboard · Transactions · Wallet · Earnings · AEPS · Leads · Payouts"
                   },
                   {
-                        "value": "Operational / BDE experience",
+                        "value": "Saathi / BDE workflow",
                         "label": "Lead visibility · Assignment · Verification · Fulfilment"
                   }
             ]
@@ -288,18 +287,18 @@ export const projects: Project[] = [
       {
             "eyebrow": "Early product evidence",
             "title": "Acquisition was only the start.",
-            "body": "The early funnel showed that acquisition alone wasn’t enough. Getting merchants through onboarding and into meaningful product usage was the next problem to solve."
+            "body": "The Sep 1–11 onboarding cohort in the opening snapshot showed a gap between starting and completing digital onboarding. It points to activation as a follow-up priority; it does not identify which verification step caused the loss or establish later product usage."
       },
       {
             "eyebrow": "Onboarding · Designing around the system",
             "title": "Ask for less when the system knows more.",
-            "body": "Udyam or GST data could prefill information already available to the system. The journey also had to handle failed verification, missing records, incorrect bank details and alternate routes.",
+            "body": "Udyam or GST data could prefill details already available through the system. I used that opportunity to reduce repeat entry while retaining routes for failed verification, missing records and incorrect bank details. Automation could not replace recovery when the data or verification failed.",
             "highlight": "Reduce merchant effort without hiding system complexity."
       },
       {
             "eyebrow": "The dashboard",
             "title": "From app home to business home.",
-            "body": "Once onboarded, merchants needed more than a catalogue of services. I brought transactions, earnings, payouts and leads closer together to make their business understandable.",
+            "body": "Transactions, earnings, payouts and leads risked becoming separate destinations that merchants had to reconcile. I brought them into one dashboard so the entry point reflected the business, not just a service catalogue. The screen shows this architecture; its effect on task completion was not measured here.",
             "footnote": "What happened? What did I earn? What needs my attention? What happened to my leads?",
             "screens": [
                   {
@@ -338,13 +337,13 @@ export const projects: Project[] = [
       {
             "eyebrow": "The product expands",
             "title": "The bigger opportunity was already in the store.",
-            "body": "Kirana owners already had trusted customer relationships. Instead of fulfilling an entire financial-product journey, merchants could identify an opportunity and submit the customer as a lead.",
+            "body": "The business model used kiranas’ existing customer relationships to generate financial-product opportunities. Merchants could submit a lead rather than fulfil the entire journey themselves. That division of responsibility required a downstream field workflow.",
             "highlight": "This turned the merchant app from a transaction tool into an acquisition channel."
       },
       {
             "eyebrow": "Merchant → BDE · From referral to conversion",
             "title": "Submission wasn’t the finish line.",
-            "body": "Submitted opportunities moved into the BDE workflow for follow-up and verification, connecting merchant acquisition with field execution.",
+            "body": "Lead submission needed an operational next step. I connected the merchant confirmation with BDE work visibility and verification so the workflow continued beyond the merchant app. The screens show those interfaces, not an independently measured handoff improvement.",
             "flow": [
                   "Lead submitted",
                   "Assigned",
@@ -385,12 +384,13 @@ export const projects: Project[] = [
                         "value": "600+",
                         "label": "Gold Loan + VM loan leads converted"
                   }
-            ]
+            ],
+            "footnote": "Reported business results for the first two weeks. These are distinct from BRD targets and the Sep 1–11 digital-onboarding cohort; they do not isolate the effect of a particular design decision."
       },
       {
             "eyebrow": "Product decision / reflection",
             "title": "Designing for the business, not just the feature.",
-            "body": "An early dashboard direction brought transactions, earnings, payouts and leads into one business view. Initially challenged, the direction became clearer as the product evolved.",
+            "body": "The consolidated dashboard direction was initially challenged. As the product expanded, the need for one business view became clearer. The trade-off was to bring related activity together without making merchants discover and reconcile every feature independently.",
             "highlight": "A merchant shouldn’t have to reconstruct their business from separate features."
       },
       {
@@ -402,7 +402,7 @@ export const projects: Project[] = [
                   "Field execution",
                   "Conversion"
             ],
-            "body": "The product connected merchant activity with downstream execution, turning kirana relationships into a measurable financial-services channel."
+            "body": "The shipped system connected merchant activity with field execution. Early business results show uptake; long-term merchant activity, earnings and the effect of individual design decisions still need further evidence."
       }
 ],
     opportunity: {
@@ -450,22 +450,21 @@ export const projects: Project[] = [
     ],
     storyPins: [
       {
-            "eyebrow": "The problem",
-            "title": "Commitment came before confidence.",
-            "body": "The old selection screen offered multiple rate cards with Book Now actions. Investment amount, maturity value and gains appeared in a later step.",
-            "highlight": "5.6% selected Mahindra Finance.",
-            "footnote": "Existing funnel baseline. This identifies a progression gap; it does not establish why users left."
+            "eyebrow": "Analytics signal → problem hypothesis",
+            "title": "Selection was a progression bottleneck.",
+            "body": "The opening funnel shows limited progression from FD entry to Mahindra selection and then Book Now. In the old UI, users encountered rate cards before the investment amount and expected returns. My hypothesis was that separating these details created decision friction; the analytics alone cannot establish that cause.",
+            "footnote": "Observed funnel baseline. No interviews or causal usability finding are documented for this project."
       },
       {
             "eyebrow": "Design direction",
             "title": "Make the investment decision understandable before commitment.",
-            "body": "Bring the selected scheme, investment amount and expected returns into one decision view, with a focused sheet for changing tenure.",
+            "body": "To address that hypothesis, I brought the selected scheme, amount and expected returns into one view. A separate tenure sheet keeps alternatives available without showing every rate card alongside the investment summary. This is a design response awaiting validation.",
             "highlight": "The decision is the journey — not just the Book Now action."
       },
       {
             "eyebrow": "Before → After · Under review",
             "title": "Understand the product before starting.",
-            "body": "Retain benefits, rates and key terms before Start Investing. The revised discovery screen adds a women-specific rate row and makes lock-in and interest-payout options explicit.",
+            "body": "Users need the product’s terms before choosing an investment. I retained benefits and rates, added the women-specific rate row, and made lock-in and payout options explicit. This keeps discovery useful before Start Investing; improved understanding remains a hypothesis.",
             "screens": [
                   {
                         "src": "/fd-iphone/before-landing.png",
@@ -482,7 +481,7 @@ export const projects: Project[] = [
       {
             "eyebrow": "Before → After · Under review",
             "title": "Bring the scheme and its outcome together.",
-            "body": "Replace several rate cards and Book Now actions with one selected scheme. Interest rate, tenure, investment amount, maturity amount, total gains, maturity action and interest payout are visible together before Continue.",
+            "body": "To avoid asking users to commit before seeing the outcome, I replaced multiple Book Now cards with one selected scheme and Continue. Rate, tenure, amount, maturity value, gains, maturity action and payout sit together. The trade-off is a focused summary with alternatives accessed separately.",
             "screens": [
                   {
                         "src": "/fd-iphone/before-schemes.png",
@@ -499,7 +498,7 @@ export const projects: Project[] = [
       {
             "eyebrow": "Before → After · Under review",
             "title": "Make changing tenure a focused decision.",
-            "body": "Move tenure and rate selection into one sheet. Each row pairs a tenure with its interest rate; eligibility toggles remain available and Apply confirms the selection.",
+            "body": "To compare alternatives without filling the main view with scheme cards, I moved tenure and rate into a focused sheet. Each row pairs the two values; eligibility toggles remain available and Apply confirms the choice. This prioritizes comparison inside one task.",
             "screens": [
                   {
                         "src": "/fd-iphone/before-schemes.png",
@@ -516,7 +515,7 @@ export const projects: Project[] = [
       {
             "eyebrow": "Success metric · Measurement planned",
             "title": "Measure whether clearer decisions improve progression.",
-            "body": "After launch, measure FD product view → partner or plan selection → investment initiation. Compare progression against the existing baseline; no redesign uplift is claimed.",
+            "body": "The redesign is under review and has not shipped. Check whether users can interpret the selected scheme, change tenure and understand expected returns before continuing. After launch, compare product view → selection → investment initiation against the baseline; no projected uplift or achieved conversion gain is claimed.",
             "footnote": "Under review · Not yet shipped · Impact measurement planned post-launch",
             "variant": "wide"
       }
@@ -558,38 +557,34 @@ export const projects: Project[] = [
     metric: "+18%",
     metricLabel: "predicted impact metric placeholder",
     category: "Hives · Bumble concept feature",
-    headline: "Designing smaller social contexts inside Bumble.",
-    metadata: ["Concept project", "Feature design", "Social"],
+    headline: "Exploring smaller social contexts inside Bumble.",
+    metadata: ["Concept project", "Social discovery", "Not validated"],
     stats: [
-      { value: "Concept", label: "Feature exploration" },
+      { value: "Concept", label: "Exploration, not a shipped outcome" },
       { value: "Bumble", label: "Product context" },
-      { value: "[Target metric]", label: "Predicted / target impact", isForecast: true },
+      { value: "Unvalidated", label: "No measured impact available" },
     ],
     opportunity: {
-      title: "Move from matching toward a shared context.",
-      body: "Placeholder for the concept opportunity: how smaller social settings could help people discover and connect with more intention.",
+      title: "Could a smaller group make discovery more intentional?",
+      body: "Hives explores smaller social contexts inside Bumble. The concept brief proposes shared context as a reason to connect; it does not document a measured user problem or research finding.",
     },
     problem: {
-      title: "A match alone does not create momentum.",
-      body: "Placeholder for the behavioural gap the concept explores. This project should frame any future outcome as predicted, not observed.",
+      title: "The starting point is a hypothesis.",
+      body: "The premise is that matching alone may not provide enough context to start a connection. No interviews, behavioural data or user testing are documented to confirm that premise.",
     },
     decisions: [
-      {
-        title: "Start with a shared context",
-        body: "Placeholder for the concept decision that gives people a clearer reason to participate.",
-      },
-      {
-        title: "Keep discovery lightweight",
-        body: "Placeholder for the decision that balances social possibility with a low-pressure experience.",
-      },
+      { title: "Explore shared context", body: "Use smaller groups as the concept direction for helping people find a reason to connect. This is a proposed response to the premise, not a validated decision." },
+      { title: "Keep discovery low-pressure", body: "The brief favours lightweight participation. The trade-off between giving people context and adding effort still needs to be explored and tested." },
     ],
     solution: {
-      title: "A concept for discovering people through smaller groups.",
-      body: "Placeholder for the concept experience and the major product visual that best communicates the direction.",
+      title: "A direction, not a demonstrated product outcome.",
+      body: "The documented scope is a concept for discovering people through smaller groups. No supporting product screens or tested prototype are available in this repository to substantiate a completed implementation.",
     },
     impact: {
-      title: "A testable direction for deeper engagement.",
-      body: "Predicted impact placeholder only. Replace with a clearly labelled target or forecast when the concept is validated.",
+      title: "Validate the premise before claiming impact.",
+      body: "Next, establish whether shared context addresses a real discovery problem, then test whether a smaller-group concept helps. No measured result or defensible numerical forecast is documented.",
+      sectionLabel: "05 — Concept validation",
+      showMetric: false,
     },
   },
 ];
