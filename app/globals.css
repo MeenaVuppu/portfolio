@@ -7680,17 +7680,18 @@ body:has(.archive-mode) {
   }
 
   .archive-holder-slot--hives {
-    left: 3%;
-    top: 33%;
+    top: 8%;
   }
 
   .archive-holder-slot {
-    height: 34%;
-    width: 29%;
+    height: 24%;
+    width: 50%;
+    left: 25%;
+    right: auto;
   }
 
-  .archive-holder-slot--two { left: 35.5%; top: 33%; }
-  .archive-holder-slot--three { right: 3%; }
+  .archive-holder-slot--two { top: 38%; }
+  .archive-holder-slot--three { top: 68%; }
 
 }
 
@@ -8172,6 +8173,32 @@ body:has(.archive-mode) {
 }
 
 /* Bookshelf interactions stay local to books and brushes; the shelf itself is static. */
+  .bookshelf-book-region {
+    display: block;
+    position: absolute;
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: inherit;
+    cursor: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bookshelf-book-note {
+    display: grid;
+    z-index: 120;
+  }
+
+  .bookshelf-book-note.is-open {
+    opacity: 1;
+    transform: translateY(0) rotate(0.5deg);
+  }
+
+  .fixed-board:has(.brushes-object.is-peg-dragging) .bookshelf-book-note {
+    opacity: 0;
+  }
+
 .fixed-board .brushes-object:not(.is-peg-dragging):hover .brush-holder__hover,
 .fixed-board .brushes-object.is-open:not(.is-peg-dragging):hover .brush-holder__hover {
   filter: drop-shadow(0 5px 4px rgba(72, 0, 30, 0.13));

@@ -17,6 +17,11 @@ type HomeBoardProps = {
 
 const EMAIL_ADDRESS = "vuppumeena@gmail.com";
 const ARTWORK_ROTATIONS = [-5, 4, -2];
+const BOOK_NOTES = [
+  { title: "Days at the Morisaki Bookshop", note: "Such a pleasant read. Light and easy, like a breeze.", left: "14%", top: "30%", width: "48%", height: "23%" },
+  { title: "The Silent Patient", note: "Had me hooked. Couldn't focus on anything else until I finished it.", left: "12%", top: "54%", width: "53%", height: "15%" },
+  { title: "Hooked", note: "Product design without the boring lecture. Actually enjoyed this one.", left: "11%", top: "70%", width: "55%", height: "15%" },
+];
 
 type ArtworkPosition = {
   selectedX: number;
@@ -134,6 +139,9 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const [isArtworkOpen, setIsArtworkOpen] = useState(false);
   const [isArtworkPositioned, setIsArtworkPositioned] = useState(false);
   const [isMusicCreditOpen, setIsMusicCreditOpen] = useState(false);
+  const [activeBook, setActiveBook] = useState<number | null>(null);
+  const bookNoteRef = useRef<HTMLDivElement>(null);
+  const bookTapRef = useRef<{ x: number; y: number } | null>(null);
   const [artworkPositions, setArtworkPositions] = useState<ArtworkPosition[]>([]);
   const [selectedArtwork, setSelectedArtwork] = useState<number | null>(null);
   const boardRef = useRef<HTMLElement>(null);
@@ -220,6 +228,17 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   }, []);
 
   const musicCreditPosition = useSafeContextNote(isMusicCreditOpen, headphonesRef, musicCreditNoteRef, boardRef, musicCreditRef);
+  const bookNotePosition = useSafeContextNote(activeBook !== null, brushesRef, bookNoteRef, boardRef, boardRef);
+
+  useEffect(() => {
+    if (activeBook === null) return;
+    function dismissBookNote(event: PointerEvent) {
+      if (event.target instanceof Element && event.target.closest(".bookshelf-book-region")) return;
+      setActiveBook(null);
+    }
+    document.addEventListener("pointerdown", dismissBookNote, true);
+    return () => document.removeEventListener("pointerdown", dismissBookNote, true);
+  }, [activeBook]);
 
   async function copyEmailAddress() {
     try {
@@ -605,6 +624,34 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
                 height={684}
                 unoptimized
               />
+              {BOOK_NOTES.map((book, index) => (
+                <button
+                  type="button"
+                  key={book.title}
+                  className="bookshelf-book-region"
+                  data-book={book.title}
+                  aria-label={`Reading note: ${book.title}`}
+                  aria-expanded={activeBook === index}
+                  style={{ left: book.left, top: book.top, width: book.width, height: book.height }}
+                  onPointerEnter={(event) => { if (event.pointerType === "mouse") setActiveBook(index); }}
+                  onPointerLeave={(event) => {
+                    if (event.pointerType === "mouse") {
+                      bookTapRef.current = null;
+                      setActiveBook(null);
+                    }
+                  }}
+                  onPointerDown={(event) => { bookTapRef.current = { x: event.clientX, y: event.clientY }; }}
+                  onPointerMove={(event) => {
+                    const start = bookTapRef.current;
+                    if (start && Math.hypot(event.clientX - start.x, event.clientY - start.y) > 6) bookTapRef.current = null;
+                  }}
+                  onPointerCancel={() => { bookTapRef.current = null; }}
+                  onClick={(event) => {
+                    if (bookTapRef.current || event.detail === 0) setActiveBook(index);
+                    bookTapRef.current = null;
+                  }}
+                />
+              ))}
             </div>
             <button
               ref={brushHitareaRef}
@@ -642,6 +689,16 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
               </button>
             ))}
           </div>
+        </div>
+
+        <div
+          ref={bookNoteRef}
+          className={`music-credit__popover bookshelf-book-note${activeBook !== null ? " is-open" : ""}`}
+          style={{ left: bookNotePosition.left, top: bookNotePosition.top }}
+          aria-hidden={activeBook === null}
+        >
+          <strong>{activeBook !== null ? BOOK_NOTES[activeBook].title : ""}</strong>
+          <span>{activeBook !== null ? BOOK_NOTES[activeBook].note : ""}</span>
         </div>
 
         <div
