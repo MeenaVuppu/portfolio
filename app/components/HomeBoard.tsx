@@ -168,6 +168,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     if (!board) return;
 
     let frame: number | null = null;
+    let alignedGeometry = "";
     const alignElements = (ids: string[]) => {
       ids.forEach((id) => {
         const element = board.querySelector<HTMLElement>(`[data-peg-draggable="${id}"]`);
@@ -178,6 +179,13 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
       if (frame !== null) window.cancelAnimationFrame(frame);
       frame = window.requestAnimationFrame(() => {
         frame = null;
+        // Project mode changes the hidden board's measurements, not its arrangement.
+        if (board.closest(".is-project-mode")) return;
+        const geometry = [
+          board.dataset.layoutSeed, window.innerWidth, window.innerHeight,
+        ].join(":");
+        if (geometry === alignedGeometry) return;
+        alignedGeometry = geometry;
         alignElements([
           "digital-gold",
           "vyapar-plus",
