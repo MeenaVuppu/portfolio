@@ -74,7 +74,7 @@ export const projects: Project[] = [
     metadata: [
       "Sole Product Designer",
       "Research → Strategy → UX/UI → Prototype",
-      "Pre-launch · Awaiting validation",
+      "Redesign · Impact not yet measured",
     ],
     stats: [
       { value: "80,554", label: "Entered Digital Gold journey" },
@@ -90,35 +90,35 @@ export const projects: Project[] = [
       },
       {
             "eyebrow": "Talking to real users · Exploratory branch research",
-            "title": "The promise of saving met a different product story.",
-            "body": "I visited one branch and spoke with three customers. The existing research account describes an expectation gap: saving-led banners brought people in, while the product mixed investment and jewellery-purchase journeys.",
+            "title": "Some customers saw a jewellery journey.",
+            "body": "In direct conversations, some customers scrolled to the jewellery catalogue and asked whether the displayed jewellery could be bought on EMI. Some treated the calculator as a way to check gold weight or rate for a jewellery purchase.",
             "items": [
                   {
-                        "value": "Reported pattern",
-                        "label": "Saving-led acquisition and the mixed investment/jewellery journey set different expectations."
+                        "value": "Observed interpretation",
+                        "label": "Jewellery purchase, rather than the intended Digital Gold investment journey."
                   },
                   {
-                        "value": "Interpretation",
-                        "label": "A saving intention needed a clearer path inside the product."
+                        "value": "Insight",
+                        "label": "The page needed to explain what customers were saving or buying before asking them to calculate an amount."
                   },
                   {
                         "value": "Design response",
-                        "label": "Bring recurring saving forward, while retaining one-time buying."
+                        "label": "Lead with the saving proposition and explicit monthly, weekly and one-time choices."
                   }
             ],
-            "footnote": "Directional evidence from the existing project account. Interview transcripts and verbatim quotes are not available in the repository; these conversations do not establish prevalence."
+            "footnote": "Directional evidence from exploratory conversations. The project records one branch visit and three conversations; transcripts and verbatim quotes are unavailable, so no prevalence is claimed."
       },
       {
             "eyebrow": "Research → design principle",
             "title": "Make the first choice match the reason for arriving.",
-            "body": "The branch conversations suggested a saving intention that the entry experience did not foreground. I made monthly, weekly and one-time routes explicit, while keeping buying available. The landing comparison below shows that response.",
+            "body": "The mental-model mismatch called for more than rearranging the page. The first brief allowed roughly two days and kept the calculator unchanged to limit development effort. Business/Growth then pushed for a more meaningful revamp, opening space for the saving-led entry shown below.",
             "highlight": "Lead with the saving intention.",
-            "footnote": "Design hypothesis: clearer choices may help users find the relevant path. Comprehension and completion still need testing."
+            "footnote": "The initial assumption that customers already understood the calculator was not established by the conversations. The current design response still needs outcome measurement."
       },
       {
             "eyebrow": "Before → after · Landing, top",
             "title": "Give saving its own front door.",
-            "body": "To respond to the reported expectation gap, I moved the saving proposition and Save Monthly / Save Weekly / Buy Gold choices ahead of the transaction flow. The old entry led with balance, price, a chart and the purchase form. The redesign also explains how recurring saving works before setup.",
+            "body": "To distinguish investing from jewellery shopping, I put the saving proposition and Save Monthly / Save Weekly / Buy Gold choices before the transaction flow. The previous entry led with balance, price, a chart and the calculator. The new hierarchy explains the available actions before asking for an amount.",
             "screens": [
                   {
                         "src": "/dg-evidence/before-top.png",
@@ -134,8 +134,8 @@ export const projects: Project[] = [
       },
       {
             "eyebrow": "Before → after · Landing, continued",
-            "title": "Connect the habit to a tangible gold outcome.",
-            "body": "The old landing continues through jewellery shopping, FAQs and articles. The redesign explains accumulation and then connects gold savings to coins and jewellery. This supports the goal-saving direction recorded with Growth; it does not demonstrate a complete goal-setting flow.",
+            "title": "Explain accumulation before the catalogue.",
+            "body": "The redesigned continuation explains how recurring contributions accumulate, then presents supporting information and the coins/jewellery catalogue. The catalogue remains available, but no longer defines the main entry story. These screens do not implement a personal gold or jewellery goal.",
             "screens": [
                   {
                         "src": "/dg-evidence/before-continued.png",
@@ -152,7 +152,7 @@ export const projects: Project[] = [
       {
             "eyebrow": "Design decision · From intention to setup",
             "title": "Make recurring saving a concrete action.",
-            "body": "Choosing a saving route needs to lead to a usable plan. With Marketing, I moved from explaining gold to exposing amount, frequency and investment date before payment. Monthly and weekly choices support recurrence without removing the one-time path shown on the landing.",
+            "body": "A saving choice needs a clear next step. The recurring setup exposes amount, monthly or weekly frequency and investment date before payment. One-time buying remains a separate choice rather than being removed in favour of recurring saving.",
             "screens": [
                   {
                         "src": "/dg-evidence/recurring.png",
@@ -163,76 +163,68 @@ export const projects: Project[] = [
             "footnote": "This screen demonstrates the design response. It does not prove recurring-saving adoption or mandate completion."
       },
       {
-            "eyebrow": "V1 → V2 → V3",
-            "title": "The direction evolved through the work.",
+            "eyebrow": "Constraint → stakeholder input → deeper redesign",
+            "title": "The scope changed, not just the layout.",
             "items": [
                   {
-                        "value": "V1 · Explain",
-                        "label": "Show how small investments accumulate into gold."
+                        "value": "Initial brief",
+                        "label": "Approximately two days; low development effort; retain the calculator because the PM assumed users understood it."
                   },
                   {
-                        "value": "V2 · Act",
-                        "label": "With Marketing, simplify jargon and foreground recurring saving."
+                        "value": "First response",
+                        "label": "Work largely within the existing product structure."
                   },
                   {
-                        "value": "V3 · Purpose",
-                        "label": "With Growth, connect repeated contributions to a tangible gold goal."
+                        "value": "Broader revamp",
+                        "label": "Business/Growth challenged a purely reorganised landing page; the direction expanded to clearer saving choices and setup."
                   }
             ],
-            "footnote": "Evolution documented in the existing case study; the supplied files do not establish a dated version history."
+            "footnote": "The supplied screens show the current direction, not a complete archive of every iteration."
       },
       {
             "eyebrow": "Ownership",
             "title": "One design owner, multiple perspectives.",
-            "body": "As sole Product Designer, I owned strategy, flows, interaction, UI and prototyping. Branch conversations informed the problem; Marketing and Growth shaped the recurring-saving and goal directions."
+            "body": "As sole Product Designer, I owned strategy, flows, interaction, UI and prototyping. Customer conversations challenged the intended mental model; PM constraints shaped the first response, and Business/Growth input broadened the revamp."
       },
       {
             "eyebrow": "Learning · What the evidence supports",
             "title": "The funnel located the gap. Conversations gave it context.",
-            "body": "Analytics located the progression gap; three exploratory conversations suggested an expectation mismatch. I translated that interpretation into saving-led choices and recurring setup. The small research sample and pre-launch status limit what can be concluded about comprehension or conversion.",
+            "body": "The funnel identified weak progression; customer conversations revealed a jewellery-purchase interpretation. I responded with clearer saving choices and recurring setup. That is a supported design rationale, not proof that the redesign improved conversion.",
             "highlight": "A directional finding became a testable product decision."
       },
       {
-            "eyebrow": "Validation & measurement · Pre-launch",
-            "title": "Prototype first. Engineering second.",
-            "body": "Validate the prototype with branch users: do they understand the choices, see a meaningful goal and complete setup without assistance? After launch, measure first-payment conversion, recurring-saving adoption, mandate creation, repeat saving, journey drop-offs and gold or jewellery redemption.",
-            "footnote": "Awaiting validation. No measured redesign impact is available.",
+            "eyebrow": "Expected measurement",
+            "title": "Measure movement through the existing funnel.",
+            "body": "Compare Digital Gold journey entry → Buy Now → payment → completed transaction with the existing baseline. Check whether customers understand the investment purpose and can reach purchase intent. No post-launch improvement is documented here.",
+            "footnote": "Existing analytics are baseline evidence. The screens show design changes; their effect on the funnel remains to be measured.",
             "variant": "wide"
       }
 ],
     opportunity: {
-      title: "Interest wasn’t the problem. Progression was.",
-      body: "In 30 days, 80,554 users entered the journey. 8,502 reached Buy Now, 5,605 proceeded to payment and 3,704 completed a transaction. The largest loss happened before Buy Now; the data showed where users left, not why.",
-      highlight: "89% of journey entries did not reach Buy Now.",
+      title: "The largest gap came before Buy Now.",
+      body: "In 30 days, 80,554 entered, 8,502 reached Buy Now, 5,605 proceeded to payment and 3,704 completed. This identified weak progression, not its cause.",
     },
     problem: {
-      title: "The acquisition message and product told different stories.",
-      body: "One branch visit and 3 exploratory customer conversations exposed an expectation gap. Saving-led banners brought users in, but the product mixed investment and jewellery-purchase journeys. This was directional research, not statistically representative validation.",
-      highlight: "The acquisition message and the in-product experience were telling two different stories.",
+      title: "Some customers interpreted a jewellery-purchase journey.",
+      body: "Customers asked about EMI for displayed jewellery and used the calculator to interpret gold weight or rate for a purchase. These exploratory observations do not establish prevalence.",
     },
     decisions: [
-      {
-        title: "Move from education to action",
-        body: "V1 explained how small investments accumulate into gold. With Marketing, V2 simplified jargon and brought recurring saving forward: Buy once, Weekly or Monthly.",
-      },
-      {
-        title: "Give saving a tangible purpose",
-        body: "With Growth, V3 adapted goal-based saving to Muthoot: repeated contributions toward a gold coin or jewellery outcome redeemable in its ecosystem.",
-      },
+      { title: "Work within the first brief", body: "Approximately two days, limited development effort and an unchanged calculator constrained the initial landing redesign." },
+      { title: "Use the revamp to clarify the product", body: "Business/Growth pushed beyond rearrangement toward a clearer saving proposition, action choices and recurring setup." },
     ],
     solution: {
-      title: "From buying gold once to building a saving habit.",
-      body: "The final direction connects recurring contributions to a fixed, tangible gold goal. It aims to make larger purchases feel attainable while creating potential for repeat saving and eventual redemption—outcomes still to be validated.",
-      highlight: "Understand → Start saving → Build a habit → Reach a tangible gold goal.",
+      title: "Make the saving and buying routes explicit.",
+      body: "The current screens distinguish monthly saving, weekly saving and one-time buying. Recurring setup exposes amount, frequency and date; a personal gold/jewellery goal is not implemented in these screens.",
+      highlight: "Lead with the saving intention.",
     },
     impact: {
-      title: "Prototype first. Engineering second.",
-      body: "The redesign is pre-launch. Next, the prototype will be validated with branch users. Success metrics to measure after launch: first-payment conversion, recurring-saving adoption, mandate creation, repeat-saving rate, journey drop-offs and gold or jewellery redemption.",
-      sectionLabel: "05 — Validation & measurement",
+      title: "Measure the existing funnel.",
+      body: "Compare journey entry, Buy Now, payment and transaction completion with the baseline. No post-launch uplift is documented.",
+      sectionLabel: "05 — Expected measurement",
       showMetric: false,
     },
     caseStudyMetric: "4.6%",
-    caseStudyMetricLabel: "Current completion · redesign pre-launch",
+    caseStudyMetricLabel: "Baseline completion · redesign impact unmeasured",
   },
   {
     slug: "vyapar-plus",
@@ -290,10 +282,10 @@ export const projects: Project[] = [
             "body": "The Sep 1–11 onboarding cohort in the opening snapshot showed a gap between starting and completing digital onboarding. It points to activation as a follow-up priority; it does not identify which verification step caused the loss or establish later product usage."
       },
       {
-            "eyebrow": "Onboarding · Designing around the system",
-            "title": "Ask for less when the system knows more.",
-            "body": "Udyam or GST data could prefill details already available through the system. I used that opportunity to reduce repeat entry while retaining routes for failed verification, missing records and incorrect bank details. Automation could not replace recovery when the data or verification failed.",
-            "highlight": "Reduce merchant effort without hiding system complexity."
+            "eyebrow": "Technical constraint · Third-party APIs",
+            "title": "Clarify the journey around fixed API steps.",
+            "body": "Several financial-service integrations prescribed the steps and order needed to work. I could not freely redesign those underlying flows, so I focused on hierarchy, states, transitions and guidance. Where available, Udyam/GST prefill reduced entry while failure and alternative routes remained necessary.",
+            "highlight": "Make constrained journeys understandable."
       },
       {
             "eyebrow": "The dashboard",
@@ -310,8 +302,8 @@ export const projects: Project[] = [
       },
       {
             "eyebrow": "A connected money story",
-            "title": "A transaction isn’t the end of the story.",
-            "body": "Completing a transaction is only one step. Merchants also need to understand where the money went and what they earned.",
+            "title": "What did I do—and what did I earn?",
+            "body": "A merchant should not have to reconstruct a transaction and its associated earnings across disconnected features. I treated transaction history, wallet movement and commission/earnings as connected parts of the business experience. The screens show that relationship without claiming every transaction earns commission.",
             "flow": [
                   "Activity",
                   "Money movement",
@@ -390,7 +382,7 @@ export const projects: Project[] = [
       {
             "eyebrow": "Product decision / reflection",
             "title": "Designing for the business, not just the feature.",
-            "body": "The consolidated dashboard direction was initially challenged. As the product expanded, the need for one business view became clearer. The trade-off was to bring related activity together without making merchants discover and reconcile every feature independently.",
+            "body": "The dashboard brings transactions, earnings, payouts and leads into one merchant business view. The reasoning was to connect activity with its financial meaning while retaining clear paths into the individual tasks. No specific stakeholder-rejection account is claimed.",
             "highlight": "A merchant shouldn’t have to reconstruct their business from separate features."
       },
       {
@@ -450,21 +442,21 @@ export const projects: Project[] = [
     ],
     storyPins: [
       {
-            "eyebrow": "Analytics signal → problem hypothesis",
-            "title": "Selection was a progression bottleneck.",
-            "body": "The opening funnel shows limited progression from FD entry to Mahindra selection and then Book Now. In the old UI, users encountered rate cards before the investment amount and expected returns. My hypothesis was that separating these details created decision friction; the analytics alone cannot establish that cause.",
-            "footnote": "Observed funnel baseline. No interviews or causal usability finding are documented for this project."
+            "eyebrow": "Internal review + customer feedback + analytics",
+            "title": "Two signals pointed to the decision experience.",
+            "body": "The selection flow was confusing during internal review. The PM then spoke with customers who also reported difficulty understanding it. Separately, funnel analytics showed weak progression; together, these signals justified revisiting the experience.",
+            "footnote": "Customer feedback was relayed through the PM. Analytics did not prove that comprehension caused drop-off."
       },
       {
             "eyebrow": "Design direction",
             "title": "Make the investment decision understandable before commitment.",
-            "body": "To address that hypothesis, I brought the selected scheme, amount and expected returns into one view. A separate tenure sheet keeps alternatives available without showing every rate card alongside the investment summary. This is a design response awaiting validation.",
+            "body": "I consolidated the selected scheme, amount and expected returns so customers could assess the investment before continuing. Tenure alternatives moved into a focused sheet. This addressed the reported comprehension problem without claiming a measured improvement.",
             "highlight": "The decision is the journey — not just the Book Now action."
       },
       {
             "eyebrow": "Before → After · Under review",
             "title": "Understand the product before starting.",
-            "body": "Users need the product’s terms before choosing an investment. I retained benefits and rates, added the women-specific rate row, and made lock-in and payout options explicit. This keeps discovery useful before Start Investing; improved understanding remains a hypothesis.",
+            "body": "Retain benefits and rates before Start Investing, while making lock-in and payout options explicit. The added women-specific rate row makes another eligibility distinction visible before selection.",
             "screens": [
                   {
                         "src": "/fd-iphone/before-landing.png",
@@ -481,7 +473,7 @@ export const projects: Project[] = [
       {
             "eyebrow": "Before → After · Under review",
             "title": "Bring the scheme and its outcome together.",
-            "body": "To avoid asking users to commit before seeing the outcome, I replaced multiple Book Now cards with one selected scheme and Continue. Rate, tenure, amount, maturity value, gains, maturity action and payout sit together. The trade-off is a focused summary with alternatives accessed separately.",
+            "body": "Replace multiple Book Now cards with one selected scheme and Continue. Rate, tenure, amount, maturity value, gains, maturity action and payout are visible together, so customers can assess the outcome before progressing.",
             "screens": [
                   {
                         "src": "/fd-iphone/before-schemes.png",
@@ -498,7 +490,7 @@ export const projects: Project[] = [
       {
             "eyebrow": "Before → After · Under review",
             "title": "Make changing tenure a focused decision.",
-            "body": "To compare alternatives without filling the main view with scheme cards, I moved tenure and rate into a focused sheet. Each row pairs the two values; eligibility toggles remain available and Apply confirms the choice. This prioritizes comparison inside one task.",
+            "body": "Move alternatives into a focused tenure/rate sheet instead of showing several scheme cards in the main decision view. Eligibility toggles remain available; Apply confirms the choice.",
             "screens": [
                   {
                         "src": "/fd-iphone/before-schemes.png",
@@ -515,7 +507,7 @@ export const projects: Project[] = [
       {
             "eyebrow": "Success metric · Measurement planned",
             "title": "Measure whether clearer decisions improve progression.",
-            "body": "The redesign is under review and has not shipped. Check whether users can interpret the selected scheme, change tenure and understand expected returns before continuing. After launch, compare product view → selection → investment initiation against the baseline; no projected uplift or achieved conversion gain is claimed.",
+            "body": "After release, compare FD entry → Mahindra selection → Book Now against the current funnel. Better progression would support the direction; comprehension still needs to be checked separately. No achieved redesign impact is available.",
             "footnote": "Under review · Not yet shipped · Impact measurement planned post-launch",
             "variant": "wide"
       }
