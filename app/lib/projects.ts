@@ -435,6 +435,8 @@ export const projects: Project[] = [
     category: "FIXED DEPOSIT · INVESTMENT EXPERIENCE",
     headline: "Redesigning Fixed Deposits around informed investment decisions.",
     metadata: ["Product Designer", "Under review · Not yet shipped", "Measurement planned post-launch"],
+    snapshotLabel: "Existing funnel · Baseline",
+    snapshotFootnote: "Existing experience baseline — not redesign outcomes. Analytics show progression, not the cause of drop-off.",
     stats: [
       { value: "25,275", label: "Reached the FD experience" },
       { value: "5.6%", label: "Selected Mahindra Finance" },
@@ -442,38 +444,31 @@ export const projects: Project[] = [
     ],
     storyPins: [
       {
-            "eyebrow": "Internal review + customer feedback + analytics",
-            "title": "Two signals pointed to the decision experience.",
-            "body": "The selection flow was confusing during internal review. The PM then spoke with customers who also reported difficulty understanding it. Separately, funnel analytics showed weak progression; together, these signals justified revisiting the experience.",
-            "footnote": "Customer feedback was relayed through the PM. Analytics did not prove that comprehension caused drop-off."
+            "eyebrow": "Evidence · Analytics + PM-relayed feedback",
+            "title": "The funnel showed where progression weakened. Feedback helped explain what users were struggling with.",
+            "body": "The existing selection experience was already difficult to interpret during internal review. The PM then spoke with customers who also reported difficulty understanding it. Funnel analytics separately showed weak progression through the journey.",
+            "footnote": "Customer feedback was relayed through the PM. Analytics identified the progression problem, but did not prove that comprehension caused the drop-off."
       },
       {
-            "eyebrow": "Design direction",
-            "title": "Make the investment decision understandable before commitment.",
-            "body": "I consolidated the selected scheme, amount and expected returns so customers could assess the investment before continuing. Tenure alternatives moved into a focused sheet. This addressed the reported comprehension problem without claiming a measured improvement.",
-            "highlight": "The decision is the journey — not just the Book Now action."
+            "eyebrow": "UX diagnosis",
+            "title": "The interface was asking for commitment before helping users compare.",
+            "body": "The existing experience distributed the decision across filters and multiple scheme cards. Customers had to interpret tenure, rate and eligibility, then choose between several Book Now actions without seeing the investment outcome together. Instead of treating this as a visual clean-up, I reframed the problem around one question: What does someone need to know before they’re comfortable continuing with an FD?",
+            "highlight": "Help users evaluate first. Ask them to commit second."
       },
       {
-            "eyebrow": "Before → After · Under review",
-            "title": "Understand the product before starting.",
-            "body": "Retain benefits and rates before Start Investing, while making lock-in and payout options explicit. The added women-specific rate row makes another eligibility distinction visible before selection.",
-            "screens": [
-                  {
-                        "src": "/fd-iphone/before-landing.png",
-                        "alt": "Before: Understand the product before starting."
-                  },
-                  {
-                        "src": "/fd-iphone/after-landing.png",
-                        "alt": "After: Understand the product before starting."
-                  }
+            "eyebrow": "Design principles",
+            "title": "Turn scattered choices into one decision.",
+            "items": [
+                  { "value": "01 — Select, don’t scan", "label": "Move tenure alternatives out of competing cards and into a focused selection sheet." },
+                  { "value": "02 — Show the consequence", "label": "Keep rate, tenure, investment amount, gains and maturity value together." },
+                  { "value": "03 — One clear next step", "label": "Replace multiple Book Now actions with one selected scheme and Continue." }
             ],
-            "variant": "visual",
-            "footnote": "Full-length supplied captures, shown uncropped. The FAQ text is placeholder content in both designs."
+            "highlight": "One decision → its outcome → one next step."
       },
       {
             "eyebrow": "Before → After · Under review",
             "title": "Bring the scheme and its outcome together.",
-            "body": "Replace multiple Book Now cards with one selected scheme and Continue. Rate, tenure, amount, maturity value, gains, maturity action and payout are visible together, so customers can assess the outcome before progressing.",
+            "body": "The selected scheme now brings rate, tenure, amount and expected returns together. One Continue action follows the information needed to assess the investment.",
             "screens": [
                   {
                         "src": "/fd-iphone/before-schemes.png",
