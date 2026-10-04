@@ -1,26 +1,19 @@
 "use client";
 
 import { useEffect } from "react";
-import { projects } from "../lib/projects";
-import { ProjectFile } from "./ProjectFile";
+import { PegPin, PaperClip } from "./Hardware";
 import type { ProjectModePhase } from "./ProjectMode";
 
 type ArchiveModeProps = { phase: ProjectModePhase };
 
-function EmptyArchiveHolder({ className }: { className: string }) {
-  return (
-    <div className={`archive-holder-slot ${className} project-reveal`} aria-hidden="true">
-      <span className="project-holder archive-empty-holder">
-        <span className="project-holder__mesh" />
-        <span className="project-holder__lip" />
-      </span>
-    </div>
-  );
-}
+const workSnapshots = [
+  { title: "Credit Score", descriptor: "CRIF + CIBIL", scope: "Payments · Rewards", evidence: "500K+ monthly users · <2% conversion baseline" },
+  { title: "Lending", descriptor: "Gold Loan · Vehicle Loan", scope: "Lead generation · Application journeys" },
+  { title: "Forex", descriptor: "Financial-service journeys" },
+  { title: "Other Product Work", descriptor: "Chatbot · Permissions", scope: "Supporting fintech journeys" },
+];
 
 export function ArchiveMode({ phase }: ArchiveModeProps) {
-  const hives = projects.find((project) => project.slug === "hives")!;
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
     document.querySelectorAll<HTMLElement>(".archive-mode .project-reveal")
@@ -31,13 +24,18 @@ export function ArchiveMode({ phase }: ArchiveModeProps) {
     <main className={`project-mode archive-mode project-mode--${phase}`} aria-label="Archive" aria-live="polite">
       <div className="project-view project-view--archive">
         <section className="project-pegboard archive-pegboard" aria-label="Archived work board">
-          <div className="archive-holder-gallery">
-            <div className="archive-holder-slot archive-holder-slot--hives project-reveal">
-              <ProjectFile project={hives} disabled className="archive-hives" />
-            </div>
-          <EmptyArchiveHolder className="archive-holder-slot--two" />
-          <EmptyArchiveHolder className="archive-holder-slot--three" />
-        </div>
+          <div className="archive-work-gallery" aria-label="Additional product exposure">
+            {workSnapshots.map((work, index) => (
+              <article className="project-story-pin archive-work-pin project-reveal" key={work.title}>
+                {index % 2 === 0 ? <PegPin /> : <PaperClip />}
+                <span className="section-kicker">Product exposure</span>
+                <h2>{work.title}</h2>
+                <p>{work.descriptor}</p>
+                {work.scope && <p>{work.scope}</p>}
+                {work.evidence && <small className="project-story-footnote">{work.evidence}</small>}
+              </article>
+            ))}
+          </div>
       </section>
       </div>
     </main>

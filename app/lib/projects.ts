@@ -67,8 +67,8 @@ export const projects: Project[] = [
     title: "Digital Gold",
     description:
       "Placeholder for a sharper story about redesigning a high-trust investment experience.",
-    metric: "+32%",
-    metricLabel: "impact metric placeholder",
+    metric: "4.6%",
+    metricLabel: "Transaction baseline",
     category: "DIGITAL GOLD · MUTHOOT FINCORP ONE",
     headline: "80K+ entered. Only 4.6% transacted.",
     metadata: [
@@ -234,7 +234,7 @@ export const projects: Project[] = [
     description:
       "I designed Vyapar Plus from 0→1 — simplifying complex financial services into an accessible platform for kirana owners to onboard, earn and serve customers from their stores.",
     metric: "0 → 1",
-    metricLabel: "Sole Product Designer · impact metric placeholder",
+    metricLabel: "Sole Product Designer",
     category: "VYAPAR PLUS · MUTHOOT FINANCE",
     headline: "Turning neighbourhood kiranas into financial-service distribution points.",
     metadata: ["Sole Product Designer", "0→1", "Shipped Sep 2026"],
@@ -431,7 +431,7 @@ export const projects: Project[] = [
     title: "Fixed Deposit",
     description: "Redesigning Fixed Deposits around informed investment decisions.",
     metric: "5.6%",
-    metricLabel: "Mahindra selection baseline",
+    metricLabel: "Partner-selection baseline",
     category: "FIXED DEPOSIT · INVESTMENT EXPERIENCE",
     headline: "Redesigning Fixed Deposits around informed investment decisions.",
     metadata: ["Product Designer", "Under review · Not yet shipped", "Measurement planned post-launch"],
@@ -541,8 +541,8 @@ export const projects: Project[] = [
     title: "Hives",
     description:
       "Placeholder for a concept feature that explores smaller social contexts inside Bumble.",
-    metric: "+18%",
-    metricLabel: "predicted impact metric placeholder",
+    metric: "Concept",
+    metricLabel: "Not validated",
     category: "Hives · Bumble concept feature",
     headline: "Exploring smaller social contexts inside Bumble.",
     metadata: ["Concept project", "Social discovery", "Not validated"],
