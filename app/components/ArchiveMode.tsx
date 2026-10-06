@@ -15,6 +15,14 @@ const workSnapshots = [
   { title: "Other Product Work", descriptor: "Chatbot · Permissions", scope: "Supporting fintech journeys" },
 ];
 
+const hivesProject: Project = {
+  ...projects.find((project) => project.slug === "hives")!,
+  title: "Hives",
+  eyebrow: "NextLeap Fellowship",
+  metric: "Top Fellow · 88%",
+  metricLabel: "Graduation Project",
+};
+
 export function ArchiveMode({ phase, onOpenProject }: ArchiveModeProps) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -27,8 +35,11 @@ export function ArchiveMode({ phase, onOpenProject }: ArchiveModeProps) {
       <div className="project-view project-view--archive">
         <section className="project-pegboard archive-pegboard" aria-label="Archived work board">
           <div className="archive-case-study">
-            <span className="section-kicker">Full case study</span>
-            <ProjectFile project={projects.find((project) => project.slug === "fixed-deposit")!} className="archive-fd" onOpenProject={onOpenProject} />
+            <span className="section-kicker">Full case studies</span>
+            <div className="archive-case-study-folders">
+              <ProjectFile project={projects.find((project) => project.slug === "fixed-deposit")!} className="archive-fd" onOpenProject={onOpenProject} />
+              <ProjectFile project={hivesProject} className="archive-hives" externalHref="https://assets.nextleap.app/submissions/HivesCaseStudy-cb636350-e245-462f-b229-da36d2199b60.pdf" />
+            </div>
           </div>
           <div className="archive-supporting-label section-kicker">Supporting work</div>
           <div className="archive-work-gallery" aria-label="Additional product exposure">

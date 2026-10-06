@@ -13,11 +13,12 @@ type ProjectFileProps = {
   compact?: boolean;
   disabled?: boolean;
   layoutOnly?: boolean;
+  externalHref?: string;
   pegboardDragId?: string;
   onOpenProject?: (project: Project, trigger: HTMLAnchorElement) => void;
 };
 
-export function ProjectFile({ project, className = "", compact, disabled = false, layoutOnly = false, pegboardDragId, onOpenProject }: ProjectFileProps) {
+export function ProjectFile({ project, className = "", compact, disabled = false, layoutOnly = false, externalHref, pegboardDragId, onOpenProject }: ProjectFileProps) {
   const router = useRouter();
   const [isOpening, setIsOpening] = useState(false);
   const [openingStyle, setOpeningStyle] = useState<CSSProperties>();
@@ -94,6 +95,14 @@ export function ProjectFile({ project, className = "", compact, disabled = false
       <div className={projectClassName} aria-label={`${project.title} project`} aria-hidden={layoutOnly || undefined} inert={layoutOnly || undefined} data-peg-draggable={pegboardDragId}>
         {projectContent}
       </div>
+    );
+  }
+
+  if (externalHref) {
+    return (
+      <a className={projectClassName} href={externalHref} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} case study (PDF, opens in a new tab)`}>
+        {projectContent}
+      </a>
     );
   }
 
