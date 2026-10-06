@@ -7,7 +7,7 @@ import type { ProjectModePhase } from "./ProjectMode";
 type ArchiveModeProps = { phase: ProjectModePhase };
 
 const workSnapshots = [
-  { title: "Credit Score", descriptor: "CRIF + CIBIL", scope: "Payments · Rewards", evidence: "500K+ monthly users · <2% conversion baseline" },
+  { title: "Credit Score", descriptor: "CRIF + CIBIL", scope: "Payments · Rewards", evidence: "<2% payment-completion baseline" },
   { title: "Lending", descriptor: "Gold Loan · Vehicle Loan", scope: "Lead generation · Application journeys" },
   { title: "Forex", descriptor: "Financial-service journeys" },
   { title: "Other Product Work", descriptor: "Chatbot · Permissions", scope: "Supporting fintech journeys" },
