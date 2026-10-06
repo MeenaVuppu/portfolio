@@ -217,7 +217,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
     const selectors = {
       "digital-gold": '[data-peg-draggable="digital-gold"]',
       "vyapar-plus": '[data-peg-draggable="vyapar-plus"]',
-      "fixed-deposit": '[data-peg-draggable="fixed-deposit"]',
+      "fixed-deposit": '.home-project-space',
       photo: '[data-peg-draggable="photo"]',
       headphones: '[data-peg-draggable="headphones"]',
       watercolor: '.brushes-object',

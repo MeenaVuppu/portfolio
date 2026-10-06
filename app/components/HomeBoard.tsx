@@ -563,7 +563,8 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
 
         <ProjectFile project={projects[1]} className="board-object p2" onOpenProject={onOpenProject} pegboardDragId="vyapar-plus" />
 
-        <ProjectFile project={projects[2]} className="board-object p3" onOpenProject={onOpenProject} pegboardDragId="fixed-deposit" />
+        {/* Retain the measured shuffle slot, but leave it empty and free of drag obstacles. */}
+        <ProjectFile project={projects[2]} className="board-object p3 home-project-space" layoutOnly />
 
         <a
           className="resume-object board-object"

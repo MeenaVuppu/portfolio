@@ -176,7 +176,7 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
             onSwitchProject={switchProject}
           />
         ) : null}
-        {archiveOpen ? <ArchiveMode phase={phase} /> : null}
+        {archiveOpen ? <ArchiveMode phase={phase} onOpenProject={openProject} /> : null}
       </div>
     </div>
   );

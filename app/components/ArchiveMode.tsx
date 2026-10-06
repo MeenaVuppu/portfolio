@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
+import { ProjectFile } from "./ProjectFile";
+import { projects, type Project } from "../lib/projects";
 import { PegPin, PaperClip } from "./Hardware";
 import type { ProjectModePhase } from "./ProjectMode";
 
-type ArchiveModeProps = { phase: ProjectModePhase };
+type ArchiveModeProps = { phase: ProjectModePhase; onOpenProject?: (project: Project, trigger: HTMLAnchorElement) => void };
 
 const workSnapshots = [
   { title: "Credit Score", descriptor: "CRIF + CIBIL", scope: "Payments · Rewards", evidence: "<2% payment-completion baseline" },
@@ -13,7 +15,7 @@ const workSnapshots = [
   { title: "Other Product Work", descriptor: "Chatbot · Permissions", scope: "Supporting fintech journeys" },
 ];
 
-export function ArchiveMode({ phase }: ArchiveModeProps) {
+export function ArchiveMode({ phase, onOpenProject }: ArchiveModeProps) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
     document.querySelectorAll<HTMLElement>(".archive-mode .project-reveal")
@@ -24,6 +26,11 @@ export function ArchiveMode({ phase }: ArchiveModeProps) {
     <main className={`project-mode archive-mode project-mode--${phase}`} aria-label="Archive" aria-live="polite">
       <div className="project-view project-view--archive">
         <section className="project-pegboard archive-pegboard" aria-label="Archived work board">
+          <div className="archive-case-study">
+            <span className="section-kicker">Full case study</span>
+            <ProjectFile project={projects.find((project) => project.slug === "fixed-deposit")!} className="archive-fd" onOpenProject={onOpenProject} />
+          </div>
+          <div className="archive-supporting-label section-kicker">Supporting work</div>
           <div className="archive-work-gallery" aria-label="Additional product exposure">
             {workSnapshots.map((work, index) => (
               <article className="project-story-pin archive-work-pin project-reveal" key={work.title}>

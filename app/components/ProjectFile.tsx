@@ -12,11 +12,12 @@ type ProjectFileProps = {
   className?: string;
   compact?: boolean;
   disabled?: boolean;
+  layoutOnly?: boolean;
   pegboardDragId?: string;
   onOpenProject?: (project: Project, trigger: HTMLAnchorElement) => void;
 };
 
-export function ProjectFile({ project, className = "", compact, disabled = false, pegboardDragId, onOpenProject }: ProjectFileProps) {
+export function ProjectFile({ project, className = "", compact, disabled = false, layoutOnly = false, pegboardDragId, onOpenProject }: ProjectFileProps) {
   const router = useRouter();
   const [isOpening, setIsOpening] = useState(false);
   const [openingStyle, setOpeningStyle] = useState<CSSProperties>();
@@ -88,9 +89,9 @@ export function ProjectFile({ project, className = "", compact, disabled = false
 
   const projectClassName = `project-file project-file--${project.slug} ${compact ? "project-file--compact" : ""} ${isOpening ? "is-opening" : ""} ${className}`;
 
-  if (disabled) {
+  if (disabled || layoutOnly) {
     return (
-      <div className={projectClassName} aria-label={`${project.title} project`} data-peg-draggable={pegboardDragId}>
+      <div className={projectClassName} aria-label={`${project.title} project`} aria-hidden={layoutOnly || undefined} inert={layoutOnly || undefined} data-peg-draggable={pegboardDragId}>
         {projectContent}
       </div>
     );

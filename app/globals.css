@@ -8394,3 +8394,15 @@ body:has(.archive-mode) {
   .archive-work-gallery { grid-template-columns: 1fr; gap: 32px; margin: 28px 8px; }
   .archive-work-gallery .archive-work-pin { padding: 24px; }
 }
+
+/* An inert measurement slot preserves the original home shuffle without blocking drag. */
+.fixed-board .home-project-space { clip-path: inset(100%); pointer-events: none; }
+.archive-case-study { width: min(100%, 900px); margin: 48px auto 64px; }
+.archive-case-study > .section-kicker { display: block; margin-bottom: 36px; }
+.archive-case-study .archive-fd { width: 300px; height: 340px; min-height: 0; }
+.archive-supporting-label { max-width: 900px; margin: 0 auto; }
+@media (max-width: 760px) {
+  .archive-case-study { width: auto; margin: 28px 8px 48px; }
+  .archive-case-study .archive-fd { width: min(100%, 300px); height: 320px; }
+  .archive-supporting-label { margin: 0 8px; }
+}
