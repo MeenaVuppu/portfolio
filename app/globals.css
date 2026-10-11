@@ -8417,7 +8417,7 @@ body:has(.archive-mode) {
 
 /* Mobile-only home spacing and supporting archive scale. */
 @media (max-width: 760px) {
-  .portfolio-experience.is-board-mode .fixed-board .money-plant { width: 60%; max-width: none; }
+  .portfolio-experience.is-board-mode .fixed-board .money-plant { width: 40%; max-width: none; }
   .fixed-board .home-project-space { display: none; }
 
   .archive-case-study-folders { gap: 36px; }
