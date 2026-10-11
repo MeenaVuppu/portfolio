@@ -8473,3 +8473,12 @@ body:has(.archive-mode) {
     height: calc((100dvh - 118px) * .28);
   }
 }
+
+@media (min-width: 761px) {
+  .archive-work-pin h2 {
+    font-size: clamp(15px, 1.35vw, 21px);
+    font-weight: 750;
+    /* Preserve the existing heading space and card geometry. */
+    min-height: calc(clamp(24px, 2.2vw, 32px) * 1.08);
+  }
+}
