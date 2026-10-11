@@ -633,11 +633,11 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
         <a
           className="resume-object board-object"
           data-peg-draggable="resume"
-          href="#"
+          href="/resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
           draggable={false}
-          aria-label="Resume placeholder"
+          aria-label="Resume (PDF, opens in a new tab)"
         >
           <PegPin />
           <strong>Resume</strong>
