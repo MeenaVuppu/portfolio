@@ -18,7 +18,7 @@ type HomeBoardProps = {
 const EMAIL_ADDRESS = "vuppumeena@gmail.com";
 const ARTWORK_ROTATIONS = [-5, 4, -2];
 // Like the shuffle layout, this resets on refresh, not client-side navigation.
-let deskRevealStarted = false;
+let pinSettleStarted = false;
 const BOOK_NOTES = [
   { title: "Days at the Morisaki Bookshop", note: "Such a pleasant read. Light and easy, like a breeze.", left: "14%", top: "30%", width: "48%", height: "23%" },
   { title: "The Silent Patient", note: "Had me hooked. Couldn't focus on anything else until I finished it.", left: "12%", top: "54%", width: "53%", height: "15%" },
@@ -173,22 +173,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   usePegboardDrag(boardRef, dragPreviewRef, playPlacementSound);
   usePegboardShuffle(boardRef);
 
-  useLayoutEffect(() => {
-    if (deskRevealStarted) return;
-    deskRevealStarted = true;
-    if (projectModeActive || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    // Opacity leaves the live geometry used by drag, collision and snapping intact.
-    boardRef.current?.querySelectorAll<HTMLElement>(":scope > .board-object:not(.home-project-space)")
-      .forEach((object, index) => {
-        object.animate([{ opacity: 0 }, { opacity: 1 }], {
-          duration: 300,
-          delay: index * 40,
-          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-          fill: "backwards",
-        });
-      });
-  }, [projectModeActive]);
 
   useLayoutEffect(() => {
     const board = boardRef.current;
@@ -245,6 +229,48 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
       window.removeEventListener("resize", scheduleAlignment);
     };
   }, []);
+
+  useLayoutEffect(() => {
+    if (pinSettleStarted) return;
+    pinSettleStarted = true;
+    if (projectModeActive || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const board = boardRef.current;
+    if (!board) return;
+    const selectors = [
+      ".p1", ".p2", ".photo-object", ".resume-object",
+      ".contact-note", ".linkedin-note", ".archive-object", ".progress-note",
+    ];
+    selectors.forEach((selector, index) => {
+      const object = board.querySelector<HTMLElement>(selector);
+      if (!object) return;
+      const folder = object.classList.contains("project-file");
+      // Only inner visuals move; mounting hardware, racks and drag wrappers stay fixed.
+      const visuals = folder
+        ? [...object.querySelectorAll<HTMLElement>(".project-file__document, .project-file__back-sheet")]
+        : [...object.children].filter((child): child is HTMLElement =>
+          child instanceof HTMLElement && !child.classList.contains("peg-pin"));
+      const reveal = () => {
+        if (!board.isConnected || board.closest(".is-project-mode") ||
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const animations = visuals.map((visual) => visual.animate(
+          folder
+            ? [{ translate: "0 -5px" }, { translate: "0 0" }]
+            : [{ translate: "0 0" }, { translate: "0 3px", offset: 0.35 }, { translate: "0 0" }],
+          { duration: folder ? 320 : 280, delay: index * 70, easing: "ease-out" },
+        ));
+        // A gesture always takes priority over the brief entrance motion.
+        const stop = () => animations.forEach((animation) => animation.cancel());
+        object.addEventListener("pointerdown", stop, { capture: true, once: true });
+        void Promise.allSettled(animations.map((animation) => animation.finished))
+          .then(() => object.removeEventListener("pointerdown", stop, true));
+      };
+      const image = object.querySelector<HTMLImageElement>("img");
+      if (image && !image.complete) image.addEventListener("load", () => window.requestAnimationFrame(reveal), { once: true });
+      else window.requestAnimationFrame(reveal);
+    });
+  }, [projectModeActive]);
+
 
   const musicCreditPosition = useSafeContextNote(isMusicCreditOpen, headphonesRef, musicCreditNoteRef, boardRef, musicCreditRef);
   const bookNotePosition = useSafeContextNote(activeBook !== null, brushesRef, bookNoteRef, boardRef, boardRef);
