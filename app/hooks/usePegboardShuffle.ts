@@ -23,10 +23,15 @@ type RuntimeLayout = {
   mobileHeight: number;
   seed: number;
   signature: string;
+  placement?: {
+    height: string;
+    objects: Array<{ id: string; left: string; right: string; top: string; translate: string; x?: string; y?: string }>;
+  };
 };
 
-// Survives client-side project navigation, but intentionally resets on refresh.
-const runtimeLayouts = new Map<"desktop" | "mobile", RuntimeLayout>();
+// The page owns the cache: production routes can load separate module instances.
+// A new document (refresh/new visit) intentionally starts with an empty cache.
+type LayoutWindow = Window & { __portfolioHomeLayouts?: Map<"desktop" | "mobile", RuntimeLayout> };
 
 const DESKTOP_PROJECT_REGIONS: Slot[][] = [
   [{ id: "project-left-high", x: 3, y: 24 }, { id: "project-left-low", x: 4, y: 57 }],
@@ -207,10 +212,12 @@ function packDesktop(items: ShuffleItem[], width: number, height: number, next: 
   return result;
 }
 
-export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
+export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, projectModeActive = false) {
   useLayoutEffect(() => {
     const board = boardRef.current;
     if (!board) return;
+    const page = window as LayoutWindow;
+    const runtimeLayouts = page.__portfolioHomeLayouts ??= new Map<"desktop" | "mobile", RuntimeLayout>();
     const mobileQuery = window.matchMedia("(max-width: 760px)");
     let mobile = mobileQuery.matches;
     let layoutFrame: number | null = null;
@@ -233,6 +240,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
       board.style.removeProperty("height");
       delete board.dataset.layoutSeed;
       delete board.dataset.shuffleReady;
+      delete board.dataset.layoutRestored;
 
       for (const selector of Object.values(selectors)) {
         const element = board.querySelector<HTMLElement>(selector);
@@ -251,7 +259,6 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
     };
 
     const applyLayout = () => {
-      if (window.getComputedStyle(board.firstElementChild as Element).visibility === "hidden") return;
       const boardRect = board.getBoundingClientRect();
       const projectRegions = DESKTOP_PROJECT_REGIONS;
 
@@ -310,6 +317,30 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
           width: visibleRight - visibleLeft,
         };
       };
+
+      const savedLayout = runtimeLayouts.get(mobile ? "mobile" : "desktop");
+      if (savedLayout?.placement) {
+        // Restore the final snapped/dragged state before paint, without measuring
+        // the hidden project-mode board or rerunning initial alignment.
+        board.style.height = savedLayout.placement.height;
+        savedLayout.placement.objects.forEach(({ id, left, right, top, translate, x, y }) => {
+          const element = elements.get(id);
+          if (!element) return;
+          Object.assign(element.style, { left, right, top, translate });
+          if (x !== undefined) element.dataset.pegX = x;
+          if (y !== undefined) element.dataset.pegY = y;
+        });
+        savedLayout.assignments.forEach(([id, slot]) => {
+          const element = elements.get(id);
+          if (element) element.dataset.shuffleSlot = slot.id;
+        });
+        board.dataset.layoutSeed = String(savedLayout.seed);
+        board.dataset.layoutRestored = "true";
+        board.dataset.shuffleReady = "true";
+        return;
+      }
+
+      if (projectModeActive || window.getComputedStyle(board.firstElementChild as Element).visibility === "hidden") return;
 
       const previousSignature = window.sessionStorage.getItem(PREVIOUS_LAYOUT_KEY);
       const runtimeLayout = runtimeLayouts.get(mobile ? "mobile" : "desktop");
@@ -452,12 +483,33 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>) {
       });
     };
 
+    const savePlacement = () => {
+      if (board.closest(".is-project-mode") || board.dataset.shuffleReady !== "true") return;
+      const layout = runtimeLayouts.get(mobile ? "mobile" : "desktop");
+      if (!layout) return;
+      layout.placement = {
+        height: board.style.height,
+        objects: Object.entries(selectors).flatMap(([id, selector]) => {
+          const element = board.querySelector<HTMLElement>(selector);
+          return element ? [{
+            id, left: element.style.left, right: element.style.right,
+            top: element.style.top, translate: element.style.translate,
+            x: element.dataset.pegX, y: element.dataset.pegY,
+          }] : [];
+        }),
+      };
+    };
+    const placementObserver = new MutationObserver(savePlacement);
     applyLayout();
+    savePlacement();
+    placementObserver.observe(board, { subtree: true, attributes: true, attributeFilter: ["style"] });
     mobileQuery.addEventListener("change", handleBreakpointChange);
 
     return () => {
+      savePlacement();
+      placementObserver.disconnect();
       mobileQuery.removeEventListener("change", handleBreakpointChange);
       if (layoutFrame !== null) window.cancelAnimationFrame(layoutFrame);
     };
-  }, [boardRef]);
+  }, [boardRef, projectModeActive]);
 }

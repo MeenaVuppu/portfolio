@@ -18,8 +18,7 @@ type HomeBoardProps = {
 const EMAIL_ADDRESS = "vuppumeena@gmail.com";
 const ARTWORK_ROTATIONS = [-5, 4, -2];
 const HOME_IMAGE_ORDER = ["photo", "bookshelf", "headphones", "plant"];
-// Remember revealed assets across client-side navigation, but reset on a fresh load.
-const revealedHomeImages = new Set<string>();
+type HomeImageWindow = Window & { __portfolioRevealedHomeImages?: Set<string> };
 const BOOK_NOTES = [
   { title: "Days at the Morisaki Bookshop", note: "Such a pleasant read. Light and easy, like a breeze.", left: "14%", top: "30%", width: "48%", height: "23%" },
   { title: "The Silent Patient", note: "Had me hooked. Couldn't focus on anything else until I finished it.", left: "12%", top: "54%", width: "53%", height: "15%" },
@@ -172,11 +171,14 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   }, []);
 
   usePegboardDrag(boardRef, dragPreviewRef, playPlacementSound);
-  usePegboardShuffle(boardRef);
+  usePegboardShuffle(boardRef, projectModeActive);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const board = boardRef.current;
     if (!board) return;
+    // Share readiness across production route bundles, only for this document.
+    const page = window as HomeImageWindow;
+    const revealedHomeImages = page.__portfolioRevealedHomeImages ??= new Set<string>();
     let disposed = false;
     let frame: number | null = null;
     const ready = new Map<string, HTMLImageElement>();
@@ -237,7 +239,8 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     if (!board) return;
 
     let frame: number | null = null;
-    let alignedGeometry = "";
+    const geometryKey = () => [board.dataset.layoutSeed, window.innerWidth, window.innerHeight].join(":");
+    let alignedGeometry = board.dataset.layoutRestored === "true" ? geometryKey() : "";
     const alignElements = (ids: string[]) => {
       ids.forEach((id) => {
         const element = board.querySelector<HTMLElement>(`[data-peg-draggable="${id}"]`);
@@ -250,9 +253,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
         frame = null;
         // Project mode changes the hidden board's measurements, not its arrangement.
         if (board.closest(".is-project-mode")) return;
-        const geometry = [
-          board.dataset.layoutSeed, window.innerWidth, window.innerHeight,
-        ].join(":");
+        const geometry = geometryKey();
         if (geometry === alignedGeometry) return;
         alignedGeometry = geometry;
         alignElements([
@@ -276,7 +277,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     board.querySelectorAll<HTMLElement>("[data-peg-draggable]").forEach((element) => resizeObserver.observe(element));
     window.addEventListener("load", scheduleAlignment);
     window.addEventListener("resize", scheduleAlignment);
-    alignElements(["resume"]);
+    if (board.dataset.layoutRestored !== "true") alignElements(["resume"]);
     scheduleAlignment();
 
     return () => {
@@ -286,7 +287,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
       window.removeEventListener("load", scheduleAlignment);
       window.removeEventListener("resize", scheduleAlignment);
     };
-  }, []);
+  }, [projectModeActive]);
 
   const musicCreditPosition = useSafeContextNote(isMusicCreditOpen, headphonesRef, musicCreditNoteRef, boardRef, musicCreditRef);
   const bookNotePosition = useSafeContextNote(activeBook !== null, brushesRef, bookNoteRef, boardRef, boardRef);

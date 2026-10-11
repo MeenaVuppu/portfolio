@@ -50,7 +50,7 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
 
   useEffect(() => {
     history.replaceState(
-      { portfolio: true, project: initialProject?.slug ?? null, archive: initialArchive, fromBoard: false },
+      { ...history.state, portfolio: true, project: initialProject?.slug ?? null, archive: initialArchive, fromBoard: false },
       "",
       window.location.href,
     );
@@ -100,7 +100,7 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
     lastProjectTrigger.current = trigger;
     boardScrollY.current = window.scrollY;
     history.pushState(
-      { portfolio: true, project: project.slug, fromBoard: true },
+      { ...history.state, portfolio: true, project: project.slug, fromBoard: true },
       "",
       `/projects/${project.slug}`,
     );
@@ -114,7 +114,7 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
     clearTransitionTimer();
     lastProjectTrigger.current = trigger;
     boardScrollY.current = window.scrollY;
-    history.pushState({ portfolio: true, project: null, archive: true, fromBoard: true }, "", "/archive");
+    history.pushState({ ...history.state, portfolio: true, project: null, archive: true, fromBoard: true }, "", "/archive");
     setSelectedProject(null);
     setArchiveOpen(true);
     setPhase("opening");
@@ -131,7 +131,7 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
         closingFromControl.current = true;
         history.back();
       } else {
-        history.replaceState({ portfolio: true, project: null, fromBoard: false }, "", "/");
+        history.replaceState({ ...history.state, portfolio: true, project: null, fromBoard: false }, "", "/");
         finishOnBoard();
       }
     }, 340);
