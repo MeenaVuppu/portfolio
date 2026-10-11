@@ -259,6 +259,12 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
     };
 
     const applyLayout = () => {
+      if (mobile && !projectModeActive && !runtimeLayouts.has("mobile")) {
+        // A fresh mobile board starts below its header, rather than inheriting
+        // a previous document's scroll. In-app returns use the saved board scroll.
+        window.history.scrollRestoration = "manual";
+        window.scrollTo({ top: 0, behavior: "instant" });
+      }
       const boardRect = board.getBoundingClientRect();
       const projectRegions = DESKTOP_PROJECT_REGIONS;
 
@@ -370,7 +376,20 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
             ...secondaryIds.slice(7),
           ];
           const items = sequence.map((id) => dimensions(id, [])).filter((item): item is ShuffleItem => item !== null);
-          const packed = compactMobileAssignments(items, boardRect.width, next);
+          let packed = compactMobileAssignments(items, boardRect.width, next);
+          const viewportBottom = Math.min(window.innerHeight, window.visualViewport?.height ?? window.innerHeight) - boardRect.top - 14;
+          const featured = items.filter((item) => item.id === "digital-gold" || item.id === "vyapar-plus");
+          const hasVisibleProject = featured.some((item) => {
+            const slot = packed.assignments.get(item.id);
+            return slot && slot.y + item.topOffset >= 0 && slot.y + item.bottomOffset <= viewportBottom;
+          });
+          if (!hasVisibleProject) {
+            // Keep the ordinary random composition when it already satisfies
+            // the viewport constraint. Otherwise lead with either featured file
+            // during initial packing, before any positions reach the DOM.
+            const first = featured.find((item) => item.id === projectIds.find((id) => id !== "fixed-deposit"));
+            if (first) packed = compactMobileAssignments([first, ...items.filter((item) => item !== first)], boardRect.width, next);
+          }
           const signature = [...packed.assignments.entries()]
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([id, slot]) => `${id}:${Math.round(slot.x)},${Math.round(slot.y)}`)

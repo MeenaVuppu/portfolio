@@ -8443,3 +8443,33 @@ body:has(.archive-mode) {
   .archive-work-pin .peg-pin { transform: translateX(-50%) scale(.8); }
   .archive-work-pin .paper-clip { width: 13px; height: 32px; }
 }
+
+/* Archive folders follow the desktop homepage file footprint. */
+@media (min-width: 761px) {
+  .archive-case-study .project-file {
+    width: calc((min(var(--portfolio-board-max), 100vw - 2 * var(--portfolio-board-gutter)) - 2px) * .17);
+    height: calc((100dvh - 118px) * .34);
+  }
+  .archive-case-study .project-file__document {
+    bottom: 12%; left: 3%; right: 3%;
+    padding: 17px 15px 31%;
+  }
+  .archive-case-study .project-file__back-sheet { bottom: 11%; left: 4%; right: 3%; top: 3%; }
+  .archive-case-study .project-file__tab { height: 8%; right: 8%; top: -8%; width: 34%; }
+  .archive-case-study .project-holder { height: 38%; left: -2%; right: -2%; }
+  .archive-case-study .paper-clip { width: clamp(11px, 1.1vw, 15px); height: clamp(25px, calc((100dvh - 118px) * .05), 36px); }
+  .archive-case-study .project-file__eyebrow,
+  .archive-case-study .project-file__label { font-size: clamp(7px, .6vw, 9px); }
+  .archive-case-study .project-file__title { font-size: clamp(15px, 1.35vw, 21px); margin-top: clamp(5px, 1vh, 9px); }
+  .archive-case-study .project-file__metric { font-size: clamp(23px, 2.2vw, 33px); }
+  .archive-case-study .archive-hives .project-file__metric { font-size: clamp(17px, 1.55vw, 24px); }
+}
+@media (max-width: 760px) {
+  .archive-work-pin h2 { font-size: 17px; font-weight: 750; }
+}
+@media (min-width: 761px) and (max-width: 1099px) {
+  .archive-case-study .project-file {
+    width: calc((min(var(--portfolio-board-max), 100vw - 2 * var(--portfolio-board-gutter)) - 2px) * .25);
+    height: calc((100dvh - 118px) * .28);
+  }
+}
