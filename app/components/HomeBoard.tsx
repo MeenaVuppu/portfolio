@@ -17,6 +17,9 @@ type HomeBoardProps = {
 
 const EMAIL_ADDRESS = "vuppumeena@gmail.com";
 const ARTWORK_ROTATIONS = [-5, 4, -2];
+const HOME_IMAGE_ORDER = ["photo", "bookshelf", "headphones", "plant"];
+// Remember revealed assets across client-side navigation, but reset on a fresh load.
+const revealedHomeImages = new Set<string>();
 const BOOK_NOTES = [
   { title: "Days at the Morisaki Bookshop", note: "Such a pleasant read. Light and easy, like a breeze.", left: "14%", top: "30%", width: "48%", height: "23%" },
   { title: "The Silent Patient", note: "Had me hooked. Couldn't focus on anything else until I finished it.", left: "12%", top: "54%", width: "53%", height: "15%" },
@@ -126,7 +129,7 @@ function MoneyPlant() {
       aria-hidden="true"
     >
       <div className="money-plant__hover">
-        <Image src="/money-plant-layer.png" alt="" width={1254} height={1881} unoptimized />
+        <Image src="/money-plant-layer.png" alt="" width={1254} height={1881} loading="eager" data-home-image="plant" unoptimized />
       </div>
     </div>
   );
@@ -170,6 +173,64 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
 
   usePegboardDrag(boardRef, dragPreviewRef, playPlacementSound);
   usePegboardShuffle(boardRef);
+
+  useEffect(() => {
+    const board = boardRef.current;
+    if (!board) return;
+    let disposed = false;
+    let frame: number | null = null;
+    const ready = new Map<string, HTMLImageElement>();
+    const removeListeners: Array<() => void> = [];
+
+    const queueReady = (id: string, image: HTMLImageElement) => {
+      if (disposed) return;
+      ready.set(id, image);
+      if (frame !== null) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = null;
+        // Order assets ready in the same frame; never wait for an unready asset.
+        HOME_IMAGE_ORDER.forEach((asset) => {
+          const visual = ready.get(asset);
+          if (!visual) return;
+          const alreadyRevealed = revealedHomeImages.has(asset);
+          revealedHomeImages.add(asset);
+          visual.dataset.homeImageReady = "true";
+          if (!alreadyRevealed && !board.closest(".is-project-mode") &&
+            !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            // A near-transparent start remains measurable if packing runs mid-fade.
+            visual.animate([{ opacity: 0.001 }, { opacity: 1 }], { duration: 150, easing: "ease-out" });
+          }
+        });
+        ready.clear();
+      });
+    };
+
+    board.querySelectorAll<HTMLImageElement>("img[data-home-image]").forEach((image) => {
+      const id = image.dataset.homeImage!;
+      if (revealedHomeImages.has(id)) {
+        image.dataset.homeImageReady = "true";
+        return;
+      }
+      const decode = async () => {
+        try { await image.decode(); } catch { /* Reveal the loaded image even if decoding rejects. */ }
+        queueReady(id, image);
+      };
+      const failed = () => queueReady(id, image);
+      image.addEventListener("load", decode, { once: true });
+      image.addEventListener("error", failed, { once: true });
+      removeListeners.push(() => {
+        image.removeEventListener("load", decode);
+        image.removeEventListener("error", failed);
+      });
+      if (image.complete) void decode();
+    });
+
+    return () => {
+      disposed = true;
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      removeListeners.forEach((remove) => remove());
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const board = boardRef.current;
@@ -489,7 +550,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
         >
           <PegPin className="pin--one" />
           <PegPin className="pin--two" />
-          <Image src="/meena-photo.jpeg" alt="Meena Vuppu" width={500} height={380} priority unoptimized />
+          <Image src="/meena-photo.jpeg" alt="Meena Vuppu" width={500} height={380} priority data-home-image="photo" unoptimized />
           <span className="photo-caption">
             <span>Figma Config Bengaluru</span>
           </span>
@@ -517,6 +578,8 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
               alt="Lavender AirPods Max"
               width={2892}
               height={2960}
+              loading="eager"
+              data-home-image="headphones"
               unoptimized
             />
           </button>
@@ -623,6 +686,8 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
                 alt="Design books and paintbrushes on a small shelf"
                 width={1920}
                 height={684}
+                loading="eager"
+                data-home-image="bookshelf"
                 unoptimized
               />
               {BOOK_NOTES.map((book, index) => (
