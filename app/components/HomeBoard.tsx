@@ -17,6 +17,8 @@ type HomeBoardProps = {
 
 const EMAIL_ADDRESS = "vuppumeena@gmail.com";
 const ARTWORK_ROTATIONS = [-5, 4, -2];
+// Like the shuffle layout, this resets on refresh, not client-side navigation.
+let deskRevealStarted = false;
 const BOOK_NOTES = [
   { title: "Days at the Morisaki Bookshop", note: "Such a pleasant read. Light and easy, like a breeze.", left: "14%", top: "30%", width: "48%", height: "23%" },
   { title: "The Silent Patient", note: "Had me hooked. Couldn't focus on anything else until I finished it.", left: "12%", top: "54%", width: "53%", height: "15%" },
@@ -170,6 +172,23 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
 
   usePegboardDrag(boardRef, dragPreviewRef, playPlacementSound);
   usePegboardShuffle(boardRef);
+
+  useLayoutEffect(() => {
+    if (deskRevealStarted) return;
+    deskRevealStarted = true;
+    if (projectModeActive || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // Opacity leaves the live geometry used by drag, collision and snapping intact.
+    boardRef.current?.querySelectorAll<HTMLElement>(":scope > .board-object:not(.home-project-space)")
+      .forEach((object, index) => {
+        object.animate([{ opacity: 0 }, { opacity: 1 }], {
+          duration: 300,
+          delay: index * 40,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          fill: "backwards",
+        });
+      });
+  }, [projectModeActive]);
 
   useLayoutEffect(() => {
     const board = boardRef.current;
