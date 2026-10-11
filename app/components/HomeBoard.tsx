@@ -17,8 +17,6 @@ type HomeBoardProps = {
 
 const EMAIL_ADDRESS = "vuppumeena@gmail.com";
 const ARTWORK_ROTATIONS = [-5, 4, -2];
-// Like the shuffle layout, this resets on refresh, not client-side navigation.
-let pushpinEntranceStarted = false;
 const BOOK_NOTES = [
   { title: "Days at the Morisaki Bookshop", note: "Such a pleasant read. Light and easy, like a breeze.", left: "14%", top: "30%", width: "48%", height: "23%" },
   { title: "The Silent Patient", note: "Had me hooked. Couldn't focus on anything else until I finished it.", left: "12%", top: "54%", width: "53%", height: "15%" },
@@ -173,7 +171,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   usePegboardDrag(boardRef, dragPreviewRef, playPlacementSound);
   usePegboardShuffle(boardRef);
 
-
   useLayoutEffect(() => {
     const board = boardRef.current;
     if (!board) return;
@@ -229,33 +226,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
       window.removeEventListener("resize", scheduleAlignment);
     };
   }, []);
-
-  useLayoutEffect(() => {
-    if (pushpinEntranceStarted) return;
-    pushpinEntranceStarted = true;
-    if (projectModeActive || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const board = boardRef.current;
-    if (!board) return;
-    // Run after initial peg alignment; animate only separate pushpin graphics.
-    window.requestAnimationFrame(() => {
-      if (!board.isConnected || board.closest(".is-project-mode") ||
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      board.querySelectorAll<HTMLElement>(":scope > .board-object .peg-pin")
-        .forEach((pin, index) => {
-          const animation = pin.animate(
-            [{ translate: "0 -3px" }, { translate: "0 0" }],
-            { duration: 230, delay: index * 70, easing: "ease-out", fill: "backwards" },
-          );
-          // Restore the attachment anchor immediately before any drag measurement.
-          const object = pin.closest<HTMLElement>(".board-object");
-          const stop = () => animation.cancel();
-          object?.addEventListener("pointerdown", stop, { capture: true, once: true });
-          void animation.finished.catch(() => undefined)
-            .then(() => object?.removeEventListener("pointerdown", stop, true));
-        });
-    });
-  }, [projectModeActive]);
 
   const musicCreditPosition = useSafeContextNote(isMusicCreditOpen, headphonesRef, musicCreditNoteRef, boardRef, musicCreditRef);
   const bookNotePosition = useSafeContextNote(activeBook !== null, brushesRef, bookNoteRef, boardRef, boardRef);
