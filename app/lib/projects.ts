@@ -238,8 +238,8 @@ export const projects: Project[] = [
     category: "VYAPAR PLUS · MUTHOOT FINANCE",
     headline: "Turning neighbourhood kiranas into financial-service distribution points.",
     metadata: ["Sole Product Designer", "0→1", "Shipped Sep 2026"],
-    stats: [{ value: "819", label: "Completed digital onboarding" }, { value: "2,282", label: "Started onboarding" }, { value: "35.9%", label: "End-to-end completion" }],
-    snapshotFootnote: "Sep 1–11, 2026 · Early post-launch data",
+    stats: [{ value: "2,500+", label: "Merchants onboarded" }, { value: "1,000+", label: "Loan leads submitted" }, { value: "600+", label: "Loan leads converted" }],
+    snapshotFootnote: "First two weeks · Reported business results",
     storyPins: [
       {
             "eyebrow": "The opportunity",
@@ -279,7 +279,13 @@ export const projects: Project[] = [
       {
             "eyebrow": "Early product evidence",
             "title": "Acquisition was only the start.",
-            "body": "The Sep 1–11 onboarding cohort in the opening snapshot showed a gap between starting and completing digital onboarding. It points to activation as a follow-up priority; it does not identify which verification step caused the loss or establish later product usage."
+            "body": "The Sep 1–11 digital onboarding cohort showed a gap between starting and completing digital onboarding. It points to activation as a follow-up priority; it does not identify which verification step caused the loss or establish later product usage.",
+            "items": [
+                  { "value": "2,282", "label": "Started digital onboarding" },
+                  { "value": "819", "label": "Completed digital onboarding" },
+                  { "value": "35.9%", "label": "End-to-end completion" }
+            ],
+            "footnote": "Sep 1–11, 2026 · Digital onboarding cohort"
       },
       {
             "eyebrow": "Technical constraint · Third-party APIs",
