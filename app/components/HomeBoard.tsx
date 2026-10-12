@@ -182,6 +182,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     let disposed = false;
     let frame: number | null = null;
     const ready = new Map<string, HTMLImageElement>();
+    const decoded = new Set<string>();
     const removeListeners: Array<() => void> = [];
 
     const queueReady = (id: string, image: HTMLImageElement) => {
@@ -197,10 +198,14 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
           const alreadyRevealed = revealedHomeImages.has(asset);
           revealedHomeImages.add(asset);
           visual.dataset.homeImageReady = "true";
-          if (!alreadyRevealed && !board.closest(".is-project-mode") &&
+          if (decoded.has(asset) && !alreadyRevealed && !board.closest(".is-project-mode") &&
             !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-            // A near-transparent start remains measurable if packing runs mid-fade.
-            visual.animate([{ opacity: 0.001 }, { opacity: 1 }], { duration: 150, easing: "ease-out" });
+            // Animate only the image layer; leave placement and drag transforms intact.
+            visual.animate([
+              { opacity: 0, scale: "0.95" },
+              { opacity: 1, scale: "1.02", offset: 0.7 },
+              { opacity: 1, scale: "1" },
+            ], { duration: 280, easing: "cubic-bezier(0.16, 1, 0.3, 1)" });
           }
         });
         ready.clear();
@@ -214,7 +219,10 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
         return;
       }
       const decode = async () => {
-        try { await image.decode(); } catch { /* Reveal the loaded image even if decoding rejects. */ }
+        try {
+          await image.decode();
+          decoded.add(id);
+        } catch { /* Show failed decodes without an entrance animation. */ }
         queueReady(id, image);
       };
       const failed = () => queueReady(id, image);
