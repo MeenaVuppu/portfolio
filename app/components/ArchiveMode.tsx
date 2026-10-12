@@ -19,8 +19,8 @@ const hivesProject: Project = {
   ...projects.find((project) => project.slug === "hives")!,
   title: "Hives",
   eyebrow: "NextLeap Fellowship",
-  metric: "Top Fellow · 88%",
-  metricLabel: "Graduation Project",
+  metric: "88%",
+  metricLabel: "Top Fellow · Graduation Project",
 };
 
 export function ArchiveMode({ phase, onOpenProject }: ArchiveModeProps) {

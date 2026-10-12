@@ -8436,7 +8436,9 @@ body:has(.archive-mode) {
   .archive-case-study .project-file__label { font-size: 8px; }
   .archive-case-study .project-file__title { font-size: 17px; margin-top: 7px; }
   .archive-case-study .project-file__metric { font-size: 23px; }
-  .archive-case-study .archive-hives .project-file__metric { font-size: 17px; }
+  .archive-case-study .archive-hives .project-file__document { padding-bottom: 22%; }
+  .archive-case-study .archive-hives .project-file__metric { font-size: 20px; }
+  .archive-case-study .archive-hives .project-file__label { font-size: 7px; }
   .archive-case-study .paper-clip { width: 11px; height: 25px; }
   .archive-work-gallery { max-width: 250px; gap: 28px; }
   .archive-work-gallery .archive-work-pin { padding: 20px; }
@@ -8462,7 +8464,7 @@ body:has(.archive-mode) {
   .archive-case-study .project-file__label { font-size: clamp(7px, .6vw, 9px); }
   .archive-case-study .project-file__title { font-size: clamp(15px, 1.35vw, 21px); margin-top: clamp(5px, 1vh, 9px); }
   .archive-case-study .project-file__metric { font-size: clamp(23px, 2.2vw, 33px); }
-  .archive-case-study .archive-hives .project-file__metric { font-size: clamp(17px, 1.55vw, 24px); }
+  .archive-case-study .archive-hives .project-file__metric { font-size: clamp(23px, 2.2vw, 33px); }
 }
 @media (max-width: 760px) {
   .archive-work-pin h2 { font-size: 17px; font-weight: 750; }
