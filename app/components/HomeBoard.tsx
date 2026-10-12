@@ -201,21 +201,12 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
           if (decoded.has(asset) && !alreadyRevealed && !board.closest(".is-project-mode") &&
             !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
             // Animate only the image layer; leave placement and drag transforms intact.
-            const hanging = asset === "plant" || asset === "headphones";
-            if (hanging) {
-              visual.animate([
-                { opacity: 0, rotate: "5deg" },
-                { opacity: 1, rotate: "-2deg", offset: 0.3 },
-                { opacity: 1, rotate: "0.5deg", offset: 0.65 },
-                { opacity: 1, rotate: "0deg" },
-              ], { duration: 1000, easing: "ease-out" });
-            } else {
-              visual.animate([
-                { opacity: 0, translate: "0 -14px" },
-                { opacity: 1, translate: "0 0", offset: 0.8 },
-                { opacity: 1, translate: "0 0" },
-              ], { duration: 700, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
-            }
+            const existingFilter = window.getComputedStyle(visual).filter;
+            const materialFilter = existingFilter === "none" ? "" : `${existingFilter} `;
+            visual.animate([
+              { opacity: 0, filter: `${materialFilter}blur(3px)` },
+              { opacity: 1, filter: `${materialFilter}blur(0px)` },
+            ], { duration: 450, easing: "ease-out" });
           }
         });
         ready.clear();

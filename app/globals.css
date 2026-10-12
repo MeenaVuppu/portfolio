@@ -8399,10 +8399,6 @@ body:has(.archive-mode) {
 .fixed-board .home-project-space { clip-path: inset(100%); pointer-events: none; }
 
 /* Keep pending image geometry measurable for the existing mobile packing. */
-.fixed-board img[data-home-image="plant"],
-.fixed-board img[data-home-image="headphones"] {
-  transform-origin: 50% 0%;
-}
 .fixed-board img[data-home-image]:not([data-home-image-ready="true"]) {
   clip-path: inset(100%);
 }
