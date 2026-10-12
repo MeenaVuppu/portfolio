@@ -8482,3 +8482,14 @@ body:has(.archive-mode) {
     min-height: calc(clamp(24px, 2.2vw, 32px) * 1.08);
   }
 }
+
+.archive-hives.project-file--dual-link .project-file__case-study-link {
+  position: absolute;
+  inset: 0;
+}
+.archive-hives.project-file--dual-link > span {
+  pointer-events: none;
+}
+.archive-hives.project-file--dual-link .project-file__title {
+  pointer-events: auto;
+}

@@ -38,7 +38,7 @@ export function ArchiveMode({ phase, onOpenProject }: ArchiveModeProps) {
             <span className="section-kicker">Full case studies</span>
             <div className="archive-case-study-folders">
               <ProjectFile project={projects.find((project) => project.slug === "fixed-deposit")!} className="archive-fd" onOpenProject={onOpenProject} />
-              <ProjectFile project={hivesProject} className="archive-hives" externalHref="https://assets.nextleap.app/submissions/HivesCaseStudy-cb636350-e245-462f-b229-da36d2199b60.pdf" />
+              <ProjectFile project={hivesProject} className="archive-hives" externalHref="https://assets.nextleap.app/submissions/HivesCaseStudy-cb636350-e245-462f-b229-da36d2199b60.pdf" externalTitleHref="https://www.figma.com/proto/kVL7VTLA4mfSRs8o6vBZzM/M3--Prototype?node-id=93-2465&t=NqwsOi4ts5pt8Ixj-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=93%3A2465" />
             </div>
           </div>
           <div className="archive-supporting-label section-kicker">Supporting work</div>

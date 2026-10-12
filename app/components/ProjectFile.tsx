@@ -14,11 +14,12 @@ type ProjectFileProps = {
   disabled?: boolean;
   layoutOnly?: boolean;
   externalHref?: string;
+  externalTitleHref?: string;
   pegboardDragId?: string;
   onOpenProject?: (project: Project, trigger: HTMLAnchorElement) => void;
 };
 
-export function ProjectFile({ project, className = "", compact, disabled = false, layoutOnly = false, externalHref, pegboardDragId, onOpenProject }: ProjectFileProps) {
+export function ProjectFile({ project, className = "", compact, disabled = false, layoutOnly = false, externalHref, externalTitleHref, pegboardDragId, onOpenProject }: ProjectFileProps) {
   const router = useRouter();
   const [isOpening, setIsOpening] = useState(false);
   const [openingStyle, setOpeningStyle] = useState<CSSProperties>();
@@ -77,7 +78,9 @@ export function ProjectFile({ project, className = "", compact, disabled = false
         <PaperClip className="project-file__clip" />
         <span className="project-file__tab" aria-hidden="true" />
         <span className="project-file__eyebrow">{project.eyebrow}</span>
-        <span className="project-file__title">{project.title}</span>
+        {externalHref && externalTitleHref ? (
+          <a className="project-file__title" href={externalTitleHref} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} prototype (opens in a new tab)`}>{project.title}</a>
+        ) : <span className="project-file__title">{project.title}</span>}
         <span className="project-file__metric">{project.metric}</span>
         <span className="project-file__label">{project.metricLabel}</span>
       </span>
@@ -99,6 +102,14 @@ export function ProjectFile({ project, className = "", compact, disabled = false
   }
 
   if (externalHref) {
+    if (externalTitleHref) {
+      return (
+        <div className={`${projectClassName} project-file--dual-link`}>
+          <a className="project-file__case-study-link" href={externalHref} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} case study (PDF, opens in a new tab)`} />
+          {projectContent}
+        </div>
+      );
+    }
     return (
       <a className={projectClassName} href={externalHref} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} case study (PDF, opens in a new tab)`}>
         {projectContent}
