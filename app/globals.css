@@ -8490,6 +8490,19 @@ body:has(.archive-mode) {
 .archive-hives.project-file--dual-link > span {
   pointer-events: none;
 }
-.archive-hives.project-file--dual-link .project-file__title {
+.archive-hives.project-file--dual-link .project-file__prototype-link {
+  align-self: flex-start;
+  font-size: 10px;
+  line-height: 1.3;
+  margin-top: 5px;
   pointer-events: auto;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  z-index: 1;
+}
+@media (max-width: 760px) {
+  .archive-hives.project-file--dual-link .project-file__prototype-link {
+    font-size: 9px;
+    margin-top: 3px;
+  }
 }
