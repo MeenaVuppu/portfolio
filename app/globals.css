@@ -8402,6 +8402,9 @@ body:has(.archive-mode) {
 .fixed-board img[data-home-image]:not([data-home-image-ready="true"]) {
   clip-path: inset(100%);
 }
+.fixed-board .headphones-button:has(img[data-home-image="headphones"]:not([data-home-image-ready="true"])) {
+  clip-path: inset(100%);
+}
 .archive-case-study { width: min(100%, 900px); margin: 48px auto 64px; }
 .archive-case-study > .section-kicker { display: block; margin-bottom: 36px; }
 .archive-case-study-folders { display: flex; flex-wrap: wrap; gap: 56px; }

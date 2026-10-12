@@ -200,10 +200,13 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
           visual.dataset.homeImageReady = "true";
           if (decoded.has(asset) && !alreadyRevealed && !board.closest(".is-project-mode") &&
             !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-            // Animate only the image layer; leave placement and drag transforms intact.
-            const existingFilter = window.getComputedStyle(visual).filter;
+            // The headphone button is an inner visual group, separate from its drag wrapper.
+            const revealVisual = asset === "headphones"
+              ? visual.closest<HTMLElement>(".headphones-button") ?? visual
+              : visual;
+            const existingFilter = window.getComputedStyle(revealVisual).filter;
             const materialFilter = existingFilter === "none" ? "" : `${existingFilter} `;
-            visual.animate([
+            revealVisual.animate([
               { opacity: 0, filter: `${materialFilter}blur(3px)` },
               { opacity: 1, filter: `${materialFilter}blur(0px)` },
             ], { duration: 450, easing: "ease-out" });
