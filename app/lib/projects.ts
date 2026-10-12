@@ -444,7 +444,7 @@ export const projects: Project[] = [
     snapshotLabel: "Existing funnel · Baseline",
     snapshotFootnote: "Existing experience baseline — not redesign outcomes. Analytics show progression, not the cause of drop-off.",
     stats: [
-      { value: "25,275", label: "Reached the FD experience" },
+      { value: "25,275", label: "FD page-view events" },
       { value: "5.6%", label: "Selected Mahindra Finance" },
       { value: "19.1%", label: "Of those users clicked Book Now" },
     ],
