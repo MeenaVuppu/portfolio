@@ -25,7 +25,7 @@ export type ProjectStoryPin = {
   highlight?: string;
   footnote?: string;
   visual?: string;
-  screens?: Array<{ src: string; alt: string; staticViewport?: boolean }>;
+  screens?: Array<{ src: string; alt: string; staticViewport?: boolean; scrollViewport?: boolean }>;
   variant?: "wide" | "accent" | "visual";
 };
 
@@ -123,7 +123,7 @@ export const projects: Project[] = [
                   {
                         "src": "/dg-evidence/before-top.png",
                         "alt": "BEFORE — FIRST FOLD",
-                        "staticViewport": true
+                        "scrollViewport": true
                   },
                   {
                         "src": "/dg-evidence/after-top.png",
@@ -142,12 +142,12 @@ export const projects: Project[] = [
                   {
                         "src": "/dg-evidence/before-continued.png",
                         "alt": "BEFORE — BELOW THE FOLD",
-                        "staticViewport": true
+                        "scrollViewport": true
                   },
                   {
                         "src": "/dg-evidence/after-continued.png",
                         "alt": "AFTER — BELOW THE FOLD",
-                        "staticViewport": true
+                        "scrollViewport": true
                   }
             ],
             "variant": "visual",

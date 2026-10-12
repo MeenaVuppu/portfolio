@@ -148,7 +148,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
                               <>
                                 <figcaption className="dg-phone-label">{screen.alt}</figcaption>
                                 <div className="dg-phone-device">
-                                  <div className={`dg-phone-display${screen.staticViewport ? " dg-phone-display--static" : ""}`} tabIndex={screen.staticViewport ? undefined : 0} role="region" aria-label={screen.staticViewport ? screen.alt : `${screen.alt} — scroll to view full section`}>
+                                  <div className={`dg-phone-display${screen.staticViewport ? " dg-phone-display--static" : screen.scrollViewport ? " dg-phone-display--scroll" : ""}`} tabIndex={screen.staticViewport ? undefined : 0} role="region" aria-label={screen.staticViewport ? screen.alt : `${screen.alt} — scroll to view full section`}>
                                     <img src={screen.src} alt={screen.alt} />
                                   </div>
                                 </div>

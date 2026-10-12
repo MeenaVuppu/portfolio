@@ -8358,6 +8358,9 @@ body:has(.archive-mode) {
 .project-view--digital-gold .dg-phone-display::-webkit-scrollbar { display: none; }
 .project-view--digital-gold .dg-phone-display--static { min-height: 0; overflow: clip; position: relative; }
 .project-view--digital-gold .dg-phone-display--static img { height: auto; left: 0; max-width: none; position: absolute; top: 0; width: 100%; }
+/* Existing section assets bound each comparison's native scroll range. */
+.project-view--digital-gold .dg-phone-display--scroll { min-height: 0; position: relative; overscroll-behavior-y: auto; }
+.project-view--digital-gold .dg-phone-display--scroll img { height: auto; left: 0; max-width: none; position: absolute; top: 0; width: 100%; }
 .project-view--digital-gold .dg-phone-display:focus-visible { outline: 2px solid var(--project-pink); }
 @media (min-width: 761px) {
  .project-view--digital-gold .project-story-pin:nth-child(1) { grid-column: 1 / 6; grid-row: 1; }
