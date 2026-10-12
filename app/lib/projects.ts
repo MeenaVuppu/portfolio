@@ -25,7 +25,7 @@ export type ProjectStoryPin = {
   highlight?: string;
   footnote?: string;
   visual?: string;
-  screens?: Array<{ src: string; alt: string }>;
+  screens?: Array<{ src: string; alt: string; staticViewport?: boolean }>;
   variant?: "wide" | "accent" | "visual";
 };
 
@@ -122,15 +122,17 @@ export const projects: Project[] = [
             "screens": [
                   {
                         "src": "/dg-evidence/before-top.png",
-                        "alt": "BEFORE — TOP"
+                        "alt": "BEFORE — FIRST FOLD",
+                        "staticViewport": true
                   },
                   {
                         "src": "/dg-evidence/after-top.png",
-                        "alt": "AFTER — TOP"
+                        "alt": "AFTER — FIRST FOLD",
+                        "staticViewport": true
                   }
             ],
             "variant": "visual",
-            "footnote": "Consecutive landing captures continue in the next pin. Scroll within a phone to inspect the full section."
+            "footnote": "Static first-fold viewports compare the initial entry experience. Lower-page sections appear in the next pin."
       },
       {
             "eyebrow": "Before → after · Landing, continued",
@@ -139,11 +141,13 @@ export const projects: Project[] = [
             "screens": [
                   {
                         "src": "/dg-evidence/before-continued.png",
-                        "alt": "BEFORE — CONTINUED"
+                        "alt": "BEFORE — BELOW THE FOLD",
+                        "staticViewport": true
                   },
                   {
                         "src": "/dg-evidence/after-continued.png",
-                        "alt": "AFTER — CONTINUED"
+                        "alt": "AFTER — BELOW THE FOLD",
+                        "staticViewport": true
                   }
             ],
             "variant": "visual",

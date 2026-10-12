@@ -8356,6 +8356,8 @@ body:has(.archive-mode) {
 .project-view--digital-gold .dg-phone-device { padding: 4px; border: 1px solid #73747a; border-radius: clamp(18px,3vw,38px); background: #101113; box-shadow: 0 0 0 1px #242529, 0 8px 12px rgba(41,28,33,.16); }
 .project-view--digital-gold .dg-phone-display { aspect-ratio: 375 / 812; overflow-y: auto; overflow-x: hidden; border-radius: clamp(14px,2.7vw,33px); scrollbar-width: none; background: #eaf8ff; }
 .project-view--digital-gold .dg-phone-display::-webkit-scrollbar { display: none; }
+.project-view--digital-gold .dg-phone-display--static { min-height: 0; overflow: clip; position: relative; }
+.project-view--digital-gold .dg-phone-display--static img { height: auto; left: 0; max-width: none; position: absolute; top: 0; width: 100%; }
 .project-view--digital-gold .dg-phone-display:focus-visible { outline: 2px solid var(--project-pink); }
 @media (min-width: 761px) {
  .project-view--digital-gold .project-story-pin:nth-child(1) { grid-column: 1 / 6; grid-row: 1; }
