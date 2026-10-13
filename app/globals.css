@@ -8431,6 +8431,10 @@ body:has(.archive-mode) {
   .portfolio-experience.is-board-mode .fixed-board {
     --home-layout-height: max(760px, calc(100dvh - 116px));
     --home-fit: min(1, calc((100dvh - 116px) / var(--home-layout-height)));
+    /* Compensate the logical canvas width for the height-fit scale so its
+       visible edges match the project pages' shared content container. */
+    width: calc(min(var(--portfolio-board-max), 100vw - 2 * var(--portfolio-board-gutter)) / var(--home-fit));
+    max-width: none;
     height: var(--home-layout-height);
     min-height: 0;
     position: absolute;
