@@ -19,7 +19,7 @@ const EMAIL_ADDRESS = "vuppumeena@gmail.com";
 const ARTWORK_ROTATIONS = [-5, 4, -2];
 // Reveal controls: disable sound here without changing other portfolio audio.
 const HOME_REVEAL_STAGGER_MS = 160;
-const HOME_REVEAL_SOUND_VOLUME = 0.5;
+const HOME_REVEAL_SOUND_VOLUME = 1;
 const HOME_REVEAL_SOUND_ENABLED = true;
 type HomeRevealAudio = { context: AudioContext; gain: GainNode; buffer: AudioBuffer | null; ready: Promise<void> };
 type HomeImageWindow = Window & { __portfolioHomeRevealed?: boolean; __portfolioRevealAudio?: HomeRevealAudio; webkitAudioContext?: typeof AudioContext };
@@ -27,11 +27,16 @@ type HomeImageWindow = Window & { __portfolioHomeRevealed?: boolean; __portfolio
 function getHomeRevealAudio(): HomeRevealAudio | undefined {
   const page = window as HomeImageWindow;
   if (!HOME_REVEAL_SOUND_ENABLED || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  if (page.__portfolioRevealAudio) return page.__portfolioRevealAudio;
+  if (page.__portfolioRevealAudio) {
+    page.__portfolioRevealAudio.gain.gain.value = HOME_REVEAL_SOUND_VOLUME;
+    return page.__portfolioRevealAudio;
+  }
   const AudioContextConstructor = window.AudioContext ?? page.webkitAudioContext;
   if (!AudioContextConstructor) return;
   try {
     const context = new AudioContextConstructor();
+    // Let the browser apply its autoplay policy. Never await a blocked resume.
+    void context.resume().catch(() => undefined);
     const gain = context.createGain();
     gain.gain.value = HOME_REVEAL_SOUND_VOLUME;
     gain.connect(context.destination);
@@ -312,7 +317,8 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     if (!board) return;
 
     let frame: number | null = null;
-    const geometryKey = () => [board.dataset.layoutSeed, window.innerWidth, window.innerHeight].join(":");
+    const geometryKey = () => [board.dataset.layoutSeed, window.innerWidth,
+      window.matchMedia("(max-width: 760px)").matches ? "mobile" : window.innerHeight].join(":");
     let alignedGeometry = board.dataset.layoutRestored === "true" ? geometryKey() : "";
     const alignElements = (ids: string[]) => {
       ids.forEach((id) => {

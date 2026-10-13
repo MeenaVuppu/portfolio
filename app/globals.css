@@ -7289,7 +7289,7 @@ body {
 }
 
 /* Mobile board footprints used by the compact placement pass. */
-@media (max-width: 480px) {
+@media (max-width: 760px) {
   .portfolio-experience.is-board-mode .fixed-board.fixed-board {
     width: 100%;
     zoom: 1;
@@ -7316,6 +7316,7 @@ body {
   .portfolio-experience.is-board-mode .fixed-board .brushes-object {
     height: auto;
     width: 92%;
+    max-width: min(440px, calc((100% - 28px) / 1.08));
   }
 
   .portfolio-experience.is-board-mode .fixed-board .money-plant {
@@ -8405,6 +8406,35 @@ body:has(.archive-mode) {
 
 /* Keep every object's geometry and hit area intact while visual assets decode. */
 .fixed-board[data-home-reveal="pending"] > .board-object { opacity: 0 !important; }
+
+/* Short windows scroll the board instead of squeezing its physical objects together. */
+@media (min-width: 761px) {
+  .portfolio-experience.is-board-mode .fixed-board { min-height: 760px; }
+  .fixed-board .money-plant { aspect-ratio: 1254 / 1881; width: auto; }
+  .fixed-board .money-plant__hover { aspect-ratio: auto; width: 100%; }
+}
+@media (min-width: 761px) and (max-width: 1099px) {
+  .fixed-board .money-plant { height: min(54%, 360px); }
+  .fixed-board .p1, .fixed-board .p2, .fixed-board .p3 {
+    width: clamp(165px, 22%, 190px);
+    height: 230px;
+  }
+}
+@media (min-width: 761px) and (max-width: 900px) {
+  .portfolio-experience.is-board-mode .fixed-board { min-height: 900px; }
+  html:has(.portfolio-experience.is-board-mode),
+  body:has(.portfolio-experience.is-board-mode) { height: auto; overflow-y: auto; }
+  .portfolio-experience.is-board-mode { height: auto; min-height: 100dvh; overflow: visible; }
+  .portfolio-experience.is-board-mode .portfolio-state-stage,
+  .portfolio-experience.is-board-mode .fixed-landing { height: auto; min-height: 0; overflow: visible; }
+}
+@media (min-width: 761px) and (max-height: 875px) {
+  html:has(.portfolio-experience.is-board-mode),
+  body:has(.portfolio-experience.is-board-mode) { height: auto; overflow-y: auto; }
+  .portfolio-experience.is-board-mode { height: auto; min-height: 100dvh; overflow: visible; }
+  .portfolio-experience.is-board-mode .portfolio-state-stage,
+  .portfolio-experience.is-board-mode .fixed-landing { height: auto; min-height: 0; overflow: visible; }
+}
 .archive-case-study { width: min(100%, 900px); margin: 48px auto 64px; }
 .archive-case-study > .section-kicker { display: block; margin-bottom: 36px; }
 .archive-case-study-folders { display: flex; flex-wrap: wrap; gap: 56px; }
@@ -8510,4 +8540,23 @@ body:has(.archive-mode) {
     font-size: 9px;
     margin-top: 3px;
   }
+}
+
+/* Keep paper proportions stable in very tall or short windows. */
+@media (min-width: 1100px) {
+  .fixed-board .p1, .fixed-board .p2, .fixed-board .p3 {
+    aspect-ratio: 229 / 266;
+    height: auto;
+  }
+}
+@media (min-width: 761px) {
+  .archive-case-study .project-file {
+    aspect-ratio: 229 / 266;
+    height: auto;
+    min-height: 180px;
+  }
+  .archive-case-study .project-file__document { padding-bottom: calc(31% + 8px); }
+}
+@media (max-width: 760px) {
+  .archive-case-study .archive-hives .project-holder { bottom: -8px; }
 }

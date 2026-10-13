@@ -15,12 +15,13 @@ function offsetValue(value: string | undefined) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-function visibleBounds(element: HTMLElement): Bounds {
+export function visibleBounds(element: HTMLElement): Bounds {
   const rects = [element, ...element.querySelectorAll<HTMLElement>("*")]
     .filter((node) => {
-      if (node.closest(".music-credit__popover")) return false;
+      if (node.closest('.music-credit__popover, .watercolor-artworks[aria-hidden="true"]')) return false;
       const style = window.getComputedStyle(node);
-      return style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) !== 0;
+      // The loading reveal hides whole objects, but their full footprints still count.
+      return style.display !== "none" && style.visibility !== "hidden" && (node === element || Number(style.opacity) !== 0);
     })
     .map((node) => node.getBoundingClientRect())
     .filter((rect) => rect.width > 0 && rect.height > 0);
@@ -142,7 +143,7 @@ export function snapElementToNearestHole(board: HTMLElement, element: HTMLElemen
     .filter(
       (candidate) => candidate !== element && window.getComputedStyle(candidate).visibility !== "hidden",
     )
-    .map((candidate) => candidate.getBoundingClientRect());
+    .map((candidate) => visibleBounds(candidate));
   const radius = Number.parseFloat(window.getComputedStyle(board).borderTopLeftRadius) || 0;
   const candidates = pegboardHoles(board).sort(
     (a, b) =>

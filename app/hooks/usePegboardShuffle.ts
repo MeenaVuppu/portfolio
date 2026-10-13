@@ -1,6 +1,7 @@
 "use client";
 
 import { type RefObject, useLayoutEffect } from "react";
+import { visibleBounds } from "../lib/headphoneMount";
 
 type Slot = { id: string; x: number; y: number };
 type PlacedBox = { bottom: number; id?: string; left: number; right: number; top: number };
@@ -19,6 +20,7 @@ type ShuffleItem = {
 const PREVIOUS_LAYOUT_KEY = "portfolio-home-layout-signature";
 
 type RuntimeLayout = {
+  viewport?: { width: number; height: number };
   assignments: Array<[string, Slot]>;
   mobileHeight: number;
   seed: number;
@@ -274,42 +276,19 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
         if (element) elements.set(id, element);
       }
 
+      const measuredBounds = new Map([...elements].map(([id, element]) => [id, visibleBounds(element)]));
       const dimensions = (id: string, slots: Slot[]): ShuffleItem | null => {
         const element = elements.get(id);
         if (!element) return null;
-        const rect = element.getBoundingClientRect();
-        if (!mobile) {
-          return {
-            bottomOffset: rect.height,
-            element,
-            height: rect.height,
-            id,
-            leftOffset: 0,
-            rightOffset: rect.width,
-            slots,
-            topOffset: 0,
-            width: rect.width,
-          };
-        }
-
-        const layoutLeft = element.offsetLeft;
-        const layoutTop = element.offsetTop;
-        const visibleRects = [element, ...element.querySelectorAll<HTMLElement>("*")]
-          .filter((node) => {
-            const style = window.getComputedStyle(node);
-            const closedDetails = node.closest("details:not([open])");
-            return (!closedDetails || node.tagName === "SUMMARY")
-              && style.display !== "none"
-              && style.visibility !== "hidden"
-              && Number(style.opacity) !== 0;
-          })
-          .map((node) => node.getBoundingClientRect())
-          .filter((visibleRect) => visibleRect.width > 0 && visibleRect.height > 0);
-        if (visibleRects.length === 0) return null;
-        const visibleLeft = Math.min(...visibleRects.map((visibleRect) => visibleRect.left)) - boardRect.left;
-        const visibleTop = Math.min(...visibleRects.map((visibleRect) => visibleRect.top)) - boardRect.top;
-        const visibleRight = Math.max(...visibleRects.map((visibleRect) => visibleRect.right)) - boardRect.left;
-        const visibleBottom = Math.max(...visibleRects.map((visibleRect) => visibleRect.bottom)) - boardRect.top;
+        const style = window.getComputedStyle(element);
+        // CSS left/top place the margin box; offsetLeft/Top report its border box.
+        const layoutLeft = element.offsetLeft - (Number.parseFloat(style.marginLeft) || 0);
+        const layoutTop = element.offsetTop - (Number.parseFloat(style.marginTop) || 0);
+        const bounds = measuredBounds.get(id)!;
+        const visibleLeft = bounds.left - boardRect.left;
+        const visibleTop = bounds.top - boardRect.top;
+        const visibleRight = bounds.right - boardRect.left;
+        const visibleBottom = bounds.bottom - boardRect.top;
 
         return {
           bottomOffset: visibleBottom - layoutTop,
@@ -325,7 +304,9 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
       };
 
       const savedLayout = runtimeLayouts.get(mobile ? "mobile" : "desktop");
-      if (savedLayout?.placement) {
+      const sameViewport = savedLayout?.viewport?.width === window.innerWidth &&
+        (mobile || savedLayout?.viewport?.height === window.innerHeight);
+      if (savedLayout?.placement && sameViewport) {
         // Restore the final snapped/dragged state before paint, without measuring
         // the hidden project-mode board or rerunning initial alignment.
         board.style.height = savedLayout.placement.height;
@@ -350,7 +331,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
 
       const previousSignature = window.sessionStorage.getItem(PREVIOUS_LAYOUT_KEY);
       const runtimeLayout = runtimeLayouts.get(mobile ? "mobile" : "desktop");
-      let selected: Map<string, Slot> | null = runtimeLayout ? new Map(runtimeLayout.assignments) : null;
+      let selected: Map<string, Slot> | null = runtimeLayout && sameViewport ? new Map(runtimeLayout.assignments) : null;
       let selectedSignature = runtimeLayout?.signature ?? "";
       let selectedSeed = runtimeLayout?.seed ?? 0;
       let selectedMobileHeight = runtimeLayout?.mobileHeight ?? 0;
@@ -358,7 +339,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
       for (let attempt = 0; attempt < 160 && !selected; attempt += 1) {
         const seedBytes = new Uint32Array(1);
         window.crypto.getRandomValues(seedBytes);
-        const seed = (seedBytes[0] + attempt) >>> 0;
+        const seed = ((runtimeLayout?.seed ?? seedBytes[0]) + attempt) >>> 0;
         const next = random(seed);
         const placed: PlacedBox[] = [];
         const assignments = new Map<string, Slot>();
@@ -437,7 +418,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
         rest.forEach((slot, id) => assignments.set(id, slot));
 
         const signature = [...assignments.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([id, slot]) => `${id}:${slot.id}`).join("|");
-        if (signature === previousSignature) continue;
+        if (signature === previousSignature && !runtimeLayout) continue;
         selected = assignments;
         selectedSignature = signature;
         selectedSeed = seed;
@@ -446,7 +427,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
       if (!selected && !mobile) {
         const seedBytes = new Uint32Array(1);
         window.crypto.getRandomValues(seedBytes);
-        selectedSeed = seedBytes[0];
+        selectedSeed = runtimeLayout?.seed ?? seedBytes[0];
         const next = random(selectedSeed);
         const items = Object.keys(selectors).map(id => dimensions(id, []))
           .filter((item): item is ShuffleItem => item !== null);
@@ -457,6 +438,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
       }
       if (!selected) return;
       runtimeLayouts.set(mobile ? "mobile" : "desktop", {
+        viewport: { width: window.innerWidth, height: window.innerHeight },
         assignments: [...selected.entries()],
         mobileHeight: selectedMobileHeight,
         seed: selectedSeed,
@@ -474,13 +456,8 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
         board.style.height = `${selectedMobileHeight}px`;
         for (let pass = 0; pass < 12; pass += 1) {
           const currentBoardRect = board.getBoundingClientRect();
-          const lowestVisibleEdge = Math.max(...[...elements.values()].flatMap((element) =>
-            [element, ...element.querySelectorAll<HTMLElement>("*")]
-              .filter((node) => {
-                const style = window.getComputedStyle(node);
-                return style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) !== 0;
-              })
-              .map((node) => node.getBoundingClientRect().bottom - currentBoardRect.top),
+          const lowestVisibleEdge = Math.max(...[...elements.values()].map((element) =>
+            visibleBounds(element).bottom - currentBoardRect.top,
           ));
           const fittedHeight = Math.ceil(lowestVisibleEdge + 28);
           if (Math.abs(board.getBoundingClientRect().height - fittedHeight) < 1) break;
@@ -498,6 +475,18 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
       clearCalculatedLayout();
       layoutFrame = window.requestAnimationFrame(() => {
         layoutFrame = null;
+        applyLayout();
+      });
+    };
+
+    const handleResize = () => {
+      if (board.closest(".is-project-mode")) return;
+      const saved = runtimeLayouts.get(mobile ? "mobile" : "desktop");
+      if (saved?.viewport?.width === window.innerWidth && (mobile || saved?.viewport?.height === window.innerHeight)) return;
+      if (layoutFrame !== null) window.cancelAnimationFrame(layoutFrame);
+      layoutFrame = window.requestAnimationFrame(() => {
+        layoutFrame = null;
+        clearCalculatedLayout();
         applyLayout();
       });
     };
@@ -523,11 +512,13 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
     savePlacement();
     placementObserver.observe(board, { subtree: true, attributes: true, attributeFilter: ["style"] });
     mobileQuery.addEventListener("change", handleBreakpointChange);
+    window.addEventListener("resize", handleResize);
 
     return () => {
       savePlacement();
       placementObserver.disconnect();
       mobileQuery.removeEventListener("change", handleBreakpointChange);
+      window.removeEventListener("resize", handleResize);
       if (layoutFrame !== null) window.cancelAnimationFrame(layoutFrame);
     };
   }, [boardRef, projectModeActive]);
