@@ -17,6 +17,10 @@ type HomeBoardProps = {
 
 const EMAIL_ADDRESS = "vuppumeena@gmail.com";
 const ARTWORK_ROTATIONS = [-5, 4, -2];
+// Reveal controls: disable sound here without changing other portfolio audio.
+const HOME_REVEAL_STAGGER_MS = 160;
+const HOME_REVEAL_SOUND_VOLUME = 0.5;
+const HOME_REVEAL_SOUND_ENABLED = true;
 type HomeImageWindow = Window & { __portfolioHomeRevealed?: boolean };
 const BOOK_NOTES = [
   { title: "Days at the Morisaki Bookshop", note: "Such a pleasant read. Light and easy, like a breeze.", left: "14%", top: "30%", width: "48%", height: "23%" },
@@ -185,6 +189,22 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     let disposed = false;
     const animations: Animation[] = [];
     const removeListeners: Array<() => void> = [];
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let soundAllowed = HOME_REVEAL_SOUND_ENABLED && !reducedMotion.matches;
+    // Two reusable voices allow the 204ms click to overlap slightly at 160ms.
+    const clicks = soundAllowed ? [new Audio("/loading-pin-click.wav"), new Audio("/loading-pin-click.wav")] : [];
+    const audioReady = Promise.all(clicks.map((audio) => new Promise<void>((resolve) => {
+      audio.preload = "auto";
+      audio.volume = HOME_REVEAL_SOUND_VOLUME;
+      const ready = () => resolve();
+      audio.addEventListener("canplaythrough", ready, { once: true });
+      audio.addEventListener("error", ready, { once: true });
+      removeListeners.push(() => {
+        audio.removeEventListener("canplaythrough", ready);
+        audio.removeEventListener("error", ready);
+      });
+      audio.load();
+    })));
     const assetsReady = Promise.all([...board.querySelectorAll<HTMLImageElement>("img")].map((image) =>
       new Promise<void>((resolve) => {
         const decode = async () => {
@@ -203,7 +223,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     ));
     let timeout: number;
     const fallback = new Promise<void>((resolve) => { timeout = window.setTimeout(resolve, 4000); });
-    void Promise.race([assetsReady, fallback]).then(() => {
+    void Promise.race([Promise.all([assetsReady, audioReady]), fallback]).then(() => {
       if (disposed) return;
       window.clearTimeout(timeout);
       removeListeners.forEach((remove) => remove());
@@ -214,13 +234,22 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
           const second = b.getBoundingClientRect();
           return first.top - second.top || first.left - second.left;
         });
-      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (!reducedMotion.matches) {
         objects.forEach((object, index) => {
           // Hold hidden until the stagger boundary, then appear without a transition.
-          animations.push(object.animate([
+          const animation = object.animate([
             { opacity: 0 },
             { opacity: 1 },
-          ], { duration: 0, delay: index * 110, fill: "backwards" }));
+          ], { duration: 0, delay: index * HOME_REVEAL_STAGGER_MS, fill: "backwards" });
+          animations.push(animation);
+          // The animation boundary drives both visibility and its single click.
+          void animation.finished.then(() => {
+            if (disposed || !soundAllowed || reducedMotion.matches || board.closest(".is-project-mode")) return;
+            const audio = clicks[index % clicks.length];
+            if (!audio || audio.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) return;
+            audio.currentTime = 0;
+            void audio.play().catch(() => { soundAllowed = false; });
+          }).catch(() => undefined);
         });
       }
       board.dataset.homeReveal = "ready";
@@ -230,6 +259,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
       disposed = true;
       window.clearTimeout(timeout);
       animations.forEach((animation) => animation.cancel());
+      clicks.forEach((audio) => audio.pause());
       removeListeners.forEach((remove) => remove());
     };
   }, [projectModeActive]);
