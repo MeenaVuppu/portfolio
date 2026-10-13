@@ -17,8 +17,7 @@ type HomeBoardProps = {
 
 const EMAIL_ADDRESS = "vuppumeena@gmail.com";
 const ARTWORK_ROTATIONS = [-5, 4, -2];
-const HOME_IMAGE_ORDER = ["photo", "bookshelf", "headphones", "plant"];
-type HomeImageWindow = Window & { __portfolioRevealedHomeImages?: Set<string> };
+type HomeImageWindow = Window & { __portfolioHomeRevealed?: boolean };
 const BOOK_NOTES = [
   { title: "Days at the Morisaki Bookshop", note: "Such a pleasant read. Light and easy, like a breeze.", left: "14%", top: "30%", width: "48%", height: "23%" },
   { title: "The Silent Patient", note: "Had me hooked. Couldn't focus on anything else until I finished it.", left: "12%", top: "54%", width: "53%", height: "15%" },
@@ -176,75 +175,64 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   useLayoutEffect(() => {
     const board = boardRef.current;
     if (!board) return;
-    // Share readiness across production route bundles, only for this document.
+    // Document-scoped readiness survives project navigation, but not refresh.
     const page = window as HomeImageWindow;
-    const revealedHomeImages = page.__portfolioRevealedHomeImages ??= new Set<string>();
+    if (page.__portfolioHomeRevealed || projectModeActive) {
+      page.__portfolioHomeRevealed = true;
+      board.dataset.homeReveal = "ready";
+      return;
+    }
     let disposed = false;
-    let frame: number | null = null;
-    const ready = new Map<string, HTMLImageElement>();
-    const decoded = new Set<string>();
+    const animations: Animation[] = [];
     const removeListeners: Array<() => void> = [];
-
-    const queueReady = (id: string, image: HTMLImageElement) => {
-      if (disposed) return;
-      ready.set(id, image);
-      if (frame !== null) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = null;
-        // Order assets ready in the same frame; never wait for an unready asset.
-        HOME_IMAGE_ORDER.forEach((asset) => {
-          const visual = ready.get(asset);
-          if (!visual) return;
-          const alreadyRevealed = revealedHomeImages.has(asset);
-          revealedHomeImages.add(asset);
-          visual.dataset.homeImageReady = "true";
-          if (decoded.has(asset) && !alreadyRevealed && !board.closest(".is-project-mode") &&
-            !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-            // The headphone button is an inner visual group, separate from its drag wrapper.
-            const revealVisual = asset === "headphones"
-              ? visual.closest<HTMLElement>(".headphones-button") ?? visual
-              : visual;
-            const existingFilter = window.getComputedStyle(revealVisual).filter;
-            const materialFilter = existingFilter === "none" ? "" : `${existingFilter} `;
-            revealVisual.animate([
-              { opacity: 0, filter: `${materialFilter}blur(3px)` },
-              { opacity: 1, filter: `${materialFilter}blur(0px)` },
-            ], { duration: 450, easing: "ease-out" });
-          }
+    const assetsReady = Promise.all([...board.querySelectorAll<HTMLImageElement>("img")].map((image) =>
+      new Promise<void>((resolve) => {
+        const decode = async () => {
+          try { await image.decode(); } catch { /* Failed assets must not block the board. */ }
+          resolve();
+        };
+        const failed = () => resolve();
+        image.addEventListener("load", decode, { once: true });
+        image.addEventListener("error", failed, { once: true });
+        removeListeners.push(() => {
+          image.removeEventListener("load", decode);
+          image.removeEventListener("error", failed);
         });
-        ready.clear();
-      });
-    };
-
-    board.querySelectorAll<HTMLImageElement>("img[data-home-image]").forEach((image) => {
-      const id = image.dataset.homeImage!;
-      if (revealedHomeImages.has(id)) {
-        image.dataset.homeImageReady = "true";
-        return;
+        if (image.complete) void decode();
+      }),
+    ));
+    let timeout: number;
+    const fallback = new Promise<void>((resolve) => { timeout = window.setTimeout(resolve, 4000); });
+    void Promise.race([assetsReady, fallback]).then(() => {
+      if (disposed) return;
+      window.clearTimeout(timeout);
+      removeListeners.forEach((remove) => remove());
+      page.__portfolioHomeRevealed = true;
+      const objects = [...board.querySelectorAll<HTMLElement>(":scope > .board-object:not(.home-project-space)")]
+        .sort((a, b) => {
+          const first = a.getBoundingClientRect();
+          const second = b.getBoundingClientRect();
+          return first.top - second.top || first.left - second.left;
+        });
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        objects.forEach((object, index) => {
+          // Hold hidden until the stagger boundary, then appear without a transition.
+          animations.push(object.animate([
+            { opacity: 0 },
+            { opacity: 1 },
+          ], { duration: 0, delay: index * 110, fill: "backwards" }));
+        });
       }
-      const decode = async () => {
-        try {
-          await image.decode();
-          decoded.add(id);
-        } catch { /* Show failed decodes without an entrance animation. */ }
-        queueReady(id, image);
-      };
-      const failed = () => queueReady(id, image);
-      image.addEventListener("load", decode, { once: true });
-      image.addEventListener("error", failed, { once: true });
-      removeListeners.push(() => {
-        image.removeEventListener("load", decode);
-        image.removeEventListener("error", failed);
-      });
-      if (image.complete) void decode();
+      board.dataset.homeReveal = "ready";
     });
 
     return () => {
       disposed = true;
-      if (frame !== null) window.cancelAnimationFrame(frame);
+      window.clearTimeout(timeout);
+      animations.forEach((animation) => animation.cancel());
       removeListeners.forEach((remove) => remove());
     };
-  }, []);
+  }, [projectModeActive]);
 
   useLayoutEffect(() => {
     const board = boardRef.current;
@@ -547,6 +535,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     <main className="fixed-landing" inert={projectModeActive} aria-hidden={projectModeActive}>
       <section
         ref={boardRef}
+        data-home-reveal="pending"
         className={isArtworkOpen ? "fixed-board is-artwork-open" : "fixed-board"}
         aria-label="Meena Vuppu portfolio pegboard"
       >
