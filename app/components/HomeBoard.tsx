@@ -21,7 +21,30 @@ const ARTWORK_ROTATIONS = [-5, 4, -2];
 const HOME_REVEAL_STAGGER_MS = 160;
 const HOME_REVEAL_SOUND_VOLUME = 0.5;
 const HOME_REVEAL_SOUND_ENABLED = true;
-type HomeImageWindow = Window & { __portfolioHomeRevealed?: boolean };
+type HomeRevealAudio = { context: AudioContext; gain: GainNode; buffer: AudioBuffer | null; ready: Promise<void> };
+type HomeImageWindow = Window & { __portfolioHomeRevealed?: boolean; __portfolioRevealAudio?: HomeRevealAudio; webkitAudioContext?: typeof AudioContext };
+
+function getHomeRevealAudio(): HomeRevealAudio | undefined {
+  const page = window as HomeImageWindow;
+  if (!HOME_REVEAL_SOUND_ENABLED || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (page.__portfolioRevealAudio) return page.__portfolioRevealAudio;
+  const AudioContextConstructor = window.AudioContext ?? page.webkitAudioContext;
+  if (!AudioContextConstructor) return;
+  try {
+    const context = new AudioContextConstructor();
+    const gain = context.createGain();
+    gain.gain.value = HOME_REVEAL_SOUND_VOLUME;
+    gain.connect(context.destination);
+    const audio: HomeRevealAudio = { context, gain, buffer: null, ready: Promise.resolve() };
+    audio.ready = fetch("/loading-pin-click.wav")
+      .then((response) => { if (!response.ok) throw new Error("Reveal audio unavailable"); return response.arrayBuffer(); })
+      .then((bytes) => context.decodeAudioData(bytes))
+      .then((buffer) => { audio.buffer = buffer; })
+      .catch(() => undefined);
+    page.__portfolioRevealAudio = audio;
+    return audio;
+  } catch { /* Unsupported or unavailable audio never blocks the board. */ }
+}
 const BOOK_NOTES = [
   { title: "Days at the Morisaki Bookshop", note: "Such a pleasant read. Light and easy, like a breeze.", left: "14%", top: "30%", width: "48%", height: "23%" },
   { title: "The Silent Patient", note: "Had me hooked. Couldn't focus on anything else until I finished it.", left: "12%", top: "54%", width: "53%", height: "15%" },
@@ -177,6 +200,29 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   usePegboardShuffle(boardRef, projectModeActive);
 
   useLayoutEffect(() => {
+    const portfolio = boardRef.current?.closest(".portfolio-experience");
+    if (!portfolio) return;
+    const audio = getHomeRevealAudio();
+    if (!audio) return;
+    const unlock = (event: Event) => {
+      if (!event.isTrusted || (event instanceof KeyboardEvent &&
+        (event.repeat || !["Enter", " "].includes(event.key)))) return;
+      // Resume only inside a real portfolio gesture; never replay loading clicks.
+      if (audio.context.state !== "running" && audio.context.state !== "closed") void audio.context.resume().catch(() => undefined);
+    };
+    portfolio.addEventListener("pointerdown", unlock, { passive: true });
+    portfolio.addEventListener("pointerup", unlock, { passive: true });
+    portfolio.addEventListener("click", unlock, { passive: true });
+    portfolio.addEventListener("keydown", unlock);
+    return () => {
+      portfolio.removeEventListener("pointerdown", unlock);
+      portfolio.removeEventListener("pointerup", unlock);
+      portfolio.removeEventListener("click", unlock);
+      portfolio.removeEventListener("keydown", unlock);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
     const board = boardRef.current;
     if (!board) return;
     // Document-scoped readiness survives project navigation, but not refresh.
@@ -190,21 +236,8 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     const animations: Animation[] = [];
     const removeListeners: Array<() => void> = [];
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let soundAllowed = HOME_REVEAL_SOUND_ENABLED && !reducedMotion.matches;
-    // Two reusable voices allow the 204ms click to overlap slightly at 160ms.
-    const clicks = soundAllowed ? [new Audio("/loading-pin-click.wav"), new Audio("/loading-pin-click.wav")] : [];
-    const audioReady = Promise.all(clicks.map((audio) => new Promise<void>((resolve) => {
-      audio.preload = "auto";
-      audio.volume = HOME_REVEAL_SOUND_VOLUME;
-      const ready = () => resolve();
-      audio.addEventListener("canplaythrough", ready, { once: true });
-      audio.addEventListener("error", ready, { once: true });
-      removeListeners.push(() => {
-        audio.removeEventListener("canplaythrough", ready);
-        audio.removeEventListener("error", ready);
-      });
-      audio.load();
-    })));
+    const audio = getHomeRevealAudio();
+    const sources = new Set<AudioBufferSourceNode>();
     const assetsReady = Promise.all([...board.querySelectorAll<HTMLImageElement>("img")].map((image) =>
       new Promise<void>((resolve) => {
         const decode = async () => {
@@ -223,7 +256,9 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     ));
     let timeout: number;
     const fallback = new Promise<void>((resolve) => { timeout = window.setTimeout(resolve, 4000); });
-    void Promise.race([Promise.all([assetsReady, audioReady]), fallback]).then(() => {
+    // A suspended context still preloads, but must not hold up a silent reveal.
+    const ready = audio?.context.state === "running" ? Promise.all([assetsReady, audio.ready]) : assetsReady;
+    void Promise.race([ready, fallback]).then(() => {
       if (disposed) return;
       window.clearTimeout(timeout);
       removeListeners.forEach((remove) => remove());
@@ -235,21 +270,29 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
           return first.top - second.top || first.left - second.left;
         });
       if (!reducedMotion.matches) {
+        // Snapshot permission once. Unlocking later does not enqueue missed sounds.
+        const canPlay = audio?.context.state === "running" && audio.buffer !== null;
+        const audioStart = audio?.context.currentTime ?? 0;
+        const visualStart = document.timeline.currentTime;
         objects.forEach((object, index) => {
           // Hold hidden until the stagger boundary, then appear without a transition.
           const animation = object.animate([
             { opacity: 0 },
             { opacity: 1 },
           ], { duration: 0, delay: index * HOME_REVEAL_STAGGER_MS, fill: "backwards" });
+          if (typeof visualStart === "number") animation.startTime = visualStart;
           animations.push(animation);
-          // The animation boundary drives both visibility and its single click.
-          void animation.finished.then(() => {
-            if (disposed || !soundAllowed || reducedMotion.matches || board.closest(".is-project-mode")) return;
-            const audio = clicks[index % clicks.length];
-            if (!audio || audio.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) return;
-            audio.currentTime = 0;
-            void audio.play().catch(() => { soundAllowed = false; });
-          }).catch(() => undefined);
+          if (canPlay && audio) {
+            const source = audio.context.createBufferSource();
+            source.buffer = audio.buffer;
+            source.connect(audio.gain);
+            source.onended = () => { source.disconnect(); sources.delete(source); };
+            try {
+              // Schedule against the audio clock, with the same shared stagger origin.
+              source.start(audioStart + index * HOME_REVEAL_STAGGER_MS / 1000);
+              sources.add(source);
+            } catch { source.disconnect(); }
+          }
         });
       }
       board.dataset.homeReveal = "ready";
@@ -259,7 +302,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
       disposed = true;
       window.clearTimeout(timeout);
       animations.forEach((animation) => animation.cancel());
-      clicks.forEach((audio) => audio.pause());
+      sources.forEach((source) => { source.stop(); source.disconnect(); });
       removeListeners.forEach((remove) => remove());
     };
   }, [projectModeActive]);
