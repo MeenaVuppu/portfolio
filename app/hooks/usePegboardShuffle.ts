@@ -267,7 +267,9 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
         window.history.scrollRestoration = "manual";
         window.scrollTo({ top: 0, behavior: "instant" });
       }
-      const boardRect = board.getBoundingClientRect();
+      const visualBoardRect = board.getBoundingClientRect();
+      const boardScale = visualBoardRect.width / board.offsetWidth || 1;
+      const boardRect = { left: visualBoardRect.left, top: visualBoardRect.top, width: visualBoardRect.width / boardScale, height: visualBoardRect.height / boardScale };
       const projectRegions = DESKTOP_PROJECT_REGIONS;
 
       const elements = new Map<string, HTMLElement>();
@@ -285,10 +287,10 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
         const layoutLeft = element.offsetLeft - (Number.parseFloat(style.marginLeft) || 0);
         const layoutTop = element.offsetTop - (Number.parseFloat(style.marginTop) || 0);
         const bounds = measuredBounds.get(id)!;
-        const visibleLeft = bounds.left - boardRect.left;
-        const visibleTop = bounds.top - boardRect.top;
-        const visibleRight = bounds.right - boardRect.left;
-        const visibleBottom = bounds.bottom - boardRect.top;
+        const visibleLeft = (bounds.left - boardRect.left) / boardScale;
+        const visibleTop = (bounds.top - boardRect.top) / boardScale;
+        const visibleRight = (bounds.right - boardRect.left) / boardScale;
+        const visibleBottom = (bounds.bottom - boardRect.top) / boardScale;
 
         return {
           bottomOffset: visibleBottom - layoutTop,

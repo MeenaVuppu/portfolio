@@ -118,6 +118,7 @@ export function snapElementToNearestHole(board: HTMLElement, element: HTMLElemen
   );
 
   const boardRect = board.getBoundingClientRect();
+  const scale = boardRect.width / board.offsetWidth || 1;
   const elementRect = element.getBoundingClientRect();
   const anchorRect = anchor?.getBoundingClientRect();
   const currentOffset = {
@@ -125,7 +126,7 @@ export function snapElementToNearestHole(board: HTMLElement, element: HTMLElemen
     y: offsetValue(element.dataset.pegY),
   };
   const targetShift = targetOffset
-    ? { x: targetOffset.x - currentOffset.x, y: targetOffset.y - currentOffset.y }
+    ? { x: (targetOffset.x - currentOffset.x) * scale, y: (targetOffset.y - currentOffset.y) * scale }
     : { x: 0, y: 0 };
   const anchorY = anchor && anchorRect
     ? anchor.matches("[data-headphone-mount-anchor]")
@@ -159,8 +160,8 @@ export function snapElementToNearestHole(board: HTMLElement, element: HTMLElemen
     }
 
     const nextOffset = {
-      x: (targetOffset?.x ?? currentOffset.x) + delta.x,
-      y: (targetOffset?.y ?? currentOffset.y) + delta.y,
+      x: (targetOffset?.x ?? currentOffset.x) + delta.x / scale,
+      y: (targetOffset?.y ?? currentOffset.y) + delta.y / scale,
     };
     element.dataset.pegX = String(nextOffset.x);
     element.dataset.pegY = String(nextOffset.y);

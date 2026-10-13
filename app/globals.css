@@ -8420,20 +8420,31 @@ body:has(.archive-mode) {
     height: 230px;
   }
 }
-@media (min-width: 761px) and (max-width: 900px) {
-  .portfolio-experience.is-board-mode .fixed-board { min-height: 900px; }
-  html:has(.portfolio-experience.is-board-mode),
-  body:has(.portfolio-experience.is-board-mode) { height: auto; overflow-y: auto; }
-  .portfolio-experience.is-board-mode { height: auto; min-height: 100dvh; overflow: visible; }
-  .portfolio-experience.is-board-mode .portfolio-state-stage,
-  .portfolio-experience.is-board-mode .fixed-landing { height: auto; min-height: 0; overflow: visible; }
+/* Fit the complete desktop composition below the 64px header and page gutters.
+   Scale the board as a unit; its logical layout and object proportions stay intact. */
+@media (min-width: 761px) {
+  .portfolio-experience.is-board-mode .fixed-landing {
+    height: calc(100dvh - 76px);
+    min-height: 0;
+    position: relative;
+  }
+  .portfolio-experience.is-board-mode .fixed-board {
+    --home-layout-height: max(760px, calc(100dvh - 116px));
+    --home-fit: min(1, calc((100dvh - 116px) / var(--home-layout-height)));
+    height: var(--home-layout-height);
+    min-height: 0;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin: 0;
+    transform-origin: top center;
+    transform: translateX(-50%) scale(var(--home-fit));
+  }
 }
-@media (min-width: 761px) and (max-height: 875px) {
-  html:has(.portfolio-experience.is-board-mode),
-  body:has(.portfolio-experience.is-board-mode) { height: auto; overflow-y: auto; }
-  .portfolio-experience.is-board-mode { height: auto; min-height: 100dvh; overflow: visible; }
-  .portfolio-experience.is-board-mode .portfolio-state-stage,
-  .portfolio-experience.is-board-mode .fixed-landing { height: auto; min-height: 0; overflow: visible; }
+@media (min-width: 761px) and (max-width: 900px) {
+  .portfolio-experience.is-board-mode .fixed-board {
+    --home-layout-height: max(900px, calc(100dvh - 116px));
+  }
 }
 .archive-case-study { width: min(100%, 900px); margin: 48px auto 64px; }
 .archive-case-study > .section-kicker { display: block; margin-bottom: 36px; }

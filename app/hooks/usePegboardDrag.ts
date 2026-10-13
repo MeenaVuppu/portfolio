@@ -39,6 +39,7 @@ function numberFromDataset(value: string | undefined) {
 
 function relativeBox(element: HTMLElement, boardBox: DOMRect): Box {
   const rect = element.getBoundingClientRect();
+  const scale = boardBox.width / element.closest<HTMLElement>(".fixed-board")!.offsetWidth || 1;
   const insets = (element.dataset.pegBounds ?? "0,0,0,0")
     .split(",")
     .map((value) => Number.parseFloat(value) || 0);
@@ -51,12 +52,12 @@ function relativeBox(element: HTMLElement, boardBox: DOMRect): Box {
   const height = rect.height - insetTop - insetBottom;
 
   return {
-    bottom: rect.bottom - boardBox.top - insetBottom,
-    height,
-    left: rect.left - boardBox.left + insetLeft,
-    right: rect.right - boardBox.left - insetRight,
-    top: rect.top - boardBox.top + insetTop,
-    width,
+    bottom: (rect.bottom - boardBox.top - insetBottom) / scale,
+    height: height / scale,
+    left: (rect.left - boardBox.left + insetLeft) / scale,
+    right: (rect.right - boardBox.left - insetRight) / scale,
+    top: (rect.top - boardBox.top + insetTop) / scale,
+    width: width / scale,
   };
 }
 
@@ -235,12 +236,13 @@ export function usePegboardDrag(
     function onPointerMove(event: PointerEvent) {
       if (!active || event.pointerId !== active.pointerId) return;
 
+      const scale = boardElement.getBoundingClientRect().width / boardElement.offsetWidth || 1;
       const delta = {
-        x: event.clientX - active.startPointer.x,
-        y: event.clientY - active.startPointer.y,
+        x: (event.clientX - active.startPointer.x) / scale,
+        y: (event.clientY - active.startPointer.y) / scale,
       };
 
-      if (!active.moved && Math.hypot(delta.x, delta.y) < DRAG_THRESHOLD) return;
+      if (!active.moved && Math.hypot(delta.x, delta.y) * scale < DRAG_THRESHOLD) return;
 
       event.preventDefault();
       if (!active.moved) {
@@ -262,7 +264,7 @@ export function usePegboardDrag(
         y: active.startRect.top + delta.y,
       };
       const itemSize = { width: active.startRect.width, height: active.startRect.height };
-      const boardSize = { width: boardBox.width, height: boardBox.height };
+      const boardSize = { width: boardElement.offsetWidth, height: boardElement.offsetHeight };
       const candidate = nearestAnchor(desired, itemSize, others, boardSize, radius);
 
       active.candidate = candidate;
