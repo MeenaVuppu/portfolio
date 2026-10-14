@@ -5994,9 +5994,12 @@ body {
   transform: translateY(0);
 }
 
-.portfolio-title-header.is-project-title .portfolio-title-header__brand button {
+.portfolio-title-header.is-project-title .portfolio-title-header__brand button,
+.portfolio-experience.is-board-mode .portfolio-title-header__brand a {
+  display: inline-block;
   font-size: 13px;
   font-weight: 650;
+  line-height: 1.5;
 }
 
 .project-opening .fixed-board > .board-object:not(.is-opening) {
@@ -8167,8 +8170,8 @@ body:has(.archive-mode) {
 @media (max-width: 760px) {
   .portfolio-experience.is-board-mode .portfolio-title-header__brand,
   .portfolio-experience.is-board-mode .portfolio-title-header.is-compact .portfolio-title-header__brand {
-    font-size: 13px;
-    line-height: 1.2;
+    font-size: 14px;
+    line-height: 1.5;
     transform: none;
   }
 }
@@ -8429,8 +8432,10 @@ body:has(.archive-mode) {
     position: relative;
   }
   .portfolio-experience.is-board-mode .fixed-board {
-    --home-layout-height: max(760px, calc(100dvh - 116px));
-    --home-fit: min(1, calc((100dvh - 116px) / var(--home-layout-height)));
+    --home-edge-space: max(var(--portfolio-board-gutter), calc((100vw - var(--portfolio-board-max)) / 2));
+    --home-available-height: calc(100dvh - 64px - 2 * var(--home-edge-space));
+    --home-layout-height: max(760px, var(--home-available-height));
+    --home-fit: min(1, calc(var(--home-available-height) / var(--home-layout-height)));
     /* Compensate the logical canvas width for the height-fit scale so its
        visible edges match the project pages' shared content container. */
     width: calc(min(var(--portfolio-board-max), 100vw - 2 * var(--portfolio-board-gutter)) / var(--home-fit));
@@ -8449,9 +8454,15 @@ body:has(.archive-mode) {
 }
 @media (min-width: 761px) and (max-width: 900px) {
   .portfolio-experience.is-board-mode .fixed-board {
-    --home-layout-height: max(900px, calc(100dvh - 116px));
+    --home-layout-height: max(900px, var(--home-available-height));
   }
 }
+/* If equal side margins would consume all available height, keep the previous
+   vertical clearance. Horizontal width is never changed to hide that conflict. */
+@media (min-width: 761px) and (min-width: calc(100dvh + 1436px)) {
+  .portfolio-experience.is-board-mode .fixed-board { --home-edge-space: 26px; }
+}
+
 .archive-case-study { width: min(100%, 900px); margin: 48px auto 64px; }
 .archive-case-study > .section-kicker { display: block; margin-bottom: 36px; }
 .archive-case-study-folders { display: flex; flex-wrap: wrap; gap: 56px; }
