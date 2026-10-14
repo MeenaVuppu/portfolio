@@ -159,7 +159,7 @@ function MoneyPlant() {
       aria-hidden="true"
     >
       <div className="money-plant__hover">
-        <Image src="/money-plant-layer.png" alt="" width={1254} height={1881} loading="eager" data-home-image="plant" unoptimized />
+        <Image src="/money-plant-layer.webp" alt="" width={1254} height={1881} loading="eager" data-home-image="plant" unoptimized />
       </div>
     </div>
   );
@@ -655,7 +655,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
             <BoardHook />
             <Image
               className="airpods-image"
-              src="/airpods-max-lavender.png"
+              src="/airpods-max-lavender.webp"
               alt="Lavender AirPods Max"
               width={2892}
               height={2960}
@@ -761,7 +761,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
             <div className="brush-holder__hover">
               <Image
                 className="brush-holder__image"
-                src="/books-brush-shelf-replacement.png"
+                src="/books-brush-shelf-replacement.webp"
                 style={{ aspectRatio: "3 / 1", objectFit: "contain" }}
                 alt="Design books and paintbrushes on a small shelf"
                 width={1920}
