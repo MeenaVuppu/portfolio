@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type CSSProperties, type MouseEvent, useEffect, useState } from "react";
 import type { Project } from "../lib/projects";
-import { playPageFlipSound, preloadPageFlipSound } from "../lib/soundEffects";
+import { playPageFlipSound, preloadPageFlipSound, playProjectFolderSound, preloadProjectFolderSound } from "../lib/soundEffects";
 import { PaperClip } from "./Hardware";
 
 type ProjectFileProps = {
@@ -26,9 +26,10 @@ export function ProjectFile({ project, className = "", compact, disabled = false
   const href = `/projects/${project.slug}`;
 
   useEffect(() => {
-    preloadPageFlipSound();
+    if (pegboardDragId) preloadProjectFolderSound();
+    else preloadPageFlipSound();
     return () => document.body.classList.remove("project-opening");
-  }, []);
+  }, [pegboardDragId]);
 
   function openProject(event: MouseEvent<HTMLAnchorElement>) {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -56,7 +57,8 @@ export function ProjectFile({ project, className = "", compact, disabled = false
     document.body.classList.add("project-opening");
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    window.setTimeout(playPageFlipSound, reducedMotion ? 0 : 80);
+    if (board?.classList.contains("fixed-board")) playProjectFolderSound();
+    else window.setTimeout(playPageFlipSound, reducedMotion ? 0 : 80);
     if (onOpenProject) {
       window.setTimeout(
         () => onOpenProject(project, element),
