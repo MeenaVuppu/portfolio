@@ -5967,14 +5967,8 @@ body {
 }
 
 @media (min-width: 761px) {
-  :root {
-    --board-space: clamp(32px, 3.2vw, 48px);
-    --portfolio-board-gutter: var(--board-space);
-    --portfolio-board-max: 100vw;
-  }
-
   .portfolio-experience.is-project-mode .project-view {
-    padding: var(--board-space);
+    padding-top: 6px;
   }
 }
 
@@ -8412,7 +8406,7 @@ body:has(.archive-mode) {
     position: relative;
   }
   .portfolio-experience.is-board-mode .fixed-board {
-    --home-edge-space: var(--board-space);
+    --home-edge-space: max(var(--portfolio-board-gutter), calc((100vw - var(--portfolio-board-max)) / 2));
     --home-available-height: calc(100dvh - 64px - 2 * var(--home-edge-space));
     --home-layout-height: max(760px, var(--home-available-height));
     --home-fit: min(1, calc(var(--home-available-height) / var(--home-layout-height)));
@@ -8423,13 +8417,31 @@ body:has(.archive-mode) {
     height: var(--home-layout-height);
     min-height: 0;
     position: absolute;
-    /* The landing area already starts 12px below the shared header. */
-    top: calc(var(--board-space) - 12px);
+    /* Center the fitted board in the space below the existing 64px header.
+       The landing area already starts 12px below that header. */
+    top: calc((100dvh - 64px - var(--home-layout-height) * var(--home-fit)) / 2 - 12px);
     left: 50%;
     margin: 0;
     transform-origin: top center;
     transform: translateX(-50%) scale(var(--home-fit));
+    /* Extend only the material above the unchanged object coordinate space. */
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
     overflow: visible;
+  }
+  .portfolio-experience.is-board-mode .fixed-board::before {
+    content: "";
+    position: absolute;
+    inset: calc((6px - var(--home-edge-space)) / var(--home-fit)) -1px -1px;
+    background-color: #ff2f8b;
+    background-image: var(--pegboard-hole-pattern);
+    background-position: var(--pegboard-hole-position);
+    background-size: var(--pegboard-hole-spacing);
+    border: 1px solid rgba(129, 0, 56, 0.2);
+    border-radius: inherit;
+    box-shadow: 0 18px 38px rgba(85, 21, 48, 0.17), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+    pointer-events: none;
   }
 }
 @media (min-width: 761px) and (max-width: 900px) {
@@ -8437,6 +8449,12 @@ body:has(.archive-mode) {
     --home-layout-height: max(900px, var(--home-available-height));
   }
 }
+/* If equal side margins would consume all available height, keep the previous
+   vertical clearance. Horizontal width is never changed to hide that conflict. */
+@media (min-width: 761px) and (min-width: calc(100dvh + 1436px)) {
+  .portfolio-experience.is-board-mode .fixed-board { --home-edge-space: 26px; }
+}
+
 .archive-case-study { width: min(100%, 900px); margin: 48px auto 64px; }
 .archive-case-study > .section-kicker { display: block; margin-bottom: 36px; }
 .archive-case-study-folders { display: flex; flex-wrap: wrap; gap: 56px; }
