@@ -50,7 +50,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
   return (
     <main className={`project-mode project-mode--${phase}`} aria-label={`${project.title} project`} aria-live="polite">
       <div className={`project-view project-view--${project.slug}`}>
-        <section className="project-pegboard portfolio-board-container" style={pegboardTheme} aria-label={`${project.title} case study board`}>
+        <section className="project-pegboard" style={pegboardTheme} aria-label={`${project.title} case study board`}>
           <div className="project-title-pin"><PegPin />{project.title}</div>
           <div className="project-board-intro project-reveal">
             <span className="project-board-label">{project.snapshotLabel ?? "Project snapshot"}</span>

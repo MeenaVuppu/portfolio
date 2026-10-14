@@ -33,7 +33,7 @@ export function ArchiveMode({ phase }: ArchiveModeProps) {
   return (
     <main className={`project-mode archive-mode project-mode--${phase}`} aria-label="Archive" aria-live="polite">
       <div className="project-view project-view--archive">
-        <section className="project-pegboard archive-pegboard portfolio-board-container" aria-label="Archived work board">
+        <section className="project-pegboard archive-pegboard" aria-label="Archived work board">
           <div className="archive-case-study">
             <span className="section-kicker">Full case studies</span>
             <div className="archive-case-study-folders">

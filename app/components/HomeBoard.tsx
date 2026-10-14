@@ -144,8 +144,7 @@ function useSafeContextNote(
     });
     const best = evaluated.reduce((selected, candidate) => candidate.score < selected.score ? candidate : selected);
 
-    const scale = boardRect.width / board.offsetWidth || 1;
-    setPosition({ left: (best.left - positionRootRect.left) / scale, top: (best.top - positionRootRect.top) / scale });
+    setPosition({ left: best.left - positionRootRect.left, top: best.top - positionRootRect.top });
   }, [anchorRef, boardRef, noteRef, open, positionRootRef]);
 
   return position;
@@ -536,10 +535,9 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
       x: hitareaRect.left + hitareaRect.width / 2,
       y: hitareaRect.top + hitareaRect.height / 2,
     };
-    const scale = boardRect.width / board.offsetWidth || 1;
     const sizes = artworks.map((artwork, index) => {
-      const width = (artwork?.offsetWidth ?? 0) * scale;
-      const height = (artwork?.offsetHeight ?? 0) * scale;
+      const width = artwork?.offsetWidth ?? 0;
+      const height = artwork?.offsetHeight ?? 0;
       return { ...rotatedSize(width, height, ARTWORK_ROTATIONS[index]), height, width };
     });
     const available = {
@@ -591,10 +589,10 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
       const selectedX = clamp(position.x, safe.left + selectedSize.width / 2, safe.right - selectedSize.width / 2);
       const selectedY = clamp(position.y, safe.top + selectedSize.height / 2, safe.bottom - selectedSize.height / 2);
       return {
-        selectedX: (selectedX - origin.x) / scale,
-        selectedY: (selectedY - origin.y) / scale,
-        x: (position.x - origin.x) / scale,
-        y: (position.y - origin.y) / scale,
+        selectedX: selectedX - origin.x,
+        selectedY: selectedY - origin.y,
+        x: position.x - origin.x,
+        y: position.y - origin.y,
       };
     });
 
@@ -614,7 +612,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
 
   return (
     <main className="fixed-landing" inert={projectModeActive} aria-hidden={projectModeActive}>
-      <div className="home-board-frame portfolio-board-container">
       <section
         ref={boardRef}
         data-home-reveal="pending"
@@ -888,7 +885,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
         <MoneyPlant />
         <div ref={dragPreviewRef} className="peg-drag-preview" aria-hidden="true" />
       </section>
-      </div>
     </main>
   );
 }
