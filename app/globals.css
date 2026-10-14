@@ -8438,7 +8438,9 @@ body:has(.archive-mode) {
     height: var(--home-layout-height);
     min-height: 0;
     position: absolute;
-    top: 0;
+    /* Center the fitted board in the space below the existing 64px header.
+       The landing area already starts 12px below that header. */
+    top: calc((100dvh - 64px - var(--home-layout-height) * var(--home-fit)) / 2 - 12px);
     left: 50%;
     margin: 0;
     transform-origin: top center;
@@ -8574,4 +8576,20 @@ body:has(.archive-mode) {
 }
 @media (max-width: 760px) {
   .archive-case-study .archive-hives .project-holder { bottom: -8px; }
+}
+
+/* Homepage holes use the desktop material treatment at every breakpoint.
+   Compensate only the pattern radii for the board's uniform viewport-fit scale. */
+.fixed-board {
+  --pegboard-hole-interior-pattern: radial-gradient(
+    circle calc(2.4px / var(--home-fit, 1)) at center,
+    var(--pegboard-hole-interior) 0 72%,
+    color-mix(in srgb, var(--pegboard-hole-interior) 68%, transparent) 84%,
+    transparent 97%
+  );
+  --pegboard-hole-edge-pattern: radial-gradient(
+    circle calc(2.7px / var(--home-fit, 1)) at center,
+    var(--pegboard-hole-edge) 0 82%,
+    transparent 97%
+  );
 }
