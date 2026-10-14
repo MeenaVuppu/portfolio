@@ -1483,13 +1483,6 @@ body {
   background-image:
     radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.2), transparent 48%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(220, 211, 200, 0.03));
-  display: block;
-  height: 100dvh;
-  inset: 0;
-  overflow: hidden;
-  padding: 0;
-  position: fixed;
-  width: 100vw;
 }
 
 .fixed-landing > .portfolio-title-header {
@@ -1498,14 +1491,6 @@ body {
 
 .fixed-board {
   background-color: var(--home-pegboard);
-  height: 90dvh;
-  left: 50%;
-  margin: 0;
-  overflow: hidden;
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 95vw;
 }
 
 body:has(.fixed-landing) {
@@ -4038,14 +4023,6 @@ body {
   overflow: visible;
 }
 
-.fixed-landing {
-  display: block;
-  height: auto;
-  min-height: 100dvh;
-  overflow: visible;
-  padding: 0 clamp(32px, 3.2vw, 48px) clamp(24px, 3vh, 36px);
-}
-
 .fixed-landing > .portfolio-title-header {
   margin-left: calc(-1 * clamp(32px, 3.2vw, 48px));
   width: calc(100% + 2 * clamp(32px, 3.2vw, 48px));
@@ -4111,11 +4088,6 @@ body {
   transform: translateY(0);
 }
 
-.fixed-board {
-  height: clamp(560px, 74vh, 720px);
-  margin-top: clamp(40px, 5.5vh, 54px);
-}
-
 @media (max-width: 760px) {
   .fixed-landing {
     padding: 0 10px 18px;
@@ -4155,12 +4127,6 @@ body {
   --landing-ink: #2a2025;
   background: var(--project-shell);
   color: var(--landing-ink);
-  display: grid;
-  gap: clamp(6px, 1vh, 12px);
-  grid-template-rows: minmax(0, 1fr) clamp(90px, 19dvh, 176px);
-  height: 100dvh;
-  overflow: hidden;
-  padding: clamp(12px, 2vw, 28px) clamp(12px, 2.6vw, 40px) 0;
 }
 
 .fixed-board {
@@ -4174,9 +4140,6 @@ body {
   border-radius: 16px;
   box-shadow: 0 18px 38px rgba(85, 21, 48, 0.17), inset 0 1px 0 rgba(255, 255, 255, 0.32);
   container-type: size;
-  min-height: 0;
-  overflow: hidden;
-  position: relative;
 }
 
 .fixed-board__header {
@@ -4655,13 +4618,6 @@ body {
   }
 }
 
-/* Sparse landing recomposition. Empty board space is intentional. */
-.fixed-landing {
-  gap: clamp(8px, 1.1vh, 12px);
-  grid-template-rows: minmax(0, 1fr) clamp(92px, 13dvh, 130px);
-  padding: clamp(24px, 3.2vh, 36px) clamp(32px, 3.2vw, 48px) 0;
-}
-
 .fixed-board {
   background-image:
     radial-gradient(ellipse 3px 8px at center, rgba(113, 0, 49, 0.48) 0 65%, rgba(255, 132, 184, 0.22) 70%, transparent 78%),
@@ -4950,11 +4906,6 @@ body {
   overflow: visible;
 }
 
-.fixed-landing {
-  display: block;
-  padding: 0 var(--portfolio-board-gutter) clamp(24px, 3vh, 36px);
-}
-
 .fixed-landing > .portfolio-title-header {
   margin-left: calc(-1 * clamp(32px, 3.2vw, 48px));
   width: calc(100% + 2 * clamp(32px, 3.2vw, 48px));
@@ -5058,13 +5009,6 @@ body {
 
 .fixed-board {
   border-radius: var(--portfolio-board-radius);
-  height: clamp(600px, calc(100svh - 196px), 720px);
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: var(--portfolio-board-gap);
-  max-width: var(--portfolio-board-max);
-  overflow: hidden;
-  width: 100%;
 }
 
 .fixed-board .p1 {
@@ -5277,9 +5221,6 @@ body {
 }
 
 @media (min-width: 761px) and (max-width: 1099px) {
-  .fixed-board {
-    height: 980px;
-  }
 
   .fixed-board .project-file {
     height: 28%;
@@ -5686,22 +5627,6 @@ body {
 
 /* Pegboard Home v1 viewport and plant motion refinements. */
 @media (min-width: 1100px) {
-  .portfolio-experience.is-board-mode {
-    height: 100dvh;
-    overflow: hidden;
-  }
-
-  .portfolio-experience.is-board-mode .portfolio-state-stage,
-  .portfolio-experience.is-board-mode .fixed-landing {
-    height: calc(100dvh - 64px);
-    min-height: 0;
-    overflow: visible;
-  }
-
-  .portfolio-experience.is-board-mode .fixed-board {
-    height: min(720px, calc(100dvh - 150px - var(--portfolio-board-gap) - clamp(24px, 3vh, 36px)));
-    overflow: visible;
-  }
 
   .fixed-board .money-plant:not(.is-peg-dragging):hover .money-plant__hover {
     filter: drop-shadow(0 7px 5px rgba(61, 11, 30, 0.14));
@@ -5791,6 +5716,10 @@ body {
   --portfolio-board-gap: clamp(18px, 2.6vh, 24px);
   --portfolio-board-gutter: clamp(32px, 3.2vw, 48px);
   --portfolio-board-max: 1500px;
+  --portfolio-header-height: 64px;
+  --portfolio-board-clearance: 26px;
+  --home-canvas-width: 1500px;
+  --home-canvas-height: 900px;
   --portfolio-board-radius: 16px;
   --home-pegboard: #ff2f8b;
   --project-pegboard: #faf7f2;
@@ -5808,12 +5737,95 @@ body {
   background: var(--project-shell);
 }
 
+/* Shared outer boundary; only the homepage's inner composition is scaled. */
+.portfolio-board-container {
+  width: 100%;
+  max-width: var(--portfolio-board-max);
+  margin-inline: auto;
+}
+.home-board-frame { display: contents; }
+
+@media (min-width: 761px) {
+  .portfolio-experience.is-board-mode {
+    display: grid;
+    grid-template-rows: var(--portfolio-header-height) minmax(0, 1fr);
+    height: 100dvh;
+    min-height: 0;
+    overflow: visible;
+  }
+  .portfolio-experience.is-board-mode > .portfolio-title-header {
+    position: relative;
+    top: auto;
+  }
+  .portfolio-experience.is-board-mode .portfolio-state-stage {
+    padding-top: 0;
+    height: auto;
+    min-height: 0;
+  }
+  .portfolio-experience.is-board-mode .fixed-landing {
+    display: flex;
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: var(--portfolio-board-clearance) var(--portfolio-board-gutter);
+    overflow: visible;
+  }
+  .home-board-frame {
+    display: block;
+    position: relative;
+    height: 100%;
+    min-height: 0;
+    container-type: size;
+    background-color: var(--home-pegboard);
+    border: 1px solid rgba(129, 0, 56, 0.2);
+    border-radius: var(--portfolio-board-radius);
+    box-shadow: 0 18px 38px rgba(85, 21, 48, 0.17), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  }
+  .home-board-frame > .fixed-board {
+    position: absolute;
+    width: var(--home-canvas-width);
+    height: var(--home-canvas-height);
+    min-height: 0;
+    max-width: none;
+    left: 50%;
+    top: 50%;
+    margin: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    overflow: visible;
+    transform-origin: center;
+    transform: translate(-50%, -50%) scale(min(1, calc(100cqw / var(--home-canvas-width)), calc(100cqh / var(--home-canvas-height))));
+  }
+  .home-board-frame > .fixed-board .project-file.is-opening {
+    position: absolute;
+    translate: none !important;
+  }
+  .home-board-frame .p1, .home-board-frame .p2, .home-board-frame .p3 {
+    width: 17%;
+    height: auto;
+    aspect-ratio: 229 / 266;
+  }
+}
+/* Preserve the existing mobile canvas and natural scrolling, without scaling. */
+@media (max-width: 760px) {
+  .fixed-board {
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+  }
+}
+
 .portfolio-state-stage {
   display: grid;
 }
 
 .portfolio-experience.is-project-mode .portfolio-state-stage {
-  padding-top: 64px;
+  padding-top: var(--portfolio-header-height);
 }
 
 .portfolio-state-stage > .fixed-landing,
@@ -5889,17 +5901,13 @@ body {
 }
 
 .portfolio-experience.is-board-mode .portfolio-title-header {
-  height: 64px;
-  min-height: 64px;
+  height: var(--portfolio-header-height);
+  min-height: var(--portfolio-header-height);
 }
 
 .portfolio-experience.is-board-mode .portfolio-title-header h1,
 .portfolio-title-header.is-project-title h1 {
   display: none;
-}
-
-.portfolio-experience.is-board-mode .portfolio-state-stage {
-  padding-top: 64px;
 }
 
 .project-title-pin {
@@ -5926,11 +5934,6 @@ body {
 }
 
 @media (min-width: 761px) {
-  .portfolio-experience.is-board-mode .fixed-board {
-    height: calc(100dvh - 104px);
-    max-height: none;
-    top: calc(50% + 36px);
-  }
 
   .fixed-board .money-plant {
     height: 54%;
@@ -6062,8 +6065,6 @@ body {
   box-shadow:
     0 18px 38px rgba(77, 51, 62, 0.12),
     inset 0 1px rgba(255, 255, 255, 0.6);
-  margin: 0 auto;
-  max-width: var(--portfolio-board-max);
   overflow: hidden;
   padding: clamp(42px, 5vw, 72px);
   position: relative;
@@ -7889,6 +7890,7 @@ body:has(.archive-mode) {
 
 /* Physical pegboard slots: recessed interiors with a fine material edge. */
 .fixed-board,
+.home-board-frame,
 .project-pegboard {
   --pegboard-hole-interior: color-mix(in srgb, var(--pegboard-hole-surface) 82%, #5f4d55 18%);
   --pegboard-hole-edge: color-mix(in srgb, var(--pegboard-hole-surface) 92%, var(--project-shell) 8%);
@@ -7905,19 +7907,14 @@ body:has(.archive-mode) {
   );
 }
 
-.fixed-board {
+.fixed-board,
+.home-board-frame {
   --pegboard-hole-surface: var(--home-pegboard);
   background-image:
     var(--pegboard-hole-interior-pattern), var(--pegboard-hole-edge-pattern),
     var(--pegboard-hole-interior-pattern), var(--pegboard-hole-edge-pattern);
   background-position: 21.7px 19.6px, 22px 20px, 49.7px 61.6px, 50px 62px;
   background-size: 56px 84px, 56px 84px, 56px 84px, 56px 84px;
-}
-
-@media (min-width: 1100px) {
-  .fixed-board {
-    overflow: visible;
-  }
 }
 
 .project-pegboard {
@@ -8155,15 +8152,6 @@ body:has(.archive-mode) {
   }
 }
 
-/* Keep the complete desktop board below the compact identity header. */
-@media (min-width: 761px) {
-  .portfolio-experience.is-board-mode .fixed-board {
-    height: calc(100dvh - 116px);
-    margin-top: 12px;
-    overflow: visible;
-  }
-}
-
 @media (max-width: 760px) {
   .portfolio-experience.is-board-mode .portfolio-title-header__brand,
   .portfolio-experience.is-board-mode .portfolio-title-header.is-compact .portfolio-title-header__brand {
@@ -8239,12 +8227,7 @@ body:has(.archive-mode) {
 
 /* Desktop landing: keep the header's hit area above the board. */
 @media (min-width: 761px) {
-  .portfolio-experience.is-board-mode > .portfolio-title-header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    overflow: hidden;
-  }
+
   .portfolio-experience.is-board-mode .portfolio-title-header__inner {
     height: 64px;
     min-height: 64px;
@@ -8252,19 +8235,6 @@ body:has(.archive-mode) {
   .portfolio-experience.is-board-mode .portfolio-title-header__brand {
     top: 20px;
     transform: none;
-  }
-  .portfolio-experience.is-board-mode .portfolio-state-stage {
-    padding-top: 76px;
-  }
-  .portfolio-experience.is-board-mode .fixed-landing {
-    position: relative;
-    height: auto;
-  }
-  .portfolio-experience.is-board-mode .fixed-board {
-    top: auto;
-    left: auto;
-    transform: none;
-    margin-top: 0;
   }
   .fixed-board .p3 {
     width: 17%;
@@ -8407,50 +8377,10 @@ body:has(.archive-mode) {
 /* Keep every object's geometry and hit area intact while visual assets decode. */
 .fixed-board[data-home-reveal="pending"] > .board-object { opacity: 0 !important; }
 
-/* Short windows scroll the board instead of squeezing its physical objects together. */
+
 @media (min-width: 761px) {
-  .portfolio-experience.is-board-mode .fixed-board { min-height: 760px; }
   .fixed-board .money-plant { aspect-ratio: 1254 / 1881; width: auto; }
   .fixed-board .money-plant__hover { aspect-ratio: auto; width: 100%; }
-}
-@media (min-width: 761px) and (max-width: 1099px) {
-  .fixed-board .money-plant { height: min(54%, 360px); }
-  .fixed-board .p1, .fixed-board .p2, .fixed-board .p3 {
-    width: clamp(165px, 22%, 190px);
-    height: 230px;
-  }
-}
-/* Fit the complete desktop composition below the 64px header and page gutters.
-   Scale the board as a unit; its logical layout and object proportions stay intact. */
-@media (min-width: 761px) {
-  .portfolio-experience.is-board-mode .fixed-landing {
-    height: calc(100dvh - 76px);
-    min-height: 0;
-    position: relative;
-  }
-  .portfolio-experience.is-board-mode .fixed-board {
-    --home-layout-height: max(760px, calc(100dvh - 116px));
-    --home-fit: min(1, calc((100dvh - 116px) / var(--home-layout-height)));
-    /* Compensate the logical canvas width for the height-fit scale so its
-       visible edges match the project pages' shared content container. */
-    width: calc(min(var(--portfolio-board-max), 100vw - 2 * var(--portfolio-board-gutter)) / var(--home-fit));
-    max-width: none;
-    height: var(--home-layout-height);
-    min-height: 0;
-    position: absolute;
-    /* Center the fitted board in the space below the existing 64px header.
-       The landing area already starts 12px below that header. */
-    top: calc((100dvh - 64px - var(--home-layout-height) * var(--home-fit)) / 2 - 12px);
-    left: 50%;
-    margin: 0;
-    transform-origin: top center;
-    transform: translateX(-50%) scale(var(--home-fit));
-  }
-}
-@media (min-width: 761px) and (max-width: 900px) {
-  .portfolio-experience.is-board-mode .fixed-board {
-    --home-layout-height: max(900px, calc(100dvh - 116px));
-  }
 }
 .archive-case-study { width: min(100%, 900px); margin: 48px auto 64px; }
 .archive-case-study > .section-kicker { display: block; margin-bottom: 36px; }
@@ -8560,12 +8490,7 @@ body:has(.archive-mode) {
 }
 
 /* Keep paper proportions stable in very tall or short windows. */
-@media (min-width: 1100px) {
-  .fixed-board .p1, .fixed-board .p2, .fixed-board .p3 {
-    aspect-ratio: 229 / 266;
-    height: auto;
-  }
-}
+
 @media (min-width: 761px) {
   .archive-case-study .project-file {
     aspect-ratio: 229 / 266;
@@ -8578,17 +8503,16 @@ body:has(.archive-mode) {
   .archive-case-study .archive-hives .project-holder { bottom: -8px; }
 }
 
-/* Homepage holes use the desktop material treatment at every breakpoint.
-   Compensate only the pattern radii for the board's uniform viewport-fit scale. */
+/* Homepage holes use the desktop material treatment at every breakpoint. */
 .fixed-board {
   --pegboard-hole-interior-pattern: radial-gradient(
-    circle calc(2.4px / var(--home-fit, 1)) at center,
+    circle 2.4px at center,
     var(--pegboard-hole-interior) 0 72%,
     color-mix(in srgb, var(--pegboard-hole-interior) 68%, transparent) 84%,
     transparent 97%
   );
   --pegboard-hole-edge-pattern: radial-gradient(
-    circle calc(2.7px / var(--home-fit, 1)) at center,
+    circle 2.7px at center,
     var(--pegboard-hole-edge) 0 82%,
     transparent 97%
   );

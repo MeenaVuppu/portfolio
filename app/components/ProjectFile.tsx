@@ -44,13 +44,19 @@ export function ProjectFile({ project, className = "", compact, disabled = false
     }
 
     const rect = element.getBoundingClientRect();
+    const desktopCanvas = board?.closest(".home-board-frame") && window.matchMedia("(min-width: 761px)").matches;
+    const boardRect = board?.getBoundingClientRect();
+    const scale = desktopCanvas && board && boardRect ? boardRect.width / board.offsetWidth : 1;
+    // The desktop opening animation now runs inside the scaled logical canvas.
+    const originLeft = desktopCanvas && boardRect ? (rect.left - boardRect.left) / scale : rect.left;
+    const originTop = desktopCanvas && boardRect ? (rect.top - boardRect.top) / scale : rect.top;
     setOpeningStyle({
-      "--project-origin-left": `${rect.left}px`,
-      "--project-origin-top": `${rect.top}px`,
-      "--project-origin-width": `${rect.width}px`,
-      "--project-origin-height": `${rect.height}px`,
-      "--project-shift-x": `${window.innerWidth / 2 - (rect.left + rect.width / 2)}px`,
-      "--project-shift-y": `${window.innerHeight / 2 - (rect.top + rect.height / 2)}px`,
+      "--project-origin-left": `${originLeft}px`,
+      "--project-origin-top": `${originTop}px`,
+      "--project-origin-width": `${rect.width / scale}px`,
+      "--project-origin-height": `${rect.height / scale}px`,
+      "--project-shift-x": `${(window.innerWidth / 2 - (rect.left + rect.width / 2)) / scale}px`,
+      "--project-shift-y": `${(window.innerHeight / 2 - (rect.top + rect.height / 2)) / scale}px`,
     } as CSSProperties);
 
     setIsOpening(true);

@@ -83,6 +83,29 @@ function insideBoard(bounds: Bounds, board: DOMRect, radius: number) {
 
 function pegboardHoles(board: HTMLElement): Point[] {
   const mobile = window.matchMedia("(max-width: 760px)").matches;
+  const frame = !mobile ? board.closest<HTMLElement>(".home-board-frame") : null;
+  // The unscaled outer board owns the visible hole grid. Keep snap offsets in
+  // the existing inner-canvas coordinate system after choosing a physical hole.
+  if (frame) {
+    const rect = frame.getBoundingClientRect();
+    const style = window.getComputedStyle(frame);
+    const positions = style.backgroundPosition.split(",");
+    const sizes = style.backgroundSize.split(",");
+    const holes: Point[] = [];
+    for (const index of [0, 2]) {
+      const [stepX, stepY] = sizes[index].trim().split(/\s+/).map(Number.parseFloat);
+      const [offsetX, offsetY] = positions[index].trim().split(/\s+/).map(Number.parseFloat);
+      if (!(stepX > 0 && stepY > 0)) continue;
+      const firstX = ((offsetX + stepX / 2) % stepX + stepX) % stepX;
+      const firstY = ((offsetY + stepY / 2) % stepY + stepY) % stepY;
+      for (let y = firstY; y < frame.clientHeight; y += stepY) {
+        for (let x = firstX; x < frame.clientWidth; x += stepX) {
+          holes.push({ x: rect.left + frame.clientLeft + x, y: rect.top + frame.clientTop + y });
+        }
+      }
+    }
+    return holes;
+  }
   const boardRect = board.getBoundingClientRect();
   const originX = board.clientLeft;
   const originY = board.clientTop;
