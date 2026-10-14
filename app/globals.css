@@ -7896,44 +7896,23 @@ body:has(.archive-mode) {
   }
 }
 
-/* Physical pegboard slots: recessed interiors with a fine material edge. */
+/* Shared homepage-reference material pattern. Fit compensation affects holes only. */
 .fixed-board,
 .project-pegboard {
-  --pegboard-hole-interior: color-mix(in srgb, var(--pegboard-hole-surface) 82%, #5f4d55 18%);
-  --pegboard-hole-edge: color-mix(in srgb, var(--pegboard-hole-surface) 92%, var(--project-shell) 8%);
-  --pegboard-hole-interior-pattern: radial-gradient(
-    circle 2.4px at center,
-    var(--pegboard-hole-interior) 0 72%,
-    color-mix(in srgb, var(--pegboard-hole-interior) 68%, transparent) 84%,
-    transparent 97%
-  );
-  --pegboard-hole-edge-pattern: radial-gradient(
-    circle 2.7px at center,
-    var(--pegboard-hole-edge) 0 82%,
-    transparent 97%
-  );
-}
-
-.fixed-board {
-  --pegboard-hole-surface: var(--home-pegboard);
-  background-image:
-    var(--pegboard-hole-interior-pattern), var(--pegboard-hole-edge-pattern),
-    var(--pegboard-hole-interior-pattern), var(--pegboard-hole-edge-pattern);
-  background-position: 21.7px 19.6px, 22px 20px, 49.7px 61.6px, 50px 62px;
-  background-size: 56px 84px, 56px 84px, 56px 84px, 56px 84px;
+  --pegboard-hole-interior: rgba(95, 77, 85, 0.18);
+  --pegboard-hole-edge: rgba(255, 255, 255, 0.08);
+  --pegboard-hole-interior-pattern: radial-gradient(circle calc(2.4px / var(--home-fit, 1)) at center, var(--pegboard-hole-interior) 0 72%, color-mix(in srgb, var(--pegboard-hole-interior) 68%, transparent) 84%, transparent 97%);
+  --pegboard-hole-edge-pattern: radial-gradient(circle calc(2.7px / var(--home-fit, 1)) at center, var(--pegboard-hole-edge) 0 82%, transparent 97%);
+  --pegboard-hole-pattern: var(--pegboard-hole-interior-pattern), var(--pegboard-hole-edge-pattern), var(--pegboard-hole-interior-pattern), var(--pegboard-hole-edge-pattern);
+  --pegboard-hole-position: 21.7px 19.6px, 22px 20px, 49.7px 61.6px, 50px 62px;
+  --pegboard-hole-spacing: calc(56px / var(--home-fit, 1)) calc(84px / var(--home-fit, 1));
+  background-image: var(--pegboard-hole-pattern);
+  background-position: var(--pegboard-hole-position);
+  background-size: var(--pegboard-hole-spacing);
 }
 
 @media (min-width: 1100px) {
-  .fixed-board {
-    overflow: visible;
-  }
-}
-
-.project-pegboard {
-  --pegboard-hole-surface: var(--project-pegboard);
-  background-image: var(--pegboard-hole-interior-pattern), var(--pegboard-hole-edge-pattern);
-  background-position: calc(50% - 28px) calc(50% - 21px), calc(50% - 27.7px) calc(50% - 20.6px);
-  background-size: 56px 42px, 56px 42px;
+  .fixed-board { overflow: visible; }
 }
 
 /* A shallow white cradle holds the headband; its concealed rear anchor seats in a board slot. */
@@ -7992,28 +7971,12 @@ body:has(.archive-mode) {
 @media (max-width: 760px) {
   .fixed-board,
   .project-pegboard {
-    --pegboard-hole-interior-pattern: radial-gradient(
-      ellipse 1.8px 4px at center,
-      var(--pegboard-hole-interior) 0 72%,
-      color-mix(in srgb, var(--pegboard-hole-interior) 68%, transparent) 84%,
-      transparent 97%
-    );
-    --pegboard-hole-edge-pattern: radial-gradient(
-      ellipse 2px 4.3px at center,
-      var(--pegboard-hole-edge) 0 82%,
-      transparent 97%
-    );
+    --pegboard-hole-position: 19.7px 19.6px, 20px 20px, 43.7px 59.6px, 44px 60px;
+    --pegboard-hole-spacing: 48px 80px;
   }
 
   .fixed-board {
     height: 3000px;
-    background-position: 19.7px 19.6px, 20px 20px, 43.7px 59.6px, 44px 60px;
-    background-size: 48px 80px, 48px 80px, 48px 80px, 48px 80px;
-  }
-
-  .project-pegboard {
-    background-position: calc(50% - 24px) calc(50% - 20px), calc(50% - 23.7px) calc(50% - 19.6px);
-    background-size: 48px 40px, 48px 40px;
   }
 
   .fixed-board .photo-object {
@@ -8467,9 +8430,9 @@ body:has(.archive-mode) {
     position: absolute;
     inset: calc((6px - var(--home-edge-space)) / var(--home-fit)) -1px -1px;
     background-color: #ff2f8b;
-    background-image: var(--pegboard-hole-interior-pattern), var(--pegboard-hole-edge-pattern), var(--pegboard-hole-interior-pattern), var(--pegboard-hole-edge-pattern);
-    background-position: 21.7px 19.6px, 22px 20px, 49.7px 61.6px, 50px 62px;
-    background-size: 56px 84px;
+    background-image: var(--pegboard-hole-pattern);
+    background-position: var(--pegboard-hole-position);
+    background-size: var(--pegboard-hole-spacing);
     border: 1px solid rgba(129, 0, 56, 0.2);
     border-radius: inherit;
     box-shadow: 0 18px 38px rgba(85, 21, 48, 0.17), inset 0 1px 0 rgba(255, 255, 255, 0.32);
@@ -8611,20 +8574,4 @@ body:has(.archive-mode) {
 }
 @media (max-width: 760px) {
   .archive-case-study .archive-hives .project-holder { bottom: -8px; }
-}
-
-/* Homepage holes use the desktop material treatment at every breakpoint.
-   Compensate only the pattern radii for the board's uniform viewport-fit scale. */
-.fixed-board {
-  --pegboard-hole-interior-pattern: radial-gradient(
-    circle calc(2.4px / var(--home-fit, 1)) at center,
-    var(--pegboard-hole-interior) 0 72%,
-    color-mix(in srgb, var(--pegboard-hole-interior) 68%, transparent) 84%,
-    transparent 97%
-  );
-  --pegboard-hole-edge-pattern: radial-gradient(
-    circle calc(2.7px / var(--home-fit, 1)) at center,
-    var(--pegboard-hole-edge) 0 82%,
-    transparent 97%
-  );
 }
