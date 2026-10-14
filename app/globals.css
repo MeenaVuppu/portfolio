@@ -7058,7 +7058,7 @@ body {
   }
 
   .project-view {
-    padding: 0 10px 30px;
+    padding: 0 10px 18px;
   }
 
   .project-pegboard {
@@ -7066,6 +7066,11 @@ body {
     background-size: 44px 42px;
     border-radius: 12px;
     padding: 34px 18px 44px;
+  }
+
+  .fixed-board,
+  .project-pegboard {
+    box-shadow: none;
   }
 
   .project-view--vyapar-plus .project-pegboard,
@@ -7681,7 +7686,7 @@ body:has(.archive-mode) {
   }
 
   .archive-mode .project-view {
-    padding: 12px 10px;
+    padding: 12px 10px 18px;
   }
 
   .archive-pegboard {
