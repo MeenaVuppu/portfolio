@@ -8406,7 +8406,7 @@ body:has(.archive-mode) {
     position: relative;
   }
   .portfolio-experience.is-board-mode .fixed-board {
-    --home-edge-space: max(var(--portfolio-board-gutter), calc((100vw - var(--portfolio-board-max)) / 2));
+    --home-edge-space: var(--portfolio-board-gutter);
     --home-available-height: calc(100dvh - 64px - 2 * var(--home-edge-space));
     --home-layout-height: max(760px, var(--home-available-height));
     --home-fit: min(1, calc(var(--home-available-height) / var(--home-layout-height)));
@@ -8449,12 +8449,6 @@ body:has(.archive-mode) {
     --home-layout-height: max(900px, var(--home-available-height));
   }
 }
-/* If equal side margins would consume all available height, keep the previous
-   vertical clearance. Horizontal width is never changed to hide that conflict. */
-@media (min-width: 761px) and (min-width: calc(100dvh + 1436px)) {
-  .portfolio-experience.is-board-mode .fixed-board { --home-edge-space: 26px; }
-}
-
 .archive-case-study { width: min(100%, 900px); margin: 48px auto 64px; }
 .archive-case-study > .section-kicker { display: block; margin-bottom: 36px; }
 .archive-case-study-folders { display: flex; flex-wrap: wrap; gap: 56px; }
