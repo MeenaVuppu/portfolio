@@ -5973,7 +5973,7 @@ body {
   .portfolio-experience.is-project-mode .project-view {
     padding-top: 6px;
     @media (min-width: 1100px) {
-      padding: var(--board-space);
+      padding: 24px var(--board-space) var(--board-space);
     }
   }
 }
@@ -8450,7 +8450,7 @@ body:has(.archive-mode) {
     position: absolute;
     inset: calc((6px - var(--home-edge-space)) / var(--home-fit)) -1px -1px;
     @media (min-width: 1100px) {
-      inset: -1px;
+      inset: calc((24px - var(--board-space)) / var(--home-fit) - 1px) -1px -1px;
     }
     background-color: #ff2f8b;
     background-image: var(--pegboard-hole-pattern);
