@@ -136,7 +136,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
                           <figure className="project-phone" key={screen.src}>
                             {project.slug === "fixed-deposit" ? (
                               <>
-                                <figcaption className="fd-phone-label">{screenIndex === 0 ? "BEFORE" : "AFTER"}</figcaption>
+                                <figcaption className="fd-phone-label">{screen.label ?? (screenIndex === 0 ? "BEFORE" : "AFTER")}</figcaption>
                                 <div className="fd-phone-device">
                                   <div className="fd-phone-display" tabIndex={0} role="region" aria-label={`${screen.alt} — scroll to view full screen`}>
                                     <img src={screen.src} alt={screen.alt} />
