@@ -116,16 +116,16 @@ export const projects: Project[] = [
       {
             "eyebrow": "Before → after · Landing, top",
             "title": "Give saving its own front door.",
-            "body": "The previous entry led with balance, price, a chart and the calculator. The redesigned first fold introduces the saving proposition and clear entry points before the transaction flow, helping first-time customers understand the product before committing to an amount.",
+            "body": "The previous experience prioritised balance, gold prices and the calculator. The redesign introduces clearer saving options and entry points, helping customers understand how to start investing.",
             "screens": [
                   {
                         "src": "/dg-evidence/before-top.png",
-                        "alt": "BEFORE — FIRST FOLD",
+                        "alt": "BEFORE",
                         "scrollViewport": true
                   },
                   {
                         "src": "/dg-evidence/new-user.png",
-                        "alt": "AFTER — FIRST FOLD",
+                        "alt": "AFTER",
                         "staticViewport": true
                   }
             ],
@@ -175,9 +175,9 @@ export const projects: Project[] = [
             "variant": "visual"
       },
       {
-            "eyebrow": "Scenario 3 · Returning SIP user",
+            "eyebrow": "Returning Users",
             "title": "Make progress the reason to keep saving.",
-            "body": "For customers who already save regularly, the journey prioritises their balance and savings progress. Invest More gives them a direct next action, while access to holdings and the wider saving choices keeps the experience connected.",
+            "body": "For returning users without an active SIP, visible holdings and saving entry points encourage starting regular savings. For users with an active SIP, the design surfaces existing savings and progress, with Invest More encouraging continued investment.",
             "screens": [
                   { "src": "/dg-evidence/returning-sip.png", "alt": "RETURNING SIP USER" }
             ],
