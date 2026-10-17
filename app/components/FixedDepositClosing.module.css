@@ -1,0 +1,42 @@
+.card :global(.project-story-items) {
+  grid-template-columns: 1fr;
+  gap: 22px;
+}
+
+.card :global(.project-story-items) > div {
+  padding: 22px 0 0;
+}
+
+.card :global(.project-story-items) > div + div {
+  border-left: 0;
+  border-top: 1px solid rgba(86, 64, 73, 0.13);
+  padding-left: 0;
+}
+
+.card :global(.project-story-items) strong {
+  color: var(--project-ink);
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 630;
+}
+
+.card :global(.project-story-items) > div:first-child strong {
+  font-size: clamp(36px, 4vw, 52px);
+}
+
+.card :global(.project-story-items) span {
+  font-size: 12px;
+  line-height: 1.6;
+  max-width: 56ch;
+}
+
+.card :global(.project-story-highlight) {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.card :global(.project-story-footnote) {
+  color: var(--project-ink);
+  font-size: 13px;
+  line-height: 1.6;
+}

@@ -119,7 +119,7 @@ export const projects: Project[] = [
             "body": "The previous experience prioritised balance, gold prices and the calculator. The redesign introduces clearer saving options and entry points, helping customers understand how to start investing.",
             "screens": [
                   {
-                        "src": "/dg-evidence/before-top.png",
+                        "src": "/dg-evidence/old-landing-screen.png",
                         "alt": "BEFORE",
                         "scrollViewport": true
                   },
@@ -487,13 +487,13 @@ export const projects: Project[] = [
       {
             "eyebrow": "HOW I'D MEASURE SUCCESS",
             "title": "From clearer decisions to stronger conversion.",
-            "body": "The redesign focuses on reducing friction during investment selection and helping users confidently progress toward booking. I'd evaluate its effectiveness against the existing funnel using the following targets.",
+            "body": "The aim is to help more users move from selecting a scheme to starting an investment. I'd compare the redesigned journey against these existing funnel baselines.",
             "items": [
-                  { "value": "FD page view → Mahindra selection", "label": "Baseline: 5.6% · Illustrative target: 8%" },
-                  { "value": "Mahindra selection → Book Now", "label": "Baseline: 19.1% · Illustrative target: 25%" }
+                  { "value": "19.1% → 25%", "label": "Primary · Mahindra selection → Book Now. Of users who select Mahindra Finance, the share who click Book Now. Existing baseline → proposed illustrative target." },
+                  { "value": "5.6% → 8%", "label": "Supporting · FD page view → Mahindra selection. The share progressing from the FD page to selecting Mahindra Finance. Existing baseline → proposed illustrative target." }
             ],
-            "highlight": "Proposed illustrative targets, not achieved improvements.",
-            "footnote": "Success means helping more users move from exploring an FD to confidently starting an investment.",
+            "highlight": "Proposed targets · Launch planned",
+            "footnote": "Clearer choices. More confident next steps. Targets are illustrative, not achieved results.",
             "variant": "wide"
       }
 ],
