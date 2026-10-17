@@ -5827,7 +5827,7 @@ body {
 
 .portfolio-state-stage > .fixed-landing {
   opacity: 1;
-  transition: opacity 440ms cubic-bezier(0.22, 0.72, 0.2, 1);
+  transition: none;
 }
 
 .portfolio-experience.is-project-mode .fixed-landing {
@@ -6058,7 +6058,7 @@ body {
 
 .project-view {
   padding: var(--portfolio-board-gap) var(--portfolio-board-gutter) clamp(44px, 6vw, 84px);
-  transition: opacity 220ms ease, transform 260ms cubic-bezier(0.22, 0.72, 0.2, 1);
+  transition: none;
 }
 
 .project-pegboard {
@@ -6915,11 +6915,9 @@ body {
 @keyframes project-view-enter {
   from {
     opacity: 0;
-    transform: translateY(5px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -6986,13 +6984,13 @@ body {
 }
 
 @keyframes project-switch-out {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(-12px); }
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 @keyframes project-switch-in {
-  from { opacity: 0; transform: translateX(12px); }
-  to { opacity: 1; transform: translateX(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -7011,12 +7009,41 @@ body {
 @keyframes project-view-exit {
   from {
     opacity: 1;
-    transform: scale(1);
   }
   to {
     opacity: 0;
-    transform: scale(0.985);
   }
+}
+
+/* All route changes share a stationary 200ms snapshot crossfade. */
+::view-transition-group(root) { animation: none; }
+::view-transition-old(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) {
+  animation: portfolio-page-crossfade 200ms ease-in-out both;
+  mix-blend-mode: normal;
+}
+@keyframes portfolio-page-crossfade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+[data-page-snapshot] {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2147483646;
+  animation: portfolio-page-crossfade-out 200ms ease-in-out both;
+}
+[data-page-snapshot] * { animation: none !important; transition: none !important; }
+@keyframes portfolio-page-crossfade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+.portfolio-experience > .portfolio-title-header { transition: none; }
+.portfolio-experience .project-mode { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  [data-page-snapshot] { animation: none; }
+  ::view-transition-new(root) { animation: none; }
 }
 
 @media (min-width: 761px) and (max-width: 1100px) {

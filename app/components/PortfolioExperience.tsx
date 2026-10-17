@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { getOtherProjects, getProject, type Project } from "../lib/projects";
 import { HomeBoard } from "./HomeBoard";
 import { PortfolioTitleHeader } from "./PortfolioTitleHeader";
@@ -23,10 +24,10 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
   const [selectedProject, setSelectedProject] = useState<Project | null>(initialProject);
   const [archiveOpen, setArchiveOpen] = useState(initialArchive);
   const [phase, setPhase] = useState<ProjectModePhase>(initialProject || initialArchive ? "open" : "closing");
-  const [projectSwitching, setProjectSwitching] = useState(false);
   const boardScrollY = useRef(0);
   const transitionTimer = useRef<number | null>(null);
-  const closingFromControl = useRef(false);
+  const activeTransition = useRef<ViewTransition | null>(null);
+  const outgoingSnapshot = useRef<HTMLElement | null>(null);
   const lastProjectTrigger = useRef<HTMLElement | null>(null);
 
   function clearTransitionTimer() {
@@ -40,12 +41,59 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
     setSelectedProject(null);
     setArchiveOpen(false);
     setPhase("closing");
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        window.scrollTo({ top: boardScrollY.current, behavior: "auto" });
-        lastProjectTrigger.current?.focus({ preventScroll: true });
+  }
+
+  // Every navigation path swaps the same persistent surface through opacity only.
+  function transitionTo(project: Project | null, archive = false) {
+    clearTransitionTimer();
+    activeTransition.current?.skipTransition();
+    outgoingSnapshot.current?.remove();
+    outgoingSnapshot.current = null;
+    const update = () => {
+      flushSync(() => {
+        if (!project && !archive) finishOnBoard();
+        else {
+          setSelectedProject(project);
+          setArchiveOpen(archive);
+          setPhase("open");
+        }
       });
-    });
+      window.scrollTo({ top: project || archive ? 0 : boardScrollY.current, behavior: "auto" });
+      if (!project && !archive) lastProjectTrigger.current?.focus({ preventScroll: true });
+    };
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      update();
+    } else if (document.startViewTransition) {
+      activeTransition.current = document.startViewTransition(update);
+    } else {
+      // Older browsers need a temporary, inert copy to crossfade without a blank frame.
+      const source = document.querySelector<HTMLElement>(".portfolio-experience")!;
+      const copy = source.cloneNode(true) as HTMLElement;
+      const sourceNodes = [source, ...source.querySelectorAll<HTMLElement>("*")];
+      const copiedNodes = [copy, ...copy.querySelectorAll<HTMLElement>("*")];
+      sourceNodes.forEach((node, index) => {
+        const style = getComputedStyle(node);
+        copiedNodes[index].style.opacity = style.opacity;
+        copiedNodes[index].style.transform = style.transform;
+        copiedNodes[index].style.filter = style.filter;
+      });
+      const snapshot = document.createElement("div");
+      snapshot.setAttribute("data-page-snapshot", "");
+      snapshot.setAttribute("aria-hidden", "true");
+      snapshot.inert = true;
+      Object.assign(copy.style, {
+        position: "absolute", top: `${-window.scrollY}px`, left: "0",
+        width: `${source.getBoundingClientRect().width}px`,
+      });
+      snapshot.append(copy);
+      document.body.append(snapshot);
+      outgoingSnapshot.current = snapshot;
+      update();
+      transitionTimer.current = window.setTimeout(() => {
+        snapshot.remove();
+        outgoingSnapshot.current = null;
+      }, 200);
+    }
   }
 
   useEffect(() => {
@@ -56,36 +104,16 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
     );
 
     function handlePopState() {
-      clearTransitionTimer();
       const project = projectFromPathname(window.location.pathname);
       const archive = window.location.pathname === "/archive" || window.location.pathname === "/archive/";
-      if (archive) {
-        setSelectedProject(null);
-        setArchiveOpen(true);
-        setPhase("opening");
-        transitionTimer.current = window.setTimeout(() => setPhase("open"), 420);
-        return;
-      }
-      if (!project) {
-        if (closingFromControl.current) {
-          closingFromControl.current = false;
-          finishOnBoard();
-          return;
-        }
-        setPhase("closing");
-        transitionTimer.current = window.setTimeout(finishOnBoard, 320);
-        return;
-      }
-
-      setSelectedProject(project);
-      setArchiveOpen(false);
-      setPhase("opening");
-      transitionTimer.current = window.setTimeout(() => setPhase("open"), 420);
+      transitionTo(project, archive);
     }
 
     window.addEventListener("popstate", handlePopState);
     return () => {
       clearTransitionTimer();
+      activeTransition.current?.skipTransition();
+      outgoingSnapshot.current?.remove();
       window.removeEventListener("popstate", handlePopState);
     };
   }, [initialArchive, initialProject]);
@@ -104,10 +132,7 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
       "",
       `/projects/${project.slug}`,
     );
-    setSelectedProject(project);
-    setArchiveOpen(false);
-    setPhase("opening");
-    transitionTimer.current = window.setTimeout(() => setPhase("open"), 440);
+    transitionTo(project);
   }
 
   function openArchive(trigger: HTMLElement) {
@@ -115,51 +140,30 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
     lastProjectTrigger.current = trigger;
     boardScrollY.current = window.scrollY;
     history.pushState({ ...history.state, portfolio: true, project: null, archive: true, fromBoard: true }, "", "/archive");
-    setSelectedProject(null);
-    setArchiveOpen(true);
-    setPhase("opening");
-    transitionTimer.current = window.setTimeout(() => setPhase("open"), 440);
+    transitionTo(null, true);
   }
 
   function closeProject() {
-    if ((!selectedProject && !archiveOpen) || phase === "closing") return;
-    clearTransitionTimer();
-    setPhase("closing");
-
-    transitionTimer.current = window.setTimeout(() => {
-      if (history.state?.fromBoard) {
-        closingFromControl.current = true;
-        history.back();
-      } else {
-        history.replaceState({ ...history.state, portfolio: true, project: null, fromBoard: false }, "", "/");
-        finishOnBoard();
-      }
-    }, 340);
+    if (!selectedProject && !archiveOpen) return;
+    if (history.state?.fromBoard) history.back();
+    else {
+      history.pushState({ ...history.state, portfolio: true, project: null, fromBoard: false }, "", "/");
+      transitionTo(null);
+    }
   }
 
   function switchProject(project: Project) {
     if (!selectedProject || selectedProject.slug === project.slug) return;
-    clearTransitionTimer();
-    setProjectSwitching(true);
-    setPhase("switching");
-
-    transitionTimer.current = window.setTimeout(() => {
-      history.replaceState(
-        { ...history.state, portfolio: true, project: project.slug },
-        "",
-        `/projects/${project.slug}`,
-      );
-      setSelectedProject(project);
-      setPhase("opening");
-      transitionTimer.current = window.setTimeout(() => {
-        setPhase("open");
-        setProjectSwitching(false);
-      }, 320);
-    }, 180);
+    history.pushState(
+      { ...history.state, portfolio: true, project: project.slug, fromBoard: false },
+      "",
+      `/projects/${project.slug}`,
+    );
+    transitionTo(project);
   }
 
   return (
-    <div className={`portfolio-experience ${selectedProject || archiveOpen ? "is-project-mode" : "is-board-mode"} project-phase-${phase} ${projectSwitching ? "is-project-switch" : ""}`}>
+    <div className={`portfolio-experience ${selectedProject || archiveOpen ? "is-project-mode" : "is-board-mode"} project-phase-${phase}`}>
       <PortfolioTitleHeader
         title={phase !== "closing" ? (selectedProject?.headline ?? (archiveOpen ? "Archive" : HOME_HEADLINE)) : HOME_HEADLINE}
         compactTitle={selectedProject?.headline ?? (archiveOpen ? "Archive" : HOME_HEADLINE)}
