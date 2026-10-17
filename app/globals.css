@@ -8534,6 +8534,13 @@ body:has(.archive-mode) {
   .archive-work-gallery .archive-work-pin { padding: 20px; }
   .archive-work-pin .peg-pin { transform: translateX(-50%) scale(.8); }
   .archive-work-pin .paper-clip { width: 13px; height: 32px; }
+  .archive-mode .archive-case-study .project-file__clip,
+  .archive-mode .archive-work-pin > .peg-pin,
+  .archive-mode .archive-work-pin > .paper-clip {
+    left: 50%;
+    right: auto;
+    margin-left: 0;
+  }
 }
 
 /* Archive folders follow the desktop homepage file footprint. */

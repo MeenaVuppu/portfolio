@@ -22,24 +22,27 @@ export function playPageFlipSound() {
   void audio.play().catch(() => undefined);
 }
 
-// Separate from loading-reveal audio and the page-turn sound on other surfaces.
-let projectFolderAudio: HTMLAudioElement | null = null;
+// One persistent player for intentional navigation, independent of music/control audio.
+let navigationClickAudio: HTMLAudioElement | null = null;
+let navigationClickPreloaded = false;
 
-function getProjectFolderAudio() {
-  projectFolderAudio ??= new Audio("/project-folder-click.wav");
-  projectFolderAudio.preload = "auto";
-  return projectFolderAudio;
+function getNavigationClickAudio() {
+  navigationClickAudio ??= new Audio("/navigation-click.wav");
+  navigationClickAudio.preload = "auto";
+  return navigationClickAudio;
 }
 
-export function preloadProjectFolderSound() {
-  getProjectFolderAudio().load();
+export function preloadNavigationClickSound() {
+  if (navigationClickPreloaded) return;
+  getNavigationClickAudio().load();
+  navigationClickPreloaded = true;
 }
 
-export function playProjectFolderSound() {
-  const audio = getProjectFolderAudio();
+export function playNavigationClickSound() {
+  const audio = getNavigationClickAudio();
+  if (audio.muted) return;
   audio.pause();
   audio.currentTime = 0;
-  audio.muted = false;
-  audio.volume = 0.32;
+  audio.volume = window.matchMedia("(max-width: 760px)").matches ? 0.32 : 0.4;
   void audio.play().catch(() => undefined);
 }

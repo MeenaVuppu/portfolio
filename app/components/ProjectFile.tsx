@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type CSSProperties, type MouseEvent, useEffect, useState } from "react";
 import type { Project } from "../lib/projects";
-import { playProjectFolderSound, preloadProjectFolderSound } from "../lib/soundEffects";
 import { PaperClip } from "./Hardware";
 import mobileFolder from "./ProjectFileMobile.module.css";
 
@@ -27,7 +26,6 @@ export function ProjectFile({ project, className = "", compact, disabled = false
   const href = `/projects/${project.slug}`;
 
   useEffect(() => {
-    preloadProjectFolderSound();
     return () => document.body.classList.remove("project-opening");
   }, [pegboardDragId]);
 
@@ -57,7 +55,6 @@ export function ProjectFile({ project, className = "", compact, disabled = false
     document.body.classList.add("project-opening");
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    playProjectFolderSound();
     if (onOpenProject) {
       window.setTimeout(
         () => onOpenProject(project, element),

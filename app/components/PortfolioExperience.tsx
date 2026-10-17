@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { flushSync } from "react-dom";
 import { getOtherProjects, getProject, type Project } from "../lib/projects";
 import { HomeBoard } from "./HomeBoard";
 import { PortfolioTitleHeader } from "./PortfolioTitleHeader";
 import { ProjectMode, type ProjectModePhase } from "./ProjectMode";
 import { ArchiveMode } from "./ArchiveMode";
+import { playNavigationClickSound, preloadNavigationClickSound } from "../lib/soundEffects";
 
 type PortfolioExperienceProps = {
   initialProject?: Project | null;
@@ -29,6 +30,16 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
   const activeTransition = useRef<ViewTransition | null>(null);
   const outgoingSnapshot = useRef<HTMLElement | null>(null);
   const lastProjectTrigger = useRef<HTMLElement | null>(null);
+
+  function navigationClick(event: MouseEvent<HTMLDivElement>) {
+    if (event.button !== 0 || !event.nativeEvent.isTrusted || !(event.target instanceof Element)) return;
+    const control = event.target.closest("a[href], .portfolio-title-header__brand button, .archive-object");
+    if (!control || control.closest("[data-page-snapshot]") || control.getAttribute("aria-disabled") === "true") return;
+    const href = control.getAttribute("href");
+    if (href !== null && (!href || href.startsWith("#") || href.startsWith("javascript:"))) return;
+    // Bubble after the drag handler so a suppressed drag-click remains silent.
+    playNavigationClickSound();
+  }
 
   function clearTransitionTimer() {
     if (transitionTimer.current !== null) {
@@ -97,6 +108,7 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
   }
 
   useEffect(() => {
+    preloadNavigationClickSound();
     history.replaceState(
       { ...history.state, portfolio: true, project: initialProject?.slug ?? null, archive: initialArchive, fromBoard: false },
       "",
@@ -163,7 +175,7 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
   }
 
   return (
-    <div className={`portfolio-experience ${selectedProject || archiveOpen ? "is-project-mode" : "is-board-mode"} project-phase-${phase}`}>
+    <div onClick={navigationClick} className={`portfolio-experience ${selectedProject || archiveOpen ? "is-project-mode" : "is-board-mode"} project-phase-${phase}`}>
       <PortfolioTitleHeader
         title={phase !== "closing" ? (selectedProject?.headline ?? (archiveOpen ? "Archive" : HOME_HEADLINE)) : HOME_HEADLINE}
         compactTitle={selectedProject?.headline ?? (archiveOpen ? "Archive" : HOME_HEADLINE)}
