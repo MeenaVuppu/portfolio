@@ -126,7 +126,7 @@ export const projects: Project[] = [
                   {
                         "src": "/dg-evidence/new-user.png",
                         "alt": "AFTER",
-                        "staticViewport": true
+                        "scrollViewport": true
                   }
             ],
             "variant": "visual",
@@ -152,26 +152,6 @@ export const projects: Project[] = [
                         "alt": "AFTER — RECURRING SAVING"
                   }
             ],
-            "variant": "visual"
-      },
-      {
-            "eyebrow": "Scenario 1 · New user",
-            "title": "Understand the product before starting.",
-            "body": "The new-user journey introduces saving choices, explains the three steps to begin and shows how regular contributions can accumulate. Jewellery redemption follows that investment explanation, so the catalogue supports the proposition rather than defining it.",
-            "screens": [
-                  { "src": "/dg-evidence/new-user.png", "alt": "NEW USER" }
-            ],
-            "footnote": "Helping first-time users understand the product and choose how to begin.",
-            "variant": "visual"
-      },
-      {
-            "eyebrow": "Scenario 2 · Returning user without SIP",
-            "title": "Connect existing holdings to a saving habit.",
-            "body": "The gold balance makes the customer's existing investment visible. Monthly and weekly saving remain accessible alongside one-time buying, while the growth illustration connects a regular contribution to longer-term accumulation.",
-            "screens": [
-                  { "src": "/dg-evidence/returning-no-sip.png", "alt": "RETURNING USER WITHOUT SIP" }
-            ],
-            "footnote": "Making existing holdings visible while encouraging users to build a regular saving habit.",
             "variant": "visual"
       },
       {
