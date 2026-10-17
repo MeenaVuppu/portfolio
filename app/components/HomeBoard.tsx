@@ -17,6 +17,11 @@ type HomeBoardProps = {
 
 const EMAIL_ADDRESS = "vuppumeena@gmail.com";
 const ARTWORK_ROTATIONS = [-5, 4, -2];
+const ARTWORK_IMAGES = [
+  { src: "/paintings/oranges.webp", title: "Oranges" },
+  { src: "/paintings/cow.webp", title: "Cow" },
+  { src: "/paintings/lighthouse.webp", title: "Lighthouse" },
+];
 // Reveal controls: disable sound here without changing other portfolio audio.
 const HOME_REVEAL_STAGGER_MS = 160;
 const HOME_REVEAL_SOUND_VOLUME = 1;
@@ -815,7 +820,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
                 type="button"
                 key={artwork}
                 tabIndex={isArtworkOpen ? 0 : -1}
-                aria-label={`Inspect artwork placeholder ${artwork + 1}`}
+                aria-label={`Inspect ${ARTWORK_IMAGES[artwork].title} painting`}
                 aria-pressed={selectedArtwork === artwork}
                 onClick={() => setSelectedArtwork(artwork)}
                 ref={(element) => { artworkRefs.current[artwork] = element; }}
@@ -828,9 +833,12 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
                 } as CSSProperties}
               >
                 <span className="watercolor-artwork__surface" aria-hidden="true">
-                  <i />
-                  <i />
-                  <i />
+                  <img
+                    src={ARTWORK_IMAGES[artwork].src}
+                    alt=""
+                    draggable={false}
+                    style={{ width: "100%", height: "100%", objectFit: "contain", background: "#fffdf8" }}
+                  />
                 </span>
               </button>
             ))}
