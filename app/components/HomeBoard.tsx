@@ -20,7 +20,7 @@ const ARTWORK_ROTATIONS = [-5, 4, -2];
 const ARTWORK_IMAGES = [
   { src: "/paintings/oranges.webp", title: "Oranges" },
   { src: "/paintings/cow.webp", title: "Cow" },
-  { src: "/paintings/lighthouse.webp", title: "Lighthouse" },
+  { src: "/paintings/balloon.webp", title: "Hot-air balloon" },
 ];
 // Reveal controls: disable sound here without changing other portfolio audio.
 const HOME_REVEAL_STAGGER_MS = 160;
@@ -813,7 +813,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
               aria-expanded={isArtworkOpen}
             />
           </div>
-          <div className="watercolor-artworks" role="group" aria-label="Watercolor artwork previews" aria-hidden={!isArtworkOpen}>
+          <div className="watercolor-artworks" style={{ zIndex: 21 }} role="group" aria-label="Watercolor artwork previews" aria-hidden={!isArtworkOpen}>
             {[0, 1, 2].map((artwork) => (
               <button
                 className={`watercolor-artwork watercolor-artwork--${artwork + 1}${selectedArtwork === artwork ? " is-selected" : ""}`}
