@@ -16,11 +16,10 @@ type HomeBoardProps = {
 };
 
 const EMAIL_ADDRESS = "vuppumeena@gmail.com";
-const ARTWORK_ROTATIONS = [-5, 4, -2];
+const ARTWORK_ROTATIONS = [-5, 4];
 const ARTWORK_IMAGES = [
   { src: "/paintings/oranges.webp", title: "Oranges" },
   { src: "/paintings/cow.webp", title: "Cow" },
-  { src: "/paintings/balloon.webp", title: "Hot-air balloon" },
 ];
 // Reveal controls: disable sound here without changing other portfolio audio.
 const HOME_REVEAL_STAGGER_MS = 160;
@@ -523,7 +522,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     const board = boardRef.current;
     const holder = brushesRef.current;
     const hitarea = brushHitareaRef.current;
-    const artworks = artworkRefs.current;
+    const artworks = artworkRefs.current.slice(0, ARTWORK_IMAGES.length);
     if (!board || !holder || !hitarea || artworks.some((artwork) => !artwork)) return;
 
     const boardRect = board.getBoundingClientRect();
@@ -576,7 +575,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
           };
         });
         const boxes = positions.map((position, index) => ({ ...position, width: sizes[index].width, height: sizes[index].height }));
-        const overlap = overlapRatio(boxes[0], boxes[1]) + overlapRatio(boxes[0], boxes[2]) + overlapRatio(boxes[1], boxes[2]);
+        const overlap = overlapRatio(boxes[0], boxes[1]);
         const holderBox = { x: origin.x, y: origin.y, width: hitareaRect.width, height: hitareaRect.height };
         const holderOverlap = boxes.reduce((total, box) => total + overlapRatio(box, holderBox), 0);
         const clampDistance = positions.reduce((total, position, index) => {
@@ -814,7 +813,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
             />
           </div>
           <div className="watercolor-artworks" style={{ zIndex: 21 }} role="group" aria-label="Watercolor artwork previews" aria-hidden={!isArtworkOpen}>
-            {[0, 1, 2].map((artwork) => (
+            {ARTWORK_IMAGES.map((_, artwork) => (
               <button
                 className={`watercolor-artwork watercolor-artwork--${artwork + 1}${selectedArtwork === artwork ? " is-selected" : ""}`}
                 type="button"
