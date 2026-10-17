@@ -5,6 +5,7 @@ import type { Project } from "../lib/projects";
 import { PaperClip, PegPin } from "./Hardware";
 import { ProjectFile } from "./ProjectFile";
 import digitalGoldStory from "./DigitalGoldStory.module.css";
+import vyaparClosing from "./VyaparClosing.module.css";
 
 export type ProjectModePhase = "opening" | "open" | "switching" | "closing";
 
@@ -99,7 +100,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
           )}
 
           {project.storyPins ? (
-            <section className={`project-story-board${project.slug === "digital-gold" ? ` ${digitalGoldStory.board}` : ""}`} aria-label={`${project.title} project story`}>
+            <section className={`project-story-board${project.slug === "digital-gold" ? ` ${digitalGoldStory.board}` : project.slug === "vyapar-plus" ? ` ${vyaparClosing.board}` : ""}`} aria-label={`${project.title} project story`}>
               {project.storyPins.map((pin, index) => (
                 <article
                   className={`project-story-pin project-story-pin--${pin.variant ?? "paper"} project-reveal`}
