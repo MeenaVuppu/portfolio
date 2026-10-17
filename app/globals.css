@@ -8593,13 +8593,13 @@ body:has(.archive-mode) {
 
 /* Material-only overrides: attachment/snap coordinates stay unchanged. */
 .fixed-board {
-  --pegboard-hole-interior-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='84' viewBox='0 0 56 84' preserveAspectRatio='xMidYMid meet'%3E%3Cellipse cx='28' cy='42' rx='1.9' ry='3.3' fill='%23C91B66'/%3E%3Cpath d='M26.35 42q0-2.9 1.65-2.9' fill='none' stroke='%239D1450' stroke-opacity='.3' stroke-width='.5'/%3E%3C/svg%3E");
-  --pegboard-hole-edge-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='84' viewBox='0 0 56 84' preserveAspectRatio='xMidYMid meet'%3E%3Cpath d='M29.65 42q0 2.9-1.65 2.9' fill='none' stroke='%23FFFFFF' stroke-opacity='.12' stroke-width='.5'/%3E%3C/svg%3E");
+  --pegboard-hole-interior-pattern: radial-gradient(circle calc(1.8px / var(--home-fit, 1)) at center, rgba(157, 45, 99, 0.24) 0 72%, rgba(157, 45, 99, 0.12) 86%, transparent 100%);
+  --pegboard-hole-edge-pattern: radial-gradient(circle calc(1.9px / var(--home-fit, 1)) at center, rgba(255, 255, 255, 0.06) 0 78%, transparent 100%);
 }
 
 :is(.project-view--vyapar-plus, .project-view--digital-gold, .project-view--fixed-deposit) .project-pegboard {
-  --pegboard-hole-interior-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='84' viewBox='0 0 56 84' preserveAspectRatio='xMidYMid meet'%3E%3Cellipse cx='28' cy='42' rx='1.9' ry='3.3' fill='%2385757C' fill-opacity='.26'/%3E%3Cpath d='M26.35 42q0-2.9 1.65-2.9' fill='none' stroke='%235F4D55' stroke-opacity='.14' stroke-width='.5'/%3E%3C/svg%3E");
-  --pegboard-hole-edge-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='84' viewBox='0 0 56 84' preserveAspectRatio='xMidYMid meet'%3E%3Cpath d='M29.65 42q0 2.9-1.65 2.9' fill='none' stroke='%23FFFFFF' stroke-opacity='.35' stroke-width='.5'/%3E%3C/svg%3E");
+  --pegboard-hole-interior-pattern: radial-gradient(circle 1.8px at center, rgba(120, 118, 116, 0.20) 0 72%, rgba(120, 118, 116, 0.10) 86%, transparent 100%);
+  --pegboard-hole-edge-pattern: radial-gradient(circle 1.9px at center, rgba(255, 255, 255, 0.20) 0 78%, transparent 100%);
   background-size: 47.6px 71.4px;
   background-position: 21.7px 19.6px, 22px 20px, 45.5px 55.3px, 45.8px 55.7px;
 }
