@@ -6,6 +6,7 @@ import { type CSSProperties, type MouseEvent, useEffect, useState } from "react"
 import type { Project } from "../lib/projects";
 import { playProjectFolderSound, preloadProjectFolderSound } from "../lib/soundEffects";
 import { PaperClip } from "./Hardware";
+import mobileFolder from "./ProjectFileMobile.module.css";
 
 type ProjectFileProps = {
   project: Project;
@@ -92,7 +93,7 @@ export function ProjectFile({ project, className = "", compact, disabled = false
     </>
   );
 
-  const projectClassName = `project-file project-file--${project.slug} ${compact ? "project-file--compact" : ""} ${isOpening ? "is-opening" : ""} ${className}`;
+  const projectClassName = `project-file ${mobileFolder.folder} project-file--${project.slug} ${compact ? "project-file--compact" : ""} ${isOpening ? "is-opening" : ""} ${className}`;
 
   if (disabled || layoutOnly) {
     return (

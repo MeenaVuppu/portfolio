@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import polaroid from "./HomePolaroid.module.css";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BoardHook, PegPin } from "./Hardware";
 import { ProjectFile } from "./ProjectFile";
@@ -625,7 +626,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
         <ProjectFile project={projects[0]} className="board-object p1" onOpenProject={onOpenProject} pegboardDragId="digital-gold" />
 
         <a
-          className="photo-object board-object"
+          className={`photo-object board-object ${polaroid.photo}`}
           data-peg-draggable="photo"
           href="https://www.linkedin.com/posts/meena-vuppu_friendsoffigma-configwatchparty-config2025-activity-7327375191125172224-LsLU?utm_source=share&utm_medium=member_desktop&rcm=ACoAACnGjGoBggAAG-XnFBamgY1cN6IJn76lm10"
           target="_blank"

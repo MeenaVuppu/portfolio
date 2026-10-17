@@ -1,0 +1,13 @@
+.photo :global(.photo-caption) {
+  bottom: 14%;
+}
+
+@media (max-width: 760px) {
+  :global(.fixed-board) .photo.photo {
+    padding-bottom: 28px;
+  }
+
+  .photo :global(.photo-caption) {
+    bottom: 5%;
+  }
+}

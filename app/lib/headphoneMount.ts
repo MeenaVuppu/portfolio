@@ -26,6 +26,13 @@ export function visibleBounds(element: HTMLElement): Bounds {
     .map((node) => node.getBoundingClientRect())
     .filter((rect) => rect.width > 0 && rect.height > 0);
 
+  // A temporarily hidden object still has a layout footprint. Empty extrema
+  // would produce infinities and leave the shuffle with no selectable candidate.
+  if (rects.length === 0) {
+    const rect = element.getBoundingClientRect();
+    return { bottom: rect.bottom, left: rect.left, right: rect.right, top: rect.top };
+  }
+
   return {
     bottom: Math.max(...rects.map((rect) => rect.bottom)),
     left: Math.min(...rects.map((rect) => rect.left)),

@@ -427,10 +427,9 @@ export const projects: Project[] = [
     ],
     storyPins: [
       {
-            "eyebrow": "Evidence · Analytics + PM-relayed feedback",
-            "title": "The funnel showed where progression weakened. Feedback helped explain what users were struggling with.",
-            "body": "The existing selection experience was already difficult to interpret during internal review. The PM then spoke with customers who also reported difficulty understanding it. Funnel analytics separately showed weak progression through the journey.",
-            "footnote": "The existing funnel revealed significant drop-offs during investment selection. Reviewing the journey highlighted opportunities to simplify scheme comparison, improve information hierarchy, and make investment decisions easier to navigate. These observations shaped the redesign direction."
+            "eyebrow": "EVIDENCE · ANALYTICS + CUSTOMER RESEARCH",
+            "title": "The funnel showed where users dropped off. Customer conversations helped us understand why.",
+            "body": "The investment journey showed significant drop-offs during scheme selection. To understand the friction, the PM and I spoke with customers who struggled to compare schemes and make investment decisions. Combining these insights with funnel analysis, we redesigned the page to simplify scheme comparison, clarify key information and make investment choices easier to navigate."
       },
       {
             "eyebrow": "UX diagnosis",

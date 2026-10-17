@@ -1,32 +1,31 @@
-/* Keep the remaining Digital Gold visuals together without reserved empty rows. */
+/* Flow DG papers in reading order without making short cards reserve tall rows. */
 @media (min-width: 761px) {
+  :global(.project-view--digital-gold) .board {
+    display: block;
+    column-count: 2;
+    column-gap: clamp(28px, 5vw, 64px);
+  }
+
+  :global(.project-view--digital-gold) .board > :global(.project-story-pin) {
+    break-inside: avoid;
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+    margin-top: 24px;
+    margin-bottom: calc(clamp(44px, 6vw, 78px) - 24px);
+  }
+
+  :global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(-n + 4) {
+    display: block;
+    column-span: all;
+    margin-bottom: clamp(44px, 6vw, 78px);
+  }
+
   :global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(4) {
-    grid-column: 1 / 13;
-    grid-row: 3;
-    margin-top: 0;
+    margin-bottom: calc(clamp(44px, 6vw, 78px) - 24px);
   }
 
-  :global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(5) {
-    grid-column: 1 / 7;
-    grid-row: 4;
-    margin-top: 0;
-  }
-
-  :global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(6) {
-    grid-column: 7 / 13;
-    grid-row: 4;
-    margin-top: 0;
-  }
-
-  :global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(7) {
-    grid-column: 1 / 7;
-    grid-row: 5;
-    margin-top: 0;
-  }
-
-  :global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(8) {
-    grid-column: 7 / 13;
-    grid-row: 5;
-    margin-top: 0;
+  :global(.project-view--digital-gold) .board > :global(.project-story-pin):last-child {
+    margin-bottom: 0;
   }
 }
