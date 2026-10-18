@@ -634,7 +634,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   }, [isArtworkOpen]);
 
   function toggleArtwork() {
-    if (!isArtworkOpen) playInteractionTick();
     setIsArtworkPositioned(false);
     setIsArtworkOpen((isOpen) => {
       if (isOpen) {
@@ -717,7 +716,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
               aria-expanded={isMusicCreditOpen}
               onClick={() => setIsMusicCreditOpen((open) => !open)}
             >♪</button>
-            <button className={soundControl.toggle} type="button" onClick={() => setBoardSound(isSoundMuted)} aria-label={isSoundMuted ? "Enable interaction sounds" : "Mute interaction sounds"} aria-pressed={!isSoundMuted}>
+            <button className={soundControl.toggle} data-sound-control type="button" onClick={() => setBoardSound(isSoundMuted)} aria-label={isSoundMuted ? "Enable interaction sounds" : "Mute interaction sounds"} aria-pressed={!isSoundMuted}>
               <span aria-hidden="true">♫</span>
             </button>
             <div
