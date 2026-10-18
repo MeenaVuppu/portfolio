@@ -160,7 +160,6 @@ export function usePegboardDrag(
   boardRef: RefObject<HTMLElement | null>,
   previewRef: RefObject<HTMLDivElement | null>,
   onPlaced?: () => void,
-  onPickedUp?: () => void,
 ) {
   useEffect(() => {
     const board = boardRef.current;
@@ -248,7 +247,6 @@ export function usePegboardDrag(
       event.preventDefault();
       if (!active.moved) {
         active.moved = true;
-        onPickedUp?.();
         active.element.setPointerCapture(event.pointerId);
         active.element.classList.add("is-peg-dragging");
         active.element.setAttribute("aria-grabbed", "true");
@@ -368,5 +366,5 @@ export function usePegboardDrag(
       boardElement.removeEventListener("dragstart", onDragStart);
       desktopQuery.removeEventListener("change", onDesktopChange);
     };
-  }, [boardRef, onPlaced, onPickedUp, previewRef]);
+  }, [boardRef, onPlaced, previewRef]);
 }

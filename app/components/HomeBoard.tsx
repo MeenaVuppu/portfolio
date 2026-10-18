@@ -228,7 +228,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     }
     dismissSoundPrompt("enabled");
   }
-  usePegboardDrag(boardRef, dragPreviewRef, playInteractionTick, playInteractionTick);
+  usePegboardDrag(boardRef, dragPreviewRef, playInteractionTick);
   usePegboardShuffle(boardRef, projectModeActive);
 
   useLayoutEffect(() => {
