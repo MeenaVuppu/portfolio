@@ -1,10 +1,68 @@
-/* Match the homepage's compact mobile footprint; desktop and Home are untouched. */
+/* Related folders follow the homepage's rendered footprint, without scaling them. */
+:global(:is(.project-view--vyapar-plus, .project-view--digital-gold, .project-view--fixed-deposit)) {
+@media (min-width: 761px) {
+  :global(.project-elsewhere) .folder {
+    --reference-edge: var(--board-space, var(--portfolio-board-gutter));
+    --reference-height: max(760px, calc(100dvh - 64px - 2 * var(--reference-edge)));
+    --reference-fit: min(1, calc((100dvh - 64px - 2 * var(--reference-edge)) / var(--reference-height)));
+    --reference-width: min(var(--portfolio-board-max), calc(100vw - 2 * var(--portfolio-board-gutter)));
+    width: calc((var(--reference-width) - 2px * var(--reference-fit)) * .17);
+    aspect-ratio: 229 / 266;
+    height: auto;
+    min-height: 0;
+  }
+
+  :global(.project-elsewhere) .folder :global(.project-file__document) {
+    left: 3%; right: 3%; bottom: 12%;
+    padding: calc(clamp(10px, (var(--reference-height) - 2px) * .022, 17px) * var(--reference-fit)) calc(clamp(9px, var(--reference-width) * .011 / var(--reference-fit), 15px) * var(--reference-fit)) 31%;
+    border-radius: 2px;
+  }
+  :global(.project-elsewhere) .folder:not(:hover):not(:focus-visible):not(:global(.is-opening)) :global(.project-file__document) { transform: rotate(-0.15deg); }
+
+  :global(.project-elsewhere) .folder :global(.project-file__back-sheet) {
+    left: 4%; right: 3%; top: 3%; bottom: 11%;
+    transform: rotate(0.5deg);
+  }
+  :global(.project-elsewhere) .folder:is(:global(.project-file--digital-gold), :global(.project-file--vyapar-plus)) :global(.project-file__back-sheet) { display: none; }
+  :global(.project-elsewhere) .folder :global(.project-file__tab) { height: 8%; top: -8%; right: 8%; width: 34%; }
+  :global(.project-elsewhere) .folder :global(.project-file__clip) { width: calc(clamp(11px, 1.1vw, 15px) * var(--reference-fit)); height: calc(clamp(25px, (var(--reference-height) - 2px) * .05, 36px) * var(--reference-fit)); top: calc(-18px * var(--reference-fit)); }
+  :global(.project-elsewhere) .folder :global(.project-file__eyebrow),
+  :global(.project-elsewhere) .folder :global(.project-file__label) { font-size: calc(clamp(7px, .6vw, 9px) * var(--reference-fit)); line-height: 1.35; }
+  :global(.project-elsewhere) .folder :global(.project-file__title) { font-size: calc(clamp(15px, 1.35vw, 21px) * var(--reference-fit)); line-height: .98; margin-top: calc(clamp(5px, (var(--reference-height) - 2px) * .01, 9px) * var(--reference-fit)); }
+  :global(.project-elsewhere) .folder :global(.project-file__metric) { font-size: calc(clamp(23px, 2.2vw, 33px) * var(--reference-fit)); line-height: 1; margin-top: auto; }
+  :global(.project-elsewhere) .folder :global(.project-holder) { height: 38%; left: -2%; right: -2%; }
+  :global(.project-elsewhere) .folder :global(.project-holder__mesh) { top: calc(13px * var(--reference-fit)); background-size: calc(10px * var(--reference-fit)) calc(10px * var(--reference-fit)); }
+  :global(.project-elsewhere) .folder :global(.project-holder)::before,
+  :global(.project-elsewhere) .folder :global(.project-holder)::after { width: calc(13px * var(--reference-fit)); top: calc(9px * var(--reference-fit)); bottom: calc(8px * var(--reference-fit)); }
+  :global(.project-elsewhere) .folder :global(.project-holder__lip) { height: calc(12px * var(--reference-fit)); top: calc(4px * var(--reference-fit)); }
+
+  :global(.project-elsewhere) .folder:global(.project-file--vyapar-plus) :global(.project-holder) { height: 18%; left: 4%; right: 4%; }
+  :global(.project-elsewhere) .folder:global(.project-file--vyapar-plus) :global(.project-holder__mesh) { display: none; }
+  :global(.project-elsewhere) .folder:global(.project-file--vyapar-plus) :global(.project-holder)::before,
+  :global(.project-elsewhere) .folder:global(.project-file--vyapar-plus) :global(.project-holder)::after { background: #fff7fa; border-radius: 50%; height: calc(18px * var(--reference-fit)); top: calc(2px * var(--reference-fit)); width: calc(18px * var(--reference-fit)); }
+  :global(.project-elsewhere) .folder:global(.project-file--vyapar-plus) :global(.project-holder__lip) { height: calc(9px * var(--reference-fit)); left: 2%; right: 2%; top: calc(10px * var(--reference-fit)); }
+}
+
+@media (min-width: 1100px) {
+  :global(.project-elsewhere) .folder { --reference-width: calc(100vw - 2 * var(--board-space)); }
+}
+
+@media (min-width: 761px) and (max-width: 1099px) {
+  :global(.project-elsewhere) .folder { width: calc(clamp(165px, var(--reference-width) * .22 / var(--reference-fit), 190px) * var(--reference-fit)); height: calc(230px * var(--reference-fit)); }
+}
+@media (min-width: 761px) and (max-width: 900px) {
+  :global(.project-elsewhere) .folder { --reference-height: max(900px, calc(100dvh - 64px - 2 * var(--reference-edge))); }
+}
+}
+
 @media (max-width: 760px) {
   :global(.project-elsewhere) .folder {
     width: 165px;
     height: 158px;
     min-height: 0;
   }
+  :global(:is(.project-view--vyapar-plus, .project-view--digital-gold, .project-view--fixed-deposit) .project-elsewhere) .folder:nth-child(1) { left: -22px; }
+  :global(:is(.project-view--vyapar-plus, .project-view--digital-gold, .project-view--fixed-deposit) .project-elsewhere) .folder:nth-child(2) { left: 22px; }
 
   :global(.project-elsewhere) .folder :global(.project-file__document) {
     left: 3%; right: 3%; bottom: 12%;
