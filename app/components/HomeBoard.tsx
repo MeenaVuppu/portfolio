@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import polaroid from "./HomePolaroid.module.css";
-import soundPrompt from "./SoundPrompt.module.css";
+import soundControl from "./SoundControl.module.css";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BoardHook, PegPin } from "./Hardware";
 import { ProjectFile } from "./ProjectFile";
@@ -10,7 +10,7 @@ import { projects, type Project } from "../lib/projects";
 import { usePegboardDrag } from "../hooks/usePegboardDrag";
 import { usePegboardShuffle } from "../hooks/usePegboardShuffle";
 import { snapElementToNearestHole } from "../lib/headphoneMount";
-import { INTERACTION_TICK_SRC, interactionTickVolume, isInteractionTickMuted, playInteractionTick, subscribeToInteractionTicks } from "../lib/soundEffects";
+import { INTERACTION_TICK_SRC, getInteractionSoundPreference, setInteractionSoundEnabled, interactionTickVolume, isInteractionTickMuted, playInteractionTick, subscribeToInteractionTicks } from "../lib/soundEffects";
 
 type HomeBoardProps = {
   onOpenProject?: (project: Project, trigger: HTMLAnchorElement) => void;
@@ -27,16 +27,6 @@ const ARTWORK_IMAGES = [
 // Reveal controls: disable sound here without changing other portfolio audio.
 const HOME_REVEAL_STAGGER_MS = 160;
 const HOME_REVEAL_SOUND_ENABLED = true;
-const SOUND_PROMPT_PREFERENCE = "portfolio-sound-prompt";
-let soundPromptPreference: "enabled" | "dismissed" | null = null;
-
-function hasSoundPromptPreference() {
-  try {
-    const saved = window.localStorage.getItem(SOUND_PROMPT_PREFERENCE);
-    if (saved === "enabled" || saved === "dismissed") soundPromptPreference = saved;
-  } catch { /* Storage restrictions must not interrupt the board. */ }
-  return soundPromptPreference !== null;
-}
 type HomeRevealAudio = { context: AudioContext; gain: GainNode; buffer: AudioBuffer | null; ready: Promise<void> };
 type HomeImageWindow = Window & { __portfolioHomeRevealed?: boolean; __portfolioRevealAudio?: HomeRevealAudio; webkitAudioContext?: typeof AudioContext };
 
@@ -51,9 +41,9 @@ function getHomeRevealAudio(): HomeRevealAudio | undefined {
   try {
     const context = new AudioContextConstructor();
     // Let the browser apply its autoplay policy. Never await a blocked resume.
-    void context.resume().catch(() => undefined);
+    if (!isInteractionTickMuted()) void context.resume().catch(() => undefined);
     const gain = context.createGain();
-    gain.gain.value = interactionTickVolume();
+    gain.gain.value = isInteractionTickMuted() ? 0 : interactionTickVolume();
     gain.connect(context.destination);
     const audio: HomeRevealAudio = { context, gain, buffer: null, ready: Promise.resolve() };
     audio.ready = fetch(INTERACTION_TICK_SRC)
@@ -187,7 +177,10 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const [isArtworkOpen, setIsArtworkOpen] = useState(false);
   const [isArtworkPositioned, setIsArtworkPositioned] = useState(false);
   const [isMusicCreditOpen, setIsMusicCreditOpen] = useState(false);
-  const [isSoundPromptOpen, setIsSoundPromptOpen] = useState(false);
+  const [hasSavedSoundPreference, setHasSavedSoundPreference] = useState(false);
+  const [isSoundMuted, setIsSoundMuted] = useState(false);
+  const [isRevealComplete, setIsRevealComplete] = useState(false);
+  const revealSourcesRef = useRef(new Set<AudioBufferSourceNode>());
   const [activeBook, setActiveBook] = useState<number | null>(null);
   const bookNoteRef = useRef<HTMLDivElement>(null);
   const bookTapRef = useRef<{ x: number; y: number } | null>(null);
@@ -205,28 +198,24 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const fadeFrameRef = useRef<number | null>(null);
   const emailFeedbackTimerRef = useRef<number | null>(null);
   const musicPlayingRef = useRef(false);
-  const dismissSoundPrompt = useCallback((preference: "enabled" | "dismissed") => {
-    soundPromptPreference = preference;
-    try { window.localStorage.setItem(SOUND_PROMPT_PREFERENCE, preference); } catch { /* Keep the session preference. */ }
-    setIsSoundPromptOpen(false);
+  useLayoutEffect(() => {
+    setHasSavedSoundPreference(getInteractionSoundPreference() !== null);
+    setIsSoundMuted(isInteractionTickMuted());
   }, []);
 
-  useEffect(() => {
-    if (!projectModeActive && !hasSoundPromptPreference()) setIsSoundPromptOpen(true);
-  }, [projectModeActive]);
-
-  useEffect(() => {
-    if (!isSoundPromptOpen) return;
-    const timeout = window.setTimeout(() => dismissSoundPrompt("dismissed"), 5000);
-    return () => window.clearTimeout(timeout);
-  }, [isSoundPromptOpen, dismissSoundPrompt]);
-
-  function enableBoardSound() {
+  function setBoardSound(enabled: boolean) {
+    setInteractionSoundEnabled(enabled);
+    setHasSavedSoundPreference(true);
+    setIsSoundMuted(!enabled);
     const audio = getHomeRevealAudio();
-    if (audio && !isInteractionTickMuted() && audio.gain.gain.value !== 0 && audio.context.state !== "closed") {
-      void audio.context.resume().catch(() => undefined);
+    if (audio) {
+      audio.gain.gain.value = enabled ? interactionTickVolume() : 0;
+      if (enabled && audio.context.state !== "closed") void audio.context.resume().catch(() => undefined);
     }
-    dismissSoundPrompt("enabled");
+    if (!enabled) {
+      revealSourcesRef.current.forEach((source) => { source.stop(); source.disconnect(); });
+      revealSourcesRef.current.clear();
+    }
   }
   usePegboardDrag(boardRef, dragPreviewRef, playInteractionTick);
   usePegboardShuffle(boardRef, projectModeActive);
@@ -237,6 +226,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     const audio = getHomeRevealAudio();
     if (!audio) return;
     const unlock = (event: Event) => {
+      if (isInteractionTickMuted()) return;
       if (!event.isTrusted || (event instanceof KeyboardEvent &&
         (event.repeat || !["Enter", " "].includes(event.key)))) return;
       // Resume only inside a real portfolio gesture; never replay loading clicks.
@@ -262,6 +252,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     if (page.__portfolioHomeRevealed || projectModeActive) {
       page.__portfolioHomeRevealed = true;
       board.dataset.homeReveal = "ready";
+      setIsRevealComplete(true);
       return;
     }
     let disposed = false;
@@ -270,6 +261,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const audio = getHomeRevealAudio();
     const sources = new Set<AudioBufferSourceNode>();
+    revealSourcesRef.current = sources;
     let revealAudioInterrupted = false;
     const unsubscribeInteractionTicks = subscribeToInteractionTicks(() => {
       revealAudioInterrupted = true;
@@ -344,6 +336,15 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
           }).catch(() => undefined); // Cancelled reveals do not produce sound.
         });
       }
+      // Observe completion without changing any reveal timing or object order.
+      const finalReveal = animations[animations.length - 1];
+      if (finalReveal) {
+        void finalReveal.finished.then(() => {
+          if (!disposed) setIsRevealComplete(true);
+        }).catch(() => undefined);
+      } else {
+        setIsRevealComplete(true);
+      }
       board.dataset.homeReveal = "ready";
     });
 
@@ -353,6 +354,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
       window.clearTimeout(timeout);
       animations.forEach((animation) => animation.cancel());
       sources.forEach((source) => { source.stop(); source.disconnect(); });
+      sources.clear();
       removeListeners.forEach((remove) => remove());
     };
   }, [projectModeActive]);
@@ -658,6 +660,9 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
 
   return (
     <main className="fixed-landing" inert={projectModeActive} aria-hidden={projectModeActive}>
+      {!projectModeActive && !isRevealComplete && !hasSavedSoundPreference ? (
+        <button className={soundControl.edgeControl} type="button" onClick={() => setBoardSound(true)} aria-label="Enable sound for remaining pin reveals">♫ Sound on</button>
+      ) : null}
       <section
         ref={boardRef}
         data-home-reveal="pending"
@@ -729,16 +734,9 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
               aria-expanded={isMusicCreditOpen}
               onClick={() => setIsMusicCreditOpen((open) => !open)}
             >♪</button>
-            {isSoundPromptOpen && !projectModeActive && !isMusicCreditOpen ? (
-              <div className={soundPrompt.prompt} role="group" aria-label="Board sound preference">
-                <span>♫ Enjoy this board with sound?</span>
-                <div>
-                  <button type="button" onClick={enableBoardSound}>Enable sound</button>
-                  <span aria-hidden="true"> · </span>
-                  <button type="button" onClick={() => dismissSoundPrompt("dismissed")}>Not now</button>
-                </div>
-              </div>
-            ) : null}
+            <button className={soundControl.toggle} type="button" onClick={() => setBoardSound(isSoundMuted)} aria-label={isSoundMuted ? "Enable interaction sounds" : "Mute interaction sounds"} aria-pressed={!isSoundMuted}>
+              {isSoundMuted ? "♫ Sound on" : "♫ Sound off"}
+            </button>
             <div
               ref={musicCreditNoteRef}
               className="music-credit__popover"

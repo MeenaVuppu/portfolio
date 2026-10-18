@@ -1,0 +1,35 @@
+.edgeControl {
+  position: fixed;
+  top: 40px;
+  right: var(--board-space, var(--portfolio-board-gutter, 16px));
+  z-index: 140;
+  padding: 2px 4px;
+  border: 0;
+  background: transparent;
+  color: #675e60;
+  font: 11px/1.4 Arial, sans-serif;
+  cursor: pointer;
+}
+
+.toggle {
+  position: absolute;
+  right: 22px;
+  bottom: 0;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: #fff9fc;
+  font: 10px/1.4 Arial, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.edgeControl:focus-visible,
+.toggle:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  .edgeControl { right: 10px; }
+}
