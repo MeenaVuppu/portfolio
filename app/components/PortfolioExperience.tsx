@@ -7,7 +7,7 @@ import { HomeBoard } from "./HomeBoard";
 import { PortfolioTitleHeader } from "./PortfolioTitleHeader";
 import { ProjectMode, type ProjectModePhase } from "./ProjectMode";
 import { ArchiveMode } from "./ArchiveMode";
-import { playNavigationClickSound, preloadNavigationClickSound } from "../lib/soundEffects";
+import { playInteractionTick, preloadInteractionTick } from "../lib/soundEffects";
 
 type PortfolioExperienceProps = {
   initialProject?: Project | null;
@@ -38,7 +38,7 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
     const href = control.getAttribute("href");
     if (href !== null && (!href || href.startsWith("#") || href.startsWith("javascript:"))) return;
     // Bubble after the drag handler so a suppressed drag-click remains silent.
-    playNavigationClickSound();
+    playInteractionTick();
   }
 
   function clearTransitionTimer() {
@@ -108,7 +108,7 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
   }
 
   useEffect(() => {
-    preloadNavigationClickSound();
+    preloadInteractionTick();
     history.replaceState(
       { ...history.state, portfolio: true, project: initialProject?.slug ?? null, archive: initialArchive, fromBoard: false },
       "",

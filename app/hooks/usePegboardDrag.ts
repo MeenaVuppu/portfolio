@@ -160,6 +160,7 @@ export function usePegboardDrag(
   boardRef: RefObject<HTMLElement | null>,
   previewRef: RefObject<HTMLDivElement | null>,
   onPlaced?: () => void,
+  onPickedUp?: () => void,
 ) {
   useEffect(() => {
     const board = boardRef.current;
@@ -247,6 +248,7 @@ export function usePegboardDrag(
       event.preventDefault();
       if (!active.moved) {
         active.moved = true;
+        onPickedUp?.();
         active.element.setPointerCapture(event.pointerId);
         active.element.classList.add("is-peg-dragging");
         active.element.setAttribute("aria-grabbed", "true");
@@ -318,16 +320,12 @@ export function usePegboardDrag(
       const finalDestination = shouldSnapToPeg
         ? snapElementToNearestHole(boardElement, drag.element, destination) ?? drag.startOffset
         : destination;
-      const placedInNewPosition = Boolean(
-        drag.candidate && Math.hypot(finalDestination.x - drag.startOffset.x, finalDestination.y - drag.startOffset.y) > 1,
-      );
-
       drag.element.classList.remove("is-peg-dragging");
       drag.element.classList.add("is-peg-settling");
       drag.element.removeAttribute("aria-grabbed");
       drag.element.style.zIndex = drag.zIndex;
       setOffset(drag.element, finalDestination);
-      if (placedInNewPosition && onPlaced) window.setTimeout(onPlaced, 240);
+      if (onPlaced) window.setTimeout(onPlaced, 240);
       window.setTimeout(() => drag.element.classList.remove("is-peg-settling"), 260);
 
       suppressedElement = drag.element;
@@ -370,5 +368,5 @@ export function usePegboardDrag(
       boardElement.removeEventListener("dragstart", onDragStart);
       desktopQuery.removeEventListener("change", onDesktopChange);
     };
-  }, [boardRef, onPlaced, previewRef]);
+  }, [boardRef, onPlaced, onPickedUp, previewRef]);
 }

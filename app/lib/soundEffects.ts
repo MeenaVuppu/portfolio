@@ -1,52 +1,34 @@
-let pageFlipAudio: HTMLAudioElement | null = null;
-let pageFlipAudioPreloaded = false;
+export const INTERACTION_TICK_SRC = "/loading-pin-click.wav";
 
-function getPageFlipAudio() {
-  pageFlipAudio ??= new Audio("/page-flip.mp3");
-  pageFlipAudio.preload = "auto";
-  return pageFlipAudio;
-}
-
-export function preloadPageFlipSound() {
-  if (pageFlipAudioPreloaded) return;
-  getPageFlipAudio().load();
-  pageFlipAudioPreloaded = true;
-}
-
-export function playPageFlipSound() {
-  const audio = getPageFlipAudio();
-  audio.pause();
-  audio.currentTime = 0;
-  audio.muted = false;
-  audio.volume = 0.32;
-  void audio.play().catch(() => undefined);
-}
-
-// One persistent player for intentional navigation, independent of music/control audio.
+// One persistent interaction player, independent of headphone/music audio.
 let navigationClickAudio: HTMLAudioElement | null = null;
 let navigationClickPreloaded = false;
 
 function getNavigationClickAudio() {
-  navigationClickAudio ??= new Audio("/navigation-click.wav");
+  navigationClickAudio ??= new Audio(INTERACTION_TICK_SRC);
   navigationClickAudio.preload = "auto";
   return navigationClickAudio;
 }
 
-export function preloadNavigationClickSound() {
+export function preloadInteractionTick() {
   if (navigationClickPreloaded) return;
   getNavigationClickAudio().load();
   navigationClickPreloaded = true;
 }
 
-export function isNavigationClickMuted() {
+export function isInteractionTickMuted() {
   return navigationClickAudio?.muted ?? false;
 }
 
-export function playNavigationClickSound() {
+export function interactionTickVolume() {
+  return window.matchMedia("(max-width: 760px)").matches ? 0.32 : 0.4;
+}
+
+export function playInteractionTick() {
   const audio = getNavigationClickAudio();
   if (audio.muted) return;
   audio.pause();
   audio.currentTime = 0;
-  audio.volume = window.matchMedia("(max-width: 760px)").matches ? 0.32 : 0.4;
+  audio.volume = interactionTickVolume();
   void audio.play().catch(() => undefined);
 }

@@ -10,7 +10,7 @@ import { projects, type Project } from "../lib/projects";
 import { usePegboardDrag } from "../hooks/usePegboardDrag";
 import { usePegboardShuffle } from "../hooks/usePegboardShuffle";
 import { snapElementToNearestHole } from "../lib/headphoneMount";
-import { isNavigationClickMuted } from "../lib/soundEffects";
+import { INTERACTION_TICK_SRC, interactionTickVolume, isInteractionTickMuted, playInteractionTick } from "../lib/soundEffects";
 
 type HomeBoardProps = {
   onOpenProject?: (project: Project, trigger: HTMLAnchorElement) => void;
@@ -26,7 +26,6 @@ const ARTWORK_IMAGES = [
 ];
 // Reveal controls: disable sound here without changing other portfolio audio.
 const HOME_REVEAL_STAGGER_MS = 160;
-const HOME_REVEAL_SOUND_VOLUME = 0.32;
 const HOME_REVEAL_SOUND_ENABLED = true;
 const SOUND_PROMPT_PREFERENCE = "portfolio-sound-prompt";
 let soundPromptPreference: "enabled" | "dismissed" | null = null;
@@ -54,11 +53,10 @@ function getHomeRevealAudio(): HomeRevealAudio | undefined {
     // Let the browser apply its autoplay policy. Never await a blocked resume.
     void context.resume().catch(() => undefined);
     const gain = context.createGain();
-    gain.gain.value = HOME_REVEAL_SOUND_VOLUME;
+    gain.gain.value = interactionTickVolume();
     gain.connect(context.destination);
     const audio: HomeRevealAudio = { context, gain, buffer: null, ready: Promise.resolve() };
-    // This reusable asset is byte-identical to the supplied loading-pin-click WAV.
-    audio.ready = fetch("/navigation-click.wav")
+    audio.ready = fetch(INTERACTION_TICK_SRC)
       .then((response) => { if (!response.ok) throw new Error("Reveal audio unavailable"); return response.arrayBuffer(); })
       .then((bytes) => context.decodeAudioData(bytes))
       .then((buffer) => { audio.buffer = buffer; })
@@ -204,7 +202,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const headphonesRef = useRef<HTMLDivElement>(null);
   const musicCreditRef = useRef<HTMLDivElement>(null);
   const musicCreditNoteRef = useRef<HTMLDivElement>(null);
-  const placementAudioRef = useRef<HTMLAudioElement>(null);
   const fadeFrameRef = useRef<number | null>(null);
   const emailFeedbackTimerRef = useRef<number | null>(null);
   const musicPlayingRef = useRef(false);
@@ -226,23 +223,12 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
 
   function enableBoardSound() {
     const audio = getHomeRevealAudio();
-    if (audio && !isNavigationClickMuted() && audio.gain.gain.value !== 0 && audio.context.state !== "closed") {
+    if (audio && !isInteractionTickMuted() && audio.gain.gain.value !== 0 && audio.context.state !== "closed") {
       void audio.context.resume().catch(() => undefined);
     }
     dismissSoundPrompt("enabled");
   }
-  const playPlacementSound = useCallback(() => {
-    const audio = placementAudioRef.current;
-    if (!audio) return;
-
-    audio.pause();
-    audio.currentTime = 0;
-    audio.muted = false;
-    audio.volume = 0.32;
-    void audio.play().catch(() => undefined);
-  }, []);
-
-  usePegboardDrag(boardRef, dragPreviewRef, playPlacementSound);
+  usePegboardDrag(boardRef, dragPreviewRef, playInteractionTick, playInteractionTick);
   usePegboardShuffle(boardRef, projectModeActive);
 
   useLayoutEffect(() => {
@@ -330,7 +316,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
           // Check permission then, so gestures can unlock only the remaining ticks.
           void animation.finished.then(() => {
             if (disposed || document.hidden || !audio || audio.context.state !== "running" ||
-              !audio.buffer || isNavigationClickMuted() || audio.gain.gain.value === 0) return;
+              !audio.buffer || isInteractionTickMuted() || audio.gain.gain.value === 0) return;
             const now = audio.context.currentTime;
             // If the main thread catches up after a pause, never emit a burst.
             if (now < lastTickEnd) return;
@@ -653,6 +639,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   }, [isArtworkOpen]);
 
   function toggleArtwork() {
+    if (!isArtworkOpen) playInteractionTick();
     setIsArtworkPositioned(false);
     setIsArtworkOpen((isOpen) => {
       if (isOpen) {
@@ -764,7 +751,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
             </div>
           </div>
           <audio ref={audioRef} src="/lemonade-by-sakura-girl.mp3" loop preload="none" />
-          <audio ref={placementAudioRef} src="/on-pin.mp3" preload="auto" aria-hidden="true" />
         </div>
 
         <ProjectFile project={projects[1]} className="board-object p2" onOpenProject={onOpenProject} pegboardDragId="vyapar-plus" />
