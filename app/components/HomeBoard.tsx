@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import polaroid from "./HomePolaroid.module.css";
+import soundPrompt from "./SoundPrompt.module.css";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BoardHook, PegPin } from "./Hardware";
 import { ProjectFile } from "./ProjectFile";
@@ -27,6 +28,16 @@ const ARTWORK_IMAGES = [
 const HOME_REVEAL_STAGGER_MS = 160;
 const HOME_REVEAL_SOUND_VOLUME = 0.32;
 const HOME_REVEAL_SOUND_ENABLED = true;
+const SOUND_PROMPT_PREFERENCE = "portfolio-sound-prompt";
+let soundPromptPreference: "enabled" | "dismissed" | null = null;
+
+function hasSoundPromptPreference() {
+  try {
+    const saved = window.localStorage.getItem(SOUND_PROMPT_PREFERENCE);
+    if (saved === "enabled" || saved === "dismissed") soundPromptPreference = saved;
+  } catch { /* Storage restrictions must not interrupt the board. */ }
+  return soundPromptPreference !== null;
+}
 type HomeRevealAudio = { context: AudioContext; gain: GainNode; buffer: AudioBuffer | null; ready: Promise<void> };
 type HomeImageWindow = Window & { __portfolioHomeRevealed?: boolean; __portfolioRevealAudio?: HomeRevealAudio; webkitAudioContext?: typeof AudioContext };
 
@@ -178,6 +189,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const [isArtworkOpen, setIsArtworkOpen] = useState(false);
   const [isArtworkPositioned, setIsArtworkPositioned] = useState(false);
   const [isMusicCreditOpen, setIsMusicCreditOpen] = useState(false);
+  const [isSoundPromptOpen, setIsSoundPromptOpen] = useState(false);
   const [activeBook, setActiveBook] = useState<number | null>(null);
   const bookNoteRef = useRef<HTMLDivElement>(null);
   const bookTapRef = useRef<{ x: number; y: number } | null>(null);
@@ -196,6 +208,29 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const fadeFrameRef = useRef<number | null>(null);
   const emailFeedbackTimerRef = useRef<number | null>(null);
   const musicPlayingRef = useRef(false);
+  const dismissSoundPrompt = useCallback((preference: "enabled" | "dismissed") => {
+    soundPromptPreference = preference;
+    try { window.localStorage.setItem(SOUND_PROMPT_PREFERENCE, preference); } catch { /* Keep the session preference. */ }
+    setIsSoundPromptOpen(false);
+  }, []);
+
+  useEffect(() => {
+    if (!projectModeActive && !hasSoundPromptPreference()) setIsSoundPromptOpen(true);
+  }, [projectModeActive]);
+
+  useEffect(() => {
+    if (!isSoundPromptOpen) return;
+    const timeout = window.setTimeout(() => dismissSoundPrompt("dismissed"), 5000);
+    return () => window.clearTimeout(timeout);
+  }, [isSoundPromptOpen, dismissSoundPrompt]);
+
+  function enableBoardSound() {
+    const audio = getHomeRevealAudio();
+    if (audio && !isNavigationClickMuted() && audio.gain.gain.value !== 0 && audio.context.state !== "closed") {
+      void audio.context.resume().catch(() => undefined);
+    }
+    dismissSoundPrompt("enabled");
+  }
   const playPlacementSound = useCallback(() => {
     const audio = placementAudioRef.current;
     if (!audio) return;
@@ -700,6 +735,16 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
               aria-expanded={isMusicCreditOpen}
               onClick={() => setIsMusicCreditOpen((open) => !open)}
             >♪</button>
+            {isSoundPromptOpen && !projectModeActive && !isMusicCreditOpen ? (
+              <div className={soundPrompt.prompt} role="group" aria-label="Board sound preference">
+                <span>♫ Enjoy this board with sound?</span>
+                <div>
+                  <button type="button" onClick={enableBoardSound}>Enable sound</button>
+                  <span aria-hidden="true"> · </span>
+                  <button type="button" onClick={() => dismissSoundPrompt("dismissed")}>Not now</button>
+                </div>
+              </div>
+            ) : null}
             <div
               ref={musicCreditNoteRef}
               className="music-credit__popover"
