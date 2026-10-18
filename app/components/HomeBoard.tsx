@@ -10,7 +10,7 @@ import { projects, type Project } from "../lib/projects";
 import { usePegboardDrag } from "../hooks/usePegboardDrag";
 import { usePegboardShuffle } from "../hooks/usePegboardShuffle";
 import { snapElementToNearestHole } from "../lib/headphoneMount";
-import { INTERACTION_TICK_SRC, interactionTickVolume, isInteractionTickMuted, playInteractionTick } from "../lib/soundEffects";
+import { INTERACTION_TICK_SRC, interactionTickVolume, isInteractionTickMuted, playInteractionTick, subscribeToInteractionTicks } from "../lib/soundEffects";
 
 type HomeBoardProps = {
   onOpenProject?: (project: Project, trigger: HTMLAnchorElement) => void;
@@ -270,6 +270,12 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const audio = getHomeRevealAudio();
     const sources = new Set<AudioBufferSourceNode>();
+    let revealAudioInterrupted = false;
+    const unsubscribeInteractionTicks = subscribeToInteractionTicks(() => {
+      revealAudioInterrupted = true;
+      sources.forEach((source) => { source.stop(); source.disconnect(); });
+      sources.clear();
+    });
     const assetsReady = Promise.all([...board.querySelectorAll<HTMLImageElement>("img")].map((image) =>
       new Promise<void>((resolve) => {
         const decode = async () => {
@@ -315,7 +321,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
           // The zero-duration reveal finishes exactly when this object appears.
           // Check permission then, so gestures can unlock only the remaining ticks.
           void animation.finished.then(() => {
-            if (disposed || document.hidden || !audio || audio.context.state !== "running" ||
+            if (disposed || revealAudioInterrupted || document.hidden || !audio || audio.context.state !== "running" ||
               !audio.buffer || isInteractionTickMuted() || audio.gain.gain.value === 0) return;
             const now = audio.context.currentTime;
             // If the main thread catches up after a pause, never emit a burst.
@@ -343,6 +349,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
 
     return () => {
       disposed = true;
+      unsubscribeInteractionTicks();
       window.clearTimeout(timeout);
       animations.forEach((animation) => animation.cancel());
       sources.forEach((source) => { source.stop(); source.disconnect(); });
