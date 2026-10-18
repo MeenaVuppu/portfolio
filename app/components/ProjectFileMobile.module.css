@@ -1,6 +1,17 @@
 /* Related folders follow the homepage's rendered footprint, without scaling them. */
 :global(:is(.project-view--vyapar-plus, .project-view--digital-gold, .project-view--fixed-deposit)) {
 @media (min-width: 761px) {
+  :global(.project-elsewhere):has(.folder) { padding-top: 26px; }
+  :global(.project-elsewhere__files):has(.folder) {
+    align-items: start;
+    grid-template-columns: repeat(2, max-content);
+    justify-content: center;
+    gap: clamp(48px, 6vw, 88px);
+    margin-top: 38px;
+    margin-bottom: 18px;
+  }
+  :global(.project-elsewhere) .folder:nth-child(2) { margin-top: 35px; }
+
   :global(.project-elsewhere) .folder {
     --reference-edge: var(--board-space, var(--portfolio-board-gutter));
     --reference-height: max(760px, calc(100dvh - 64px - 2 * var(--reference-edge)));
