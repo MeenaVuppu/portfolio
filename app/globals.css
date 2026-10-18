@@ -8627,8 +8627,8 @@ body:has(.archive-mode) {
 
 /* Material-only overrides: attachment/snap coordinates stay unchanged. */
 .fixed-board {
-  --pegboard-hole-interior-pattern: radial-gradient(circle calc(1.8px / var(--home-fit, 1)) at center, #E65B91 0 72%, rgba(230, 91, 145, 0.5) 86%, transparent 100%);
-  --pegboard-hole-edge-pattern: radial-gradient(circle calc(1.9px / var(--home-fit, 1)) at center, rgba(255, 255, 255, 0.06) 0 78%, transparent 100%);
+  --pegboard-hole-interior-pattern: radial-gradient(circle calc(1.8px / var(--home-fit, 1)) at center, #D91670 0 60%, #CF156A 72%, rgba(217, 22, 112, 0.5) 86%, transparent 100%);
+  --pegboard-hole-edge-pattern: radial-gradient(circle calc(1.9px / var(--home-fit, 1)) at center, rgba(255, 255, 255, 0.035) 0 78%, transparent 100%);
 }
 
 :is(.project-view--vyapar-plus, .project-view--digital-gold, .project-view--fixed-deposit) .project-pegboard {
