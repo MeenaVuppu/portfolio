@@ -10,7 +10,7 @@ import { projects, type Project } from "../lib/projects";
 import { usePegboardDrag } from "../hooks/usePegboardDrag";
 import { usePegboardShuffle } from "../hooks/usePegboardShuffle";
 import { snapElementToNearestHole } from "../lib/headphoneMount";
-import { INTERACTION_TICK_SRC, getInteractionSoundPreference, setInteractionSoundEnabled, interactionTickVolume, isInteractionTickMuted, playInteractionTick, subscribeToInteractionTicks } from "../lib/soundEffects";
+import { INTERACTION_TICK_SRC, setInteractionSoundEnabled, interactionTickVolume, isInteractionTickMuted, playInteractionTick, subscribeToInteractionTicks } from "../lib/soundEffects";
 
 type HomeBoardProps = {
   onOpenProject?: (project: Project, trigger: HTMLAnchorElement) => void;
@@ -177,9 +177,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const [isArtworkOpen, setIsArtworkOpen] = useState(false);
   const [isArtworkPositioned, setIsArtworkPositioned] = useState(false);
   const [isMusicCreditOpen, setIsMusicCreditOpen] = useState(false);
-  const [hasSavedSoundPreference, setHasSavedSoundPreference] = useState(false);
   const [isSoundMuted, setIsSoundMuted] = useState(false);
-  const [isRevealComplete, setIsRevealComplete] = useState(false);
   const revealSourcesRef = useRef(new Set<AudioBufferSourceNode>());
   const [activeBook, setActiveBook] = useState<number | null>(null);
   const bookNoteRef = useRef<HTMLDivElement>(null);
@@ -199,13 +197,11 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const emailFeedbackTimerRef = useRef<number | null>(null);
   const musicPlayingRef = useRef(false);
   useLayoutEffect(() => {
-    setHasSavedSoundPreference(getInteractionSoundPreference() !== null);
     setIsSoundMuted(isInteractionTickMuted());
   }, []);
 
   function setBoardSound(enabled: boolean) {
     setInteractionSoundEnabled(enabled);
-    setHasSavedSoundPreference(true);
     setIsSoundMuted(!enabled);
     const audio = getHomeRevealAudio();
     if (audio) {
@@ -252,7 +248,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     if (page.__portfolioHomeRevealed || projectModeActive) {
       page.__portfolioHomeRevealed = true;
       board.dataset.homeReveal = "ready";
-      setIsRevealComplete(true);
       return;
     }
     let disposed = false;
@@ -335,15 +330,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
             } catch { source.disconnect(); envelope.disconnect(); }
           }).catch(() => undefined); // Cancelled reveals do not produce sound.
         });
-      }
-      // Observe completion without changing any reveal timing or object order.
-      const finalReveal = animations[animations.length - 1];
-      if (finalReveal) {
-        void finalReveal.finished.then(() => {
-          if (!disposed) setIsRevealComplete(true);
-        }).catch(() => undefined);
-      } else {
-        setIsRevealComplete(true);
       }
       board.dataset.homeReveal = "ready";
     });
@@ -660,9 +646,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
 
   return (
     <main className="fixed-landing" inert={projectModeActive} aria-hidden={projectModeActive}>
-      {!projectModeActive && !isRevealComplete && !hasSavedSoundPreference ? (
-        <button className={soundControl.edgeControl} type="button" onClick={() => setBoardSound(true)} aria-label="Enable sound for remaining pin reveals">♫ Sound on</button>
-      ) : null}
       <section
         ref={boardRef}
         data-home-reveal="pending"
