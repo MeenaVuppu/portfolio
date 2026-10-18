@@ -718,7 +718,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
               onClick={() => setIsMusicCreditOpen((open) => !open)}
             >♪</button>
             <button className={soundControl.toggle} type="button" onClick={() => setBoardSound(isSoundMuted)} aria-label={isSoundMuted ? "Enable interaction sounds" : "Mute interaction sounds"} aria-pressed={!isSoundMuted}>
-              {isSoundMuted ? "♫ Sound on" : "♫ Sound off"}
+              <span aria-hidden="true">♫</span>
             </button>
             <div
               ref={musicCreditNoteRef}
