@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import polaroid from "./HomePolaroid.module.css";
-import soundControl from "./SoundControl.module.css";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BoardHook, PegPin } from "./Hardware";
 import { ProjectFile } from "./ProjectFile";
@@ -10,7 +9,7 @@ import { projects, type Project } from "../lib/projects";
 import { usePegboardDrag } from "../hooks/usePegboardDrag";
 import { usePegboardShuffle } from "../hooks/usePegboardShuffle";
 import { snapElementToNearestHole } from "../lib/headphoneMount";
-import { INTERACTION_TICK_SRC, setInteractionSoundEnabled, interactionTickVolume, isInteractionTickMuted, playInteractionTick, subscribeToInteractionTicks } from "../lib/soundEffects";
+import { INTERACTION_TICK_SRC, interactionTickVolume, isInteractionTickMuted, playInteractionTick, subscribeToInteractionTicks } from "../lib/soundEffects";
 
 type HomeBoardProps = {
   onOpenProject?: (project: Project, trigger: HTMLAnchorElement) => void;
@@ -177,8 +176,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const [isArtworkOpen, setIsArtworkOpen] = useState(false);
   const [isArtworkPositioned, setIsArtworkPositioned] = useState(false);
   const [isMusicCreditOpen, setIsMusicCreditOpen] = useState(false);
-  const [isSoundMuted, setIsSoundMuted] = useState(false);
-  const revealSourcesRef = useRef(new Set<AudioBufferSourceNode>());
   const [activeBook, setActiveBook] = useState<number | null>(null);
   const bookNoteRef = useRef<HTMLDivElement>(null);
   const bookTapRef = useRef<{ x: number; y: number } | null>(null);
@@ -196,23 +193,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const fadeFrameRef = useRef<number | null>(null);
   const emailFeedbackTimerRef = useRef<number | null>(null);
   const musicPlayingRef = useRef(false);
-  useLayoutEffect(() => {
-    setIsSoundMuted(isInteractionTickMuted());
-  }, []);
-
-  function setBoardSound(enabled: boolean) {
-    setInteractionSoundEnabled(enabled);
-    setIsSoundMuted(!enabled);
-    const audio = getHomeRevealAudio();
-    if (audio) {
-      audio.gain.gain.value = enabled ? interactionTickVolume() : 0;
-      if (enabled && audio.context.state !== "closed") void audio.context.resume().catch(() => undefined);
-    }
-    if (!enabled) {
-      revealSourcesRef.current.forEach((source) => { source.stop(); source.disconnect(); });
-      revealSourcesRef.current.clear();
-    }
-  }
   usePegboardDrag(boardRef, dragPreviewRef, playInteractionTick);
   usePegboardShuffle(boardRef, projectModeActive);
 
@@ -256,7 +236,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const audio = getHomeRevealAudio();
     const sources = new Set<AudioBufferSourceNode>();
-    revealSourcesRef.current = sources;
     let revealAudioInterrupted = false;
     const unsubscribeInteractionTicks = subscribeToInteractionTicks(() => {
       revealAudioInterrupted = true;
@@ -716,9 +695,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
               aria-expanded={isMusicCreditOpen}
               onClick={() => setIsMusicCreditOpen((open) => !open)}
             >♪</button>
-            <button className={soundControl.toggle} data-sound-control type="button" onClick={() => setBoardSound(isSoundMuted)} aria-label={isSoundMuted ? "Enable interaction sounds" : "Mute interaction sounds"} aria-pressed={!isSoundMuted}>
-              <span aria-hidden="true">♫</span>
-            </button>
             <div
               ref={musicCreditNoteRef}
               className="music-credit__popover"
