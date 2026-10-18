@@ -9,6 +9,7 @@ import { projects, type Project } from "../lib/projects";
 import { usePegboardDrag } from "../hooks/usePegboardDrag";
 import { usePegboardShuffle } from "../hooks/usePegboardShuffle";
 import { snapElementToNearestHole } from "../lib/headphoneMount";
+import { isNavigationClickMuted } from "../lib/soundEffects";
 
 type HomeBoardProps = {
   onOpenProject?: (project: Project, trigger: HTMLAnchorElement) => void;
@@ -24,7 +25,7 @@ const ARTWORK_IMAGES = [
 ];
 // Reveal controls: disable sound here without changing other portfolio audio.
 const HOME_REVEAL_STAGGER_MS = 160;
-const HOME_REVEAL_SOUND_VOLUME = 1;
+const HOME_REVEAL_SOUND_VOLUME = 0.32;
 const HOME_REVEAL_SOUND_ENABLED = true;
 type HomeRevealAudio = { context: AudioContext; gain: GainNode; buffer: AudioBuffer | null; ready: Promise<void> };
 type HomeImageWindow = Window & { __portfolioHomeRevealed?: boolean; __portfolioRevealAudio?: HomeRevealAudio; webkitAudioContext?: typeof AudioContext };
@@ -33,7 +34,6 @@ function getHomeRevealAudio(): HomeRevealAudio | undefined {
   const page = window as HomeImageWindow;
   if (!HOME_REVEAL_SOUND_ENABLED || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   if (page.__portfolioRevealAudio) {
-    page.__portfolioRevealAudio.gain.gain.value = HOME_REVEAL_SOUND_VOLUME;
     return page.__portfolioRevealAudio;
   }
   const AudioContextConstructor = window.AudioContext ?? page.webkitAudioContext;
@@ -46,7 +46,8 @@ function getHomeRevealAudio(): HomeRevealAudio | undefined {
     gain.gain.value = HOME_REVEAL_SOUND_VOLUME;
     gain.connect(context.destination);
     const audio: HomeRevealAudio = { context, gain, buffer: null, ready: Promise.resolve() };
-    audio.ready = fetch("/loading-pin-click.wav")
+    // This reusable asset is byte-identical to the supplied loading-pin-click WAV.
+    audio.ready = fetch("/navigation-click.wav")
       .then((response) => { if (!response.ok) throw new Error("Reveal audio unavailable"); return response.arrayBuffer(); })
       .then((bytes) => context.decodeAudioData(bytes))
       .then((buffer) => { audio.buffer = buffer; })
@@ -280,10 +281,8 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
           return first.top - second.top || first.left - second.left;
         });
       if (!reducedMotion.matches) {
-        // Snapshot permission once. Unlocking later does not enqueue missed sounds.
-        const canPlay = audio?.context.state === "running" && audio.buffer !== null;
-        const audioStart = audio?.context.currentTime ?? 0;
         const visualStart = document.timeline.currentTime;
+        let lastTickEnd = -Infinity;
         objects.forEach((object, index) => {
           // Hold hidden until the stagger boundary, then appear without a transition.
           const animation = object.animate([
@@ -292,17 +291,30 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
           ], { duration: 0, delay: index * HOME_REVEAL_STAGGER_MS, fill: "backwards" });
           if (typeof visualStart === "number") animation.startTime = visualStart;
           animations.push(animation);
-          if (canPlay && audio) {
+          // The zero-duration reveal finishes exactly when this object appears.
+          // Check permission then, so gestures can unlock only the remaining ticks.
+          void animation.finished.then(() => {
+            if (disposed || document.hidden || !audio || audio.context.state !== "running" ||
+              !audio.buffer || isNavigationClickMuted() || audio.gain.gain.value === 0) return;
+            const now = audio.context.currentTime;
+            // If the main thread catches up after a pause, never emit a burst.
+            if (now < lastTickEnd) return;
             const source = audio.context.createBufferSource();
             source.buffer = audio.buffer;
-            source.connect(audio.gain);
-            source.onended = () => { source.disconnect(); sources.delete(source); };
+            const envelope = audio.context.createGain();
+            const duration = Math.min(audio.buffer.duration, HOME_REVEAL_STAGGER_MS / 1000 * 0.85);
+            lastTickEnd = now + duration;
+            envelope.gain.setValueAtTime(1, now);
+            envelope.gain.setValueAtTime(1, now + Math.max(0, duration - 0.008));
+            envelope.gain.linearRampToValueAtTime(0, now + duration);
+            source.connect(envelope);
+            envelope.connect(audio.gain);
+            source.onended = () => { source.disconnect(); envelope.disconnect(); sources.delete(source); };
             try {
-              // Schedule against the audio clock, with the same shared stagger origin.
-              source.start(audioStart + index * HOME_REVEAL_STAGGER_MS / 1000);
+              source.start(now, 0, duration);
               sources.add(source);
-            } catch { source.disconnect(); }
-          }
+            } catch { source.disconnect(); envelope.disconnect(); }
+          }).catch(() => undefined); // Cancelled reveals do not produce sound.
         });
       }
       board.dataset.homeReveal = "ready";

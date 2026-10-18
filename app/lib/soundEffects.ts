@@ -38,6 +38,10 @@ export function preloadNavigationClickSound() {
   navigationClickPreloaded = true;
 }
 
+export function isNavigationClickMuted() {
+  return navigationClickAudio?.muted ?? false;
+}
+
 export function playNavigationClickSound() {
   const audio = getNavigationClickAudio();
   if (audio.muted) return;
