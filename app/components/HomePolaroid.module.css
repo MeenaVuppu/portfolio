@@ -7,7 +7,7 @@
     display: flex;
     flex-direction: column;
     gap: 3px;
-    padding: 6px 6px 8px;
+    padding: 6px 6px 16px;
   }
 
   :global(.fixed-board) .photo.photo > img {
