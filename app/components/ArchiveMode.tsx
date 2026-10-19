@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import Image from "next/image";
 import { ProjectFile } from "./ProjectFile";
 import { projects, type Project } from "../lib/projects";
 import { PegPin, PaperClip } from "./Hardware";
@@ -60,28 +59,19 @@ export function ArchiveMode({ phase }: ArchiveModeProps) {
               <PegPin />
               <span className="section-kicker">Experiments</span>
               <h2>AI-Assisted Design to Development</h2>
-              <p className={styles.subtitle}>Exploring how AI can bridge design and development.</p>
+              <p className={styles.subtitle}>Exploring AI-assisted design workflows.</p>
               <div className={styles.sections}>
                 <section className={styles.experiment} aria-labelledby="archive-experiment-01">
                   <span className={styles.number}>01</span>
                   <h3 id="archive-experiment-01">Claude + Figma MCP</h3>
                   <p>Generated editable UI designs directly in Figma.</p>
-                  <Workflow tools={[
-                    { name: "Claude", icon: "claude" },
-                    { name: "Figma MCP", icon: "figma" },
-                    { name: "Figma", icon: "figma" },
-                  ]} label="Claude to Figma workflow" />
+                  <Workflow tools={["Claude", "Figma MCP", "Figma"]} label="Claude to Figma workflow" />
                 </section>
                 <section className={styles.experiment} aria-labelledby="archive-experiment-02">
                   <span className={styles.number}>02</span>
                   <h3 id="archive-experiment-02">Figma MCP + Codex</h3>
-                  <p>Translated Figma design context into code changes and deployed them.</p>
-                  <Workflow tools={[
-                    { name: "Figma", icon: "figma" },
-                    { name: "Codex", icon: "code" },
-                    { name: "GitHub", icon: "github" },
-                    { name: "Vercel", icon: "vercel" },
-                  ]} label="Figma to deployment workflow" />
+                  <p>Translated Figma designs into code and deployed via GitHub.</p>
+                  <Workflow tools={["Figma", "Codex", "GitHub", "Vercel"]} label="Figma to deployment workflow" />
                 </section>
               </div>
             </article>
@@ -92,18 +82,10 @@ export function ArchiveMode({ phase }: ArchiveModeProps) {
   );
 }
 
-function Workflow({ tools, label }: { tools: { name: string; icon: string }[]; label: string }) {
+function Workflow({ tools, label }: { tools: string[]; label: string }) {
   return (
     <ol className={styles.workflow} aria-label={label}>
-      {tools.map((tool) => (
-        <li key={tool.name}>
-          <span className={styles.tool}>
-            {/* Brand marks from Simple Icons (CC0). */}
-            <span className={styles.icon}><Image src={`/tool-icons/${tool.icon}.svg`} alt="" width={24} height={24} unoptimized /></span>
-            <span>{tool.name}</span>
-          </span>
-        </li>
-      ))}
+      {tools.map((tool) => <li key={tool}>{tool}</li>)}
     </ol>
   );
 }
