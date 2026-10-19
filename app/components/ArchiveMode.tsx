@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ProjectFile } from "./ProjectFile";
 import { projects, type Project } from "../lib/projects";
 import { PegPin, PaperClip } from "./Hardware";
 import type { ProjectModePhase } from "./ProjectMode";
+import styles from "./ArchiveExperiments.module.css";
 
 type ArchiveModeProps = { phase: ProjectModePhase; onOpenProject?: (project: Project, trigger: HTMLAnchorElement) => void };
 
@@ -24,6 +25,7 @@ const hivesProject: Project = {
 };
 
 export function ArchiveMode({ phase }: ArchiveModeProps) {
+  const [experimentsOpen, setExperimentsOpen] = useState(false);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
     document.querySelectorAll<HTMLElement>(".archive-mode .project-reveal")
@@ -53,6 +55,38 @@ export function ArchiveMode({ phase }: ArchiveModeProps) {
               </article>
             ))}
           </div>
+          <section className={styles.experiments} aria-label="Design to development experiments">
+            <button
+              type="button"
+              className={`project-story-pin archive-work-pin ${styles.card}`}
+              aria-expanded={experimentsOpen}
+              aria-controls="archive-experiments-detail"
+              onClick={() => setExperimentsOpen((open) => !open)}
+            >
+              <PegPin />
+              <span className="section-kicker">Experiments</span>
+              <h2>From Figma to Deployment</h2>
+              <p>AI-Assisted Design to Development</p>
+              <span className={styles.action}>{experimentsOpen ? "Close experiments −" : "Explore two experiments +"}</span>
+            </button>
+            <div id="archive-experiments-detail" className={styles.detail} hidden={!experimentsOpen}>
+              <article>
+                <h3>01 — Claude + Figma MCP</h3>
+                <p>Explored generating editable UI designs directly inside Figma using Claude and Figma MCP.</p>
+                <ol className={styles.workflow} aria-label="Claude and Figma MCP workflow">
+                  <li>Claude</li><li>Figma MCP</li><li>Editable UI in Figma</li>
+                </ol>
+              </article>
+              <article>
+                <h3>02 — Figma MCP + Codex</h3>
+                <p>Connected Figma MCP to Codex in VS Code. Pointed Codex to the Figma design to interpret it and implement code changes, then pushed those changes to GitHub for deployment on Vercel.</p>
+                <ol className={styles.workflow} aria-label="Figma MCP and Codex workflow">
+                  <li>Figma design</li><li>Figma MCP</li><li>Codex in VS Code</li><li>Code changes</li><li>GitHub</li><li>Vercel deployment</li>
+                </ol>
+              </article>
+              <p className={styles.note}>Explorations of AI-assisted workflows, not production implementations or automatic Figma-to-code synchronization.</p>
+            </div>
+          </section>
       </section>
       </div>
     </main>

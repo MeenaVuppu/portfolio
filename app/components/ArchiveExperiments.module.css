@@ -1,0 +1,53 @@
+.experiments {
+  max-width: 900px;
+  margin: 48px auto;
+}
+
+.experiments .card {
+  display: block;
+  position: relative;
+  width: min(100%, 422px);
+  min-height: 0;
+  margin: 0;
+  padding: 28px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.card p { margin-bottom: 16px; }
+.action { font-size: 13px; color: var(--muted); }
+.card:focus-visible { outline: 2px solid var(--ink); outline-offset: 5px; }
+
+.detail {
+  margin-top: 24px;
+  padding: 28px;
+  background: #fffdfa;
+  border: 1px solid rgba(115, 63, 83, 0.15);
+}
+
+.detail article + article { margin-top: 28px; }
+.detail h3 { font-size: 18px; margin: 0 0 12px; }
+.detail p { color: var(--muted); line-height: 1.6; }
+.workflow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 18px 0 0;
+  list-style: none;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.workflow li { display: flex; align-items: center; gap: 8px; }
+.workflow li + li::before { content: "→"; color: var(--muted); }
+.detail .note { font-size: 13px; margin: 24px 0 0; }
+
+@media (max-width: 760px) {
+  .experiments { max-width: 250px; margin: 28px auto; }
+  .experiments .card, .detail { padding: 20px; }
+  .card h2 { font-size: 20px; }
+  .card p, .detail p { font-size: 14px; }
+  .detail h3 { font-size: 16px; }
+}
