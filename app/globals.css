@@ -7378,8 +7378,8 @@ body {
   }
 
   .portfolio-experience.is-board-mode .fixed-board .photo-object {
-    height: 95px;
-    width: 125px;
+    height: 120px;
+    width: 145px;
   }
 
   .portfolio-experience.is-board-mode .fixed-board .progress-note {
@@ -7402,7 +7402,10 @@ body {
   }
 
   .portfolio-experience.is-board-mode .fixed-board > .contact-note {
-    width: 145px;
+    height: 64px;
+    min-height: 0;
+    padding: 12px 8px;
+    width: 125px;
   }
 }
 

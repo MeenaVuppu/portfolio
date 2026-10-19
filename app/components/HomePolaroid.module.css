@@ -4,10 +4,18 @@
 
 @media (max-width: 760px) {
   :global(.fixed-board) .photo.photo {
-    padding-bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 6px 6px 8px;
+  }
+
+  :global(.fixed-board) .photo.photo > img {
+    flex: 1;
+    min-height: 0;
   }
 
   .photo :global(.photo-caption) {
-    bottom: 5%;
+    position: static;
   }
 }
