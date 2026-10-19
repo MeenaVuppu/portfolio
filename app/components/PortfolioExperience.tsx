@@ -33,7 +33,7 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
 
   function navigationClick(event: MouseEvent<HTMLDivElement>) {
     if (event.button !== 0 || !event.nativeEvent.isTrusted || !(event.target instanceof Element)) return;
-    const control = event.target.closest("a[href], button");
+    const control = event.target.closest('a[href], button, [role="button"]');
     if (!control || control.closest("[data-page-snapshot]") || control.getAttribute("aria-disabled") === "true") return;
     // Music playback and the mute toggle keep their own audio behavior.
     if (control.matches(".headphones-button, [data-sound-control]")) return;

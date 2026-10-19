@@ -45,7 +45,6 @@ export function ArchiveMode({ phase }: ArchiveModeProps) {
           <section className={styles.experiments} aria-label="Design to development experiments">
             <article className={`project-story-pin archive-work-pin ${styles.card}`}>
               <PegPin />
-              <span className="section-kicker">Experiments</span>
               <h2>AI-Assisted Design to Development</h2>
               <p className={styles.subtitle}>Exploring AI-assisted design workflows.</p>
               <div className={styles.sections}>
@@ -58,8 +57,8 @@ export function ArchiveMode({ phase }: ArchiveModeProps) {
                 <section className={styles.experiment} aria-labelledby="archive-experiment-02">
                   <span className={styles.number}>02</span>
                   <h3 id="archive-experiment-02">Figma MCP + Codex</h3>
-                  <p>Translated Figma designs into code and deployed via GitHub.</p>
-                  <Workflow tools={["Figma", "Codex", "GitHub", "Vercel"]} label="Figma to deployment workflow" />
+                  <p>Turned Figma designs into working UI using Codex and deployed via Vercel.</p>
+                  <Workflow tools={["Figma", "Figma MCP", "Codex", "Working UI"]} label="Figma to working UI workflow" />
                 </section>
               </div>
             </article>

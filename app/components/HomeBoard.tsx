@@ -870,6 +870,8 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
+              if (event.repeat) return;
+              playInteractionTick();
               onOpenArchive?.(event.currentTarget);
             }
           }}
