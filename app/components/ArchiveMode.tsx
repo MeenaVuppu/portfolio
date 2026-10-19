@@ -41,19 +41,7 @@ export function ArchiveMode({ phase }: ArchiveModeProps) {
               <ProjectFile project={hivesProject} className="archive-hives" externalHref="https://assets.nextleap.app/submissions/HivesCaseStudy-cb636350-e245-462f-b229-da36d2199b60.pdf" externalTitleHref="https://www.figma.com/proto/kVL7VTLA4mfSRs8o6vBZzM/M3--Prototype?node-id=93-2465&t=NqwsOi4ts5pt8Ixj-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=93%3A2465" />
             </div>
           </div>
-          <div className="archive-supporting-label section-kicker">Supporting work</div>
-          <div className="archive-work-gallery" aria-label="Additional product exposure">
-            {workSnapshots.map((work, index) => (
-              <article className="project-story-pin archive-work-pin project-reveal" key={work.title}>
-                {index % 2 === 0 ? <PegPin /> : <PaperClip />}
-                <span className="section-kicker">Product exposure</span>
-                <h2>{work.title}</h2>
-                <p>{work.descriptor}</p>
-                {work.scope && <p>{work.scope}</p>}
-                {work.evidence && <small className="project-story-footnote">{work.evidence}</small>}
-              </article>
-            ))}
-          </div>
+          <div className="archive-supporting-label section-kicker">Experiments &amp; Explorations</div>
           <section className={styles.experiments} aria-label="Design to development experiments">
             <article className={`project-story-pin archive-work-pin ${styles.card}`}>
               <PegPin />
@@ -76,6 +64,20 @@ export function ArchiveMode({ phase }: ArchiveModeProps) {
               </div>
             </article>
           </section>
+          <div className="archive-supporting-label section-kicker">Supporting work</div>
+          <div className="archive-work-gallery" aria-label="Additional product exposure">
+            {workSnapshots.map((work, index) => (
+              <article className="project-story-pin archive-work-pin project-reveal" key={work.title}>
+                {index % 2 === 0 ? <PegPin /> : <PaperClip />}
+                <span className="section-kicker">Product exposure</span>
+                <h2>{work.title}</h2>
+                <p>{work.descriptor}</p>
+                {work.scope && <p>{work.scope}</p>}
+                {work.evidence && <small className="project-story-footnote">{work.evidence}</small>}
+              </article>
+            ))}
+          </div>
+
       </section>
       </div>
     </main>
