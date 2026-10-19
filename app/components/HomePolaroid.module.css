@@ -4,18 +4,11 @@
 
 @media (max-width: 760px) {
   :global(.fixed-board) .photo.photo {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    padding: 6px 6px 16px;
+    padding: 8px 8px 50px;
   }
 
   :global(.fixed-board) .photo.photo > img {
-    flex: 1;
-    min-height: 0;
-  }
-
-  .photo :global(.photo-caption) {
-    position: static;
+    aspect-ratio: 132.758 / 164.898;
+    height: auto;
   }
 }
