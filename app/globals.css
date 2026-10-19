@@ -7387,6 +7387,9 @@ body {
   }
 
   .portfolio-experience.is-board-mode .fixed-board > .resume-object {
+    height: 54px;
+    min-height: 0;
+    padding: 10px 12px 8px;
     width: 115px;
   }
 
