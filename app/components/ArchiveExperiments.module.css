@@ -1,53 +1,31 @@
-.experiments {
-  max-width: 900px;
-  margin: 48px auto;
-}
-
-.experiments .card {
-  display: block;
-  position: relative;
-  width: min(100%, 422px);
-  min-height: 0;
-  margin: 0;
-  padding: 28px;
-  text-align: left;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-}
-
-.card p { margin-bottom: 16px; }
-.action { font-size: 13px; color: var(--muted); }
-.card:focus-visible { outline: 2px solid var(--ink); outline-offset: 5px; }
-
-.detail {
-  margin-top: 24px;
-  padding: 28px;
-  background: #fffdfa;
-  border: 1px solid rgba(115, 63, 83, 0.15);
-}
-
-.detail article + article { margin-top: 28px; }
-.detail h3 { font-size: 18px; margin: 0 0 12px; }
-.detail p { color: var(--muted); line-height: 1.6; }
-.workflow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 0;
-  margin: 18px 0 0;
-  list-style: none;
-  font-size: 13px;
-  line-height: 1.6;
-}
-.workflow li { display: flex; align-items: center; gap: 8px; }
-.workflow li + li::before { content: "→"; color: var(--muted); }
-.detail .note { font-size: 13px; margin: 24px 0 0; }
-
+.experiments { max-width: 900px; margin: 48px auto; }
+.experiments .card { position: relative; width: 100%; min-height: 0; margin: 0; padding: 36px; text-align: left; color: var(--ink); transform: none; }
+.card > :global(.section-kicker) { color: #da1b71; }
+.card h2 { max-width: 620px; margin: 12px 0; font-size: clamp(26px, 2.5vw, 36px); font-weight: 750; line-height: 1.15; letter-spacing: -0.025em; }
+.card .subtitle { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.5; }
+.sections { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 28px; }
+.experiment { min-width: 0; padding: 22px; border-radius: 14px; background: #fff0f5; }
+.number { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: #fbdce9; color: #ce1769; font-size: 15px; font-weight: 700; }
+.experiment h3 { margin: 14px 0 8px; font-size: 19px; font-weight: 650; line-height: 1.3; }
+.experiment p { min-height: 63px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+.workflow { display: flex; align-items: flex-start; justify-content: space-between; padding: 0; margin: 20px 0 0; list-style: none; }
+.workflow li { position: relative; flex: 1; min-width: 0; }
+.workflow li + li::before { content: "→"; position: absolute; left: -5px; top: 10px; color: #9d8d94; font-size: 18px; }
+.tool { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; font-size: 11px; line-height: 1.35; }
+.icon { display: grid; place-items: center; width: 42px; height: 42px; background: #fffdfb; border-radius: 10px; }
+.icon img { width: 24px; height: 24px; }
 @media (max-width: 760px) {
-  .experiments { max-width: 250px; margin: 28px auto; }
-  .experiments .card, .detail { padding: 20px; }
-  .card h2 { font-size: 20px; }
-  .card p, .detail p { font-size: 14px; }
-  .detail h3 { font-size: 16px; }
+  .experiments { max-width: 310px; margin: 28px auto; }
+  .experiments .card { padding: 22px 18px; }
+  .card h2 { font-size: 26px; }
+  .card .subtitle { font-size: 14px; }
+  .sections { grid-template-columns: 1fr; gap: 16px; margin-top: 22px; }
+  .experiment { padding: 18px 14px; }
+  .experiment h3 { font-size: 18px; }
+  .experiment p { min-height: 0; }
+  .workflow { margin-top: 18px; }
+  .icon { width: 36px; height: 36px; }
+  .icon img { width: 21px; height: 21px; }
+  .tool { font-size: 10px; }
+  .workflow li + li::before { top: 7px; font-size: 16px; }
 }

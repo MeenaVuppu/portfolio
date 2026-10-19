@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import Image from "next/image";
 import { ProjectFile } from "./ProjectFile";
 import { projects, type Project } from "../lib/projects";
 import { PegPin, PaperClip } from "./Hardware";
@@ -25,7 +26,6 @@ const hivesProject: Project = {
 };
 
 export function ArchiveMode({ phase }: ArchiveModeProps) {
-  const [experimentsOpen, setExperimentsOpen] = useState(false);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
     document.querySelectorAll<HTMLElement>(".archive-mode .project-reveal")
@@ -56,39 +56,54 @@ export function ArchiveMode({ phase }: ArchiveModeProps) {
             ))}
           </div>
           <section className={styles.experiments} aria-label="Design to development experiments">
-            <button
-              type="button"
-              className={`project-story-pin archive-work-pin ${styles.card}`}
-              aria-expanded={experimentsOpen}
-              aria-controls="archive-experiments-detail"
-              onClick={() => setExperimentsOpen((open) => !open)}
-            >
+            <article className={`project-story-pin archive-work-pin ${styles.card}`}>
               <PegPin />
               <span className="section-kicker">Experiments</span>
-              <h2>From Figma to Deployment</h2>
-              <p>AI-Assisted Design to Development</p>
-              <span className={styles.action}>{experimentsOpen ? "Close experiments −" : "Explore two experiments +"}</span>
-            </button>
-            <div id="archive-experiments-detail" className={styles.detail} hidden={!experimentsOpen}>
-              <article>
-                <h3>01 — Claude + Figma MCP</h3>
-                <p>Explored generating editable UI designs directly inside Figma using Claude and Figma MCP.</p>
-                <ol className={styles.workflow} aria-label="Claude and Figma MCP workflow">
-                  <li>Claude</li><li>Figma MCP</li><li>Editable UI in Figma</li>
-                </ol>
-              </article>
-              <article>
-                <h3>02 — Figma MCP + Codex</h3>
-                <p>Connected Figma MCP to Codex in VS Code. Pointed Codex to the Figma design to interpret it and implement code changes, then pushed those changes to GitHub for deployment on Vercel.</p>
-                <ol className={styles.workflow} aria-label="Figma MCP and Codex workflow">
-                  <li>Figma design</li><li>Figma MCP</li><li>Codex in VS Code</li><li>Code changes</li><li>GitHub</li><li>Vercel deployment</li>
-                </ol>
-              </article>
-              <p className={styles.note}>Explorations of AI-assisted workflows, not production implementations or automatic Figma-to-code synchronization.</p>
-            </div>
+              <h2>AI-Assisted Design to Development</h2>
+              <p className={styles.subtitle}>Exploring how AI can bridge design and development.</p>
+              <div className={styles.sections}>
+                <section className={styles.experiment} aria-labelledby="archive-experiment-01">
+                  <span className={styles.number}>01</span>
+                  <h3 id="archive-experiment-01">Claude + Figma MCP</h3>
+                  <p>Generated editable UI designs directly in Figma.</p>
+                  <Workflow tools={[
+                    { name: "Claude", icon: "claude" },
+                    { name: "Figma MCP", icon: "figma" },
+                    { name: "Figma", icon: "figma" },
+                  ]} label="Claude to Figma workflow" />
+                </section>
+                <section className={styles.experiment} aria-labelledby="archive-experiment-02">
+                  <span className={styles.number}>02</span>
+                  <h3 id="archive-experiment-02">Figma MCP + Codex</h3>
+                  <p>Translated Figma design context into code changes and deployed them.</p>
+                  <Workflow tools={[
+                    { name: "Figma", icon: "figma" },
+                    { name: "Codex", icon: "code" },
+                    { name: "GitHub", icon: "github" },
+                    { name: "Vercel", icon: "vercel" },
+                  ]} label="Figma to deployment workflow" />
+                </section>
+              </div>
+            </article>
           </section>
       </section>
       </div>
     </main>
+  );
+}
+
+function Workflow({ tools, label }: { tools: { name: string; icon: string }[]; label: string }) {
+  return (
+    <ol className={styles.workflow} aria-label={label}>
+      {tools.map((tool) => (
+        <li key={tool.name}>
+          <span className={styles.tool}>
+            {/* Brand marks from Simple Icons (CC0). */}
+            <span className={styles.icon}><Image src={`/tool-icons/${tool.icon}.svg`} alt="" width={24} height={24} unoptimized /></span>
+            <span>{tool.name}</span>
+          </span>
+        </li>
+      ))}
+    </ol>
   );
 }
