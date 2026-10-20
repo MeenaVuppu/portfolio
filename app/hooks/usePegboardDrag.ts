@@ -2,7 +2,7 @@
 
 import { type RefObject, useEffect } from "react";
 
-import { snapElementToNearestHole } from "../lib/headphoneMount";
+import { dragPegboardSurface, findElementPegPlacement } from "../lib/headphoneMount";
 
 type Box = {
   bottom: number;
@@ -17,6 +17,7 @@ type Point = { x: number; y: number };
 
 type DragState = {
   candidate: Point | null;
+  snappedOffset: Point | null;
   element: HTMLElement;
   lastSafeOffset: Point;
   moved: boolean;
@@ -37,10 +38,23 @@ function numberFromDataset(value: string | undefined) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-function relativeBox(element: HTMLElement, boardBox: DOMRect): Box {
-  const rect = element.getBoundingClientRect();
-  const scale = boardBox.width / element.closest<HTMLElement>(".fixed-board")!.offsetWidth || 1;
-  const insets = (element.dataset.pegBounds ?? "0,0,0,0")
+function dragBounds(element: HTMLElement) {
+  const measured = element.getBoundingClientRect();
+  const lift = hasPegAnchor(element) && element.classList.contains("is-peg-dragging")
+    ? Number.parseFloat(window.getComputedStyle(element).scale) || 1 : 1;
+  const cx = (measured.left + measured.right) / 2;
+  const cy = (measured.top + measured.bottom) / 2;
+  const rect = {
+    left: cx - measured.width / lift / 2,
+    right: cx + measured.width / lift / 2,
+    top: cy - measured.height / lift / 2,
+    bottom: cy + measured.height / lift / 2,
+    width: measured.width / lift,
+    height: measured.height / lift,
+  };
+  // The replacement shelf image is tightly cropped; its old holder-only
+  // insets would exclude the books and shelf ends from collision checks.
+  const insets = (element.dataset.pegDraggable === "watercolor" ? "0,0,0,0" : element.dataset.pegBounds ?? "0,0,0,0")
     .split(",")
     .map((value) => Number.parseFloat(value) || 0);
   const [leftRatio, topRatio, rightRatio, bottomRatio] = insets;
@@ -48,16 +62,25 @@ function relativeBox(element: HTMLElement, boardBox: DOMRect): Box {
   const insetTop = rect.height * topRatio;
   const insetRight = rect.width * rightRatio;
   const insetBottom = rect.height * bottomRatio;
-  const width = rect.width - insetLeft - insetRight;
-  const height = rect.height - insetTop - insetBottom;
+  return {
+    bottom: rect.bottom - insetBottom,
+    left: rect.left + insetLeft,
+    right: rect.right - insetRight,
+    top: rect.top + insetTop,
+  };
+}
+
+function relativeBox(element: HTMLElement, boardBox: DOMRect): Box {
+  const rect = dragBounds(element);
+  const scale = boardBox.width / element.closest<HTMLElement>(".fixed-board")!.offsetWidth || 1;
 
   return {
-    bottom: (rect.bottom - boardBox.top - insetBottom) / scale,
-    height: height / scale,
-    left: (rect.left - boardBox.left + insetLeft) / scale,
-    right: (rect.right - boardBox.left - insetRight) / scale,
-    top: (rect.top - boardBox.top + insetTop) / scale,
-    width: width / scale,
+    bottom: (rect.bottom - boardBox.top) / scale,
+    height: (rect.bottom - rect.top) / scale,
+    left: (rect.left - boardBox.left) / scale,
+    right: (rect.right - boardBox.left) / scale,
+    top: (rect.top - boardBox.top) / scale,
+    width: (rect.right - rect.left) / scale,
   };
 }
 
@@ -94,12 +117,12 @@ function cornerInsideRoundedBoard(x: number, y: number, width: number, height: n
   return (x - centerX) ** 2 + (y - centerY) ** 2 <= radius ** 2;
 }
 
-function fitsBoard(box: Box, width: number, height: number, radius: number) {
+function fitsBoard(box: Box, width: number, height: number, radius: number, padding = BOARD_PADDING) {
   if (
-    box.left < BOARD_PADDING ||
-    box.top < BOARD_PADDING ||
-    box.right > width - BOARD_PADDING ||
-    box.bottom > height - BOARD_PADDING
+    box.left < padding ||
+    box.top < padding ||
+    box.right > width - padding ||
+    box.bottom > height - padding
   ) {
     return false;
   }
@@ -112,8 +135,8 @@ function fitsBoard(box: Box, width: number, height: number, radius: number) {
   ].every(([x, y]) => cornerInsideRoundedBoard(x, y, width, height, radius));
 }
 
-function isValid(box: Box, others: Box[], boardWidth: number, boardHeight: number, radius: number) {
-  return fitsBoard(box, boardWidth, boardHeight, radius) && !others.some((other) => overlaps(box, other));
+function isValid(box: Box, others: Box[], boardWidth: number, boardHeight: number, radius: number, padding = BOARD_PADDING) {
+  return fitsBoard(box, boardWidth, boardHeight, radius, padding) && !others.some((other) => overlaps(box, other));
 }
 
 function nearestAnchor(
@@ -122,16 +145,20 @@ function nearestAnchor(
   others: Box[],
   boardSize: { width: number; height: number },
   radius: number,
+  padding = BOARD_PADDING,
+  visibleInsets = { left: 0, top: 0, right: 0, bottom: 0 },
 ) {
   const candidates: Array<Point & { distance: number }> = [];
-  const maxX = boardSize.width - BOARD_PADDING - itemSize.width;
-  const maxY = boardSize.height - BOARD_PADDING - itemSize.height;
+  const minX = padding + visibleInsets.left;
+  const minY = padding + visibleInsets.top;
+  const maxX = boardSize.width - padding - itemSize.width - visibleInsets.right;
+  const maxY = boardSize.height - padding - itemSize.height - visibleInsets.bottom;
 
   // Consider actual free-space edges, not an unrelated coarse grid that can
   // miss every valid position for a large folder in a narrow gap.
-  const xs = [desired.x, BOARD_PADDING, maxX, ...others.flatMap(box =>
+  const xs = [desired.x, minX, maxX, ...others.flatMap(box =>
     [box.right + COLLISION_GAP, box.left - itemSize.width - COLLISION_GAP])];
-  const ys = [desired.y, BOARD_PADDING, maxY, ...others.flatMap(box =>
+  const ys = [desired.y, minY, maxY, ...others.flatMap(box =>
     [box.bottom + COLLISION_GAP, box.top - itemSize.height - COLLISION_GAP])];
   for (const y of ys) {
     for (const x of xs) {
@@ -142,7 +169,12 @@ function nearestAnchor(
   candidates.sort((a, b) => a.distance - b.distance);
   for (const candidate of candidates) {
     const candidateBox = boxAt(candidate, itemSize.width, itemSize.height);
-    if (isValid(candidateBox, others, boardSize.width, boardSize.height, radius)) {
+    const visibleBox = { ...candidateBox,
+      left: candidateBox.left - visibleInsets.left, top: candidateBox.top - visibleInsets.top,
+      right: candidateBox.right + visibleInsets.right, bottom: candidateBox.bottom + visibleInsets.bottom,
+    };
+    if (isValid(candidateBox, others, boardSize.width, boardSize.height, radius, padding) &&
+        fitsBoard(visibleBox, boardSize.width, boardSize.height, radius, padding)) {
       return { x: candidate.x, y: candidate.y };
     }
   }
@@ -154,6 +186,11 @@ function setOffset(element: HTMLElement, point: Point) {
   element.dataset.pegX = String(point.x);
   element.dataset.pegY = String(point.y);
   element.style.translate = `${point.x}px ${point.y}px`;
+}
+
+function hasPegAnchor(element: HTMLElement) {
+  return ["digital-gold", "vyapar-plus", "fixed-deposit", "photo", "contact", "resume", "archive", "headphones", "linkedin", "progress-note"]
+    .includes(element.dataset.pegDraggable ?? "");
 }
 
 export function usePegboardDrag(
@@ -208,7 +245,6 @@ export function usePegboardDrag(
       const origin = event.target;
       if (!(origin instanceof Element)) return;
       if (origin.closest(".music-credit")) return;
-      if (origin.closest(".brush-holder__hitarea")) return;
       const element = origin.closest<HTMLElement>("[data-peg-draggable]");
       if (!element || !boardElement.contains(element)) return;
 
@@ -221,6 +257,7 @@ export function usePegboardDrag(
 
       active = {
         candidate: null,
+        snappedOffset: null,
         element,
         lastSafeOffset: startOffset,
         moved: false,
@@ -265,14 +302,56 @@ export function usePegboardDrag(
       };
       const itemSize = { width: active.startRect.width, height: active.startRect.height };
       const boardSize = { width: boardElement.offsetWidth, height: boardElement.offsetHeight };
-      const candidate = nearestAnchor(desired, itemSize, others, boardSize, radius);
+      let candidate = nearestAnchor(desired, itemSize, others, boardSize, radius);
+      const usesPaintedBoundary = ["watercolor", "plant"].includes(active.element.dataset.pegDraggable ?? "");
+      const surface = hasPegAnchor(active.element) || usesPaintedBoundary ? dragPegboardSurface(boardElement) : null;
+      // The plant's collision insets exclude transparent image padding, but
+      // its foliage must still stay inside the board when testing boundaries.
+      const plant = active.element.dataset.pegDraggable === "plant";
+      const raw = active.element.getBoundingClientRect();
+      const plantInsets = (active.element.dataset.pegBounds ?? "0,0,0,0").split(",").map(Number);
+      const visibleInsets = plant ? {
+        left: raw.width * plantInsets[0] / scale, top: raw.height * plantInsets[1] / scale,
+        right: raw.width * plantInsets[2] / scale, bottom: raw.height * plantInsets[3] / scale,
+      } : { left: 0, top: 0, right: 0, bottom: 0 };
+      if (surface && usesPaintedBoundary) {
+        // These unpinned objects use the same painted edge as pinned objects,
+        // without changing their geometry or introducing peg snapping.
+        const origin = { x: (surface.rect.left - boardBox.left) / scale, y: (surface.rect.top - boardBox.top) / scale };
+        const localOthers = others.map(box => ({ ...box,
+          left: box.left - origin.x, right: box.right - origin.x,
+          top: box.top - origin.y, bottom: box.bottom - origin.y,
+        }));
+        const local = nearestAnchor({ x: desired.x - origin.x, y: desired.y - origin.y }, itemSize,
+          localOthers, { width: surface.rect.width / scale, height: surface.rect.height / scale }, radius, 4 / scale, visibleInsets);
+        candidate = local ? { x: local.x + origin.x, y: local.y + origin.y } : null;
+      } else if (surface) {
+        // Preview and release must use one solver, one geometry and one result.
+        active.snappedOffset = findElementPegPlacement(boardElement, active.element, {
+          x: active.startOffset.x + delta.x,
+          y: active.startOffset.y + delta.y,
+        }, dragBounds, surface);
+        const current = relativeBox(active.element, boardBox);
+        const offset = active.snappedOffset;
+        candidate = offset ? {
+          x: current.left + offset.x - numberFromDataset(active.element.dataset.pegX),
+          y: current.top + offset.y - numberFromDataset(active.element.dataset.pegY),
+        } : null;
+      }
 
       active.candidate = candidate;
       if (candidate) showPreview(candidate, itemSize.width, itemSize.height);
       else hidePreview();
 
       const directBox = boxAt(desired, itemSize.width, itemSize.height);
-      if (fitsBoard(directBox, boardSize.width, boardSize.height, radius)) {
+      const fitsSurface = surface
+        ? fitsBoard(boxAt({
+            x: desired.x - (surface.rect.left - boardBox.left) / scale - visibleInsets.left,
+            y: desired.y - (surface.rect.top - boardBox.top) / scale - visibleInsets.top,
+          }, itemSize.width + visibleInsets.left + visibleInsets.right,
+          itemSize.height + visibleInsets.top + visibleInsets.bottom), surface.rect.width / scale, surface.rect.height / scale, radius, 4 / scale)
+        : fitsBoard(directBox, boardSize.width, boardSize.height, radius);
+      if (fitsSurface) {
         const nextOffset = { x: active.startOffset.x + delta.x, y: active.startOffset.y + delta.y };
         active.lastSafeOffset = nextOffset;
         setOffset(active.element, nextOffset);
@@ -304,19 +383,10 @@ export function usePegboardDrag(
             y: currentOffset.y + drag.candidate.y - currentRect.top,
           }
         : drag.startOffset;
-      const shouldSnapToPeg = [
-        "digital-gold",
-        "vyapar-plus",
-        "fixed-deposit",
-        "photo",
-        "contact",
-        "resume",
-        "archive",
-        "headphones",
-        "watercolor",
-      ].includes(drag.element.dataset.pegDraggable ?? "");
-      const finalDestination = shouldSnapToPeg
-        ? snapElementToNearestHole(boardElement, drag.element, destination) ?? drag.startOffset
+      // The bookshelf has no pin/clip anchor. Snapping its top edge to a hole
+      // can reject free space; it settles at the validated candidate instead.
+      const finalDestination = hasPegAnchor(drag.element)
+        ? drag.snappedOffset ?? drag.startOffset
         : destination;
       drag.element.classList.remove("is-peg-dragging");
       drag.element.classList.add("is-peg-settling");
