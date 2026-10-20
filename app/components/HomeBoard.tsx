@@ -5,6 +5,7 @@ import polaroid from "./HomePolaroid.module.css";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BoardHook, PegPin } from "./Hardware";
 import { ProjectFile } from "./ProjectFile";
+import { ExperienceClock } from "./ExperienceClock";
 import { projects, type Project } from "../lib/projects";
 import { usePegboardDrag } from "../hooks/usePegboardDrag";
 import { usePegboardShuffle } from "../hooks/usePegboardShuffle";
@@ -809,6 +810,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
                   }}
                 />
               ))}
+              <ExperienceClock />
             </div>
             <button
               ref={brushHitareaRef}

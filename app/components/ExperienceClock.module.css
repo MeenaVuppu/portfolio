@@ -1,0 +1,32 @@
+.clock {
+  position: absolute;
+  left: 22%;
+  top: 0;
+  width: 32%;
+  aspect-ratio: 2 / 1;
+  container-type: inline-size;
+  z-index: 3;
+  filter: drop-shadow(0 1px 1px rgba(50, 25, 12, 0.15));
+  user-select: none;
+}
+
+.clock > img { display: block; width: 100%; height: auto; pointer-events: none; }
+.display {
+  position: absolute;
+  left: 16%;
+  right: 14%;
+  top: 35%;
+  bottom: 29%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5cqw;
+  color: #ffc27a;
+  font-family: var(--font-geist-mono), monospace;
+  text-shadow: 0 0 2px rgba(255, 164, 60, 0.25);
+  pointer-events: none;
+}
+.digits { display: flex; align-items: baseline; gap: 3cqw; white-space: nowrap; font-size: 13cqw; font-weight: 600; line-height: 1; }
+.separator { margin: 0 1cqw; }
+.label { font-size: 4.5cqw; letter-spacing: 0.06em; white-space: nowrap; line-height: 1; }
