@@ -418,12 +418,12 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
 
     musicPlayingRef.current = true;
     setIsMusicPlaying(true);
-    if (audio.paused) audio.volume = 0;
+    stopAudioFade();
+    audio.volume = 0.12;
 
     try {
       await audio.play();
       setNoteBurst((burst) => burst + 1);
-      fadeAudio(audio, 0.12, 1300);
     } catch {
       musicPlayingRef.current = false;
       setIsMusicPlaying(false);
@@ -671,7 +671,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
               </span>
             </div>
           </div>
-          <audio ref={audioRef} src="/lemonade-by-sakura-girl.mp3" loop preload="none" />
+          <audio ref={audioRef} src="/lemonade-by-sakura-girl.mp3" loop preload="auto" />
         </div>
 
         <ProjectFile project={projects[1]} className="board-object p2" onOpenProject={onOpenProject} pegboardDragId="vyapar-plus" />

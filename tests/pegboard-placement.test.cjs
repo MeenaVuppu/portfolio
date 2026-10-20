@@ -40,3 +40,25 @@ for(const id of ['linkedin','progress-note']) {
  assert(result);assert.equal(200+result.y,firstRow,`${id}: top edge reaches first row`);
 }
 console.log('PASS: all five requested items can reach the first painted row.');
+// Regression: dragging above the top-left corner used to leave only corner
+// candidates, all invalid for the plant's full foliage, and return null.
+for(const x of [49,0,-100,779,950]) {
+ const p=g.nearestAnchor({x,y:-100},plantSize,[],boardSize,22,4,{left:45,top:22,right:23,bottom:42});
+ assert(p,'plant must find a nearby top-row placement when dragged past a corner');
+ assert.equal(p.y,26,'plant must settle at the top clearance, not jump to a lower row');
+ const visible={...g.boxAt(p,200,330),left:p.x-45,right:p.x+223,top:p.y-22,bottom:p.y+372};
+ assert(g.fitsBoard(visible,1002,840,22,4),'full foliage remains inside rounded board');
+ const again=g.nearestAnchor(p,plantSize,[],boardSize,22,4,{left:45,top:22,right:23,bottom:42});
+ assert.equal(again.x,p.x);assert.equal(again.y,p.y,'repeat pickup/drop must preserve settled top-row position');
+}
+console.log('PASS: plant top-row placement near both corners and repeated placement remains stable.');
+const anchoredIds=['digital-gold','vyapar-plus','fixed-deposit','photo','contact','resume','archive','headphones','linkedin','progress-note'];
+for(const id of anchoredIds){
+ item.dataset.pegDraggable=id;item.dataset.pegX='0';item.dataset.pegY='0';
+ pin.matches=selector=>id==='headphones'?selector==='[data-headphone-mount-anchor]':['digital-gold','vyapar-plus','fixed-deposit'].includes(id)&&selector==='.project-file__clip';
+ item.querySelector=()=>['contact','linkedin','progress-note'].includes(id)?null:pin;
+ const result=api.findElementPegPlacement(board,item,{x:0,y:-170},getBounds,surface);
+ assert(result,`${id}: valid top-row placement exists`);
+ assert(200+result.y>=surface.rect.top+4);assert(200+result.y<=firstRow+20,`${id}: settles within first row band`);
+}
+console.log('PASS: all ten anchored pins plus shelf and plant have valid top-row placements.');

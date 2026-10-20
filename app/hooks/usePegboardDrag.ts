@@ -160,13 +160,24 @@ function nearestAnchor(
     [box.right + COLLISION_GAP, box.left - itemSize.width - COLLISION_GAP])];
   const ys = [desired.y, minY, maxY, ...others.flatMap(box =>
     [box.bottom + COLLISION_GAP, box.top - itemSize.height - COLLISION_GAP])];
+  // The plant's full foliage may reach a rounded corner even when its inset
+  // collision box fits. Include edge positions clear of the corner arc, rather
+  // than rejecting the entire top row when the pointer is above/near a corner.
+  if (visibleInsets.left || visibleInsets.top || visibleInsets.right || visibleInsets.bottom) {
+    xs.push(radius + visibleInsets.left, boardSize.width - radius - itemSize.width - visibleInsets.right);
+    ys.push(radius + visibleInsets.top, boardSize.height - radius - itemSize.height - visibleInsets.bottom);
+  }
   for (const y of ys) {
     for (const x of xs) {
       candidates.push({ x, y, distance: (x - desired.x) ** 2 + (y - desired.y) ** 2 });
     }
   }
 
-  candidates.sort((a, b) => a.distance - b.distance);
+  const abovePlantEdge = visibleInsets.top > 0 && desired.y < minY;
+  candidates.sort((a, b) => {
+    if (abovePlantEdge && (a.y === minY) !== (b.y === minY)) return a.y === minY ? -1 : 1;
+    return a.distance - b.distance;
+  });
   for (const candidate of candidates) {
     const candidateBox = boxAt(candidate, itemSize.width, itemSize.height);
     const visibleBox = { ...candidateBox,
