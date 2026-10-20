@@ -7,7 +7,7 @@ import { HomeBoard } from "./HomeBoard";
 import { PortfolioTitleHeader } from "./PortfolioTitleHeader";
 import { ProjectMode, type ProjectModePhase } from "./ProjectMode";
 import { ArchiveMode } from "./ArchiveMode";
-import { playInteractionTick, preloadInteractionTick } from "../lib/soundEffects";
+import { playInteractionTick, preloadInteractionTick, unlockInteractionTick } from "../lib/soundEffects";
 
 type PortfolioExperienceProps = {
   initialProject?: Project | null;
@@ -30,16 +30,20 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
   const activeTransition = useRef<ViewTransition | null>(null);
   const outgoingSnapshot = useRef<HTMLElement | null>(null);
   const lastProjectTrigger = useRef<HTMLElement | null>(null);
+  const droppedAudioGuard = useRef<{ element: Element; until: number } | null>(null);
 
   function navigationClick(event: MouseEvent<HTMLDivElement>) {
     if (event.button !== 0 || !event.nativeEvent.isTrusted || !(event.target instanceof Element)) return;
+    const dropped = droppedAudioGuard.current;
+    if (dropped && window.performance.now() < dropped.until && dropped.element.contains(event.target)) return;
     const control = event.target.closest('a[href], button, [role="button"]');
     if (!control || control.closest("[data-page-snapshot]") || control.getAttribute("aria-disabled") === "true") return;
     // Music playback and the mute toggle keep their own audio behavior.
     if (control.matches(".headphones-button, [data-sound-control]")) return;
     const href = control.getAttribute("href");
     if (href !== null && (!href || href.startsWith("#") || href.startsWith("javascript:"))) return;
-    // Bubble after the drag handler so a suppressed drag-click remains silent.
+    // Capture before a route change can remove the clicked control.
+    // Pointer-up records the existing drag suppression window without changing dragging.
     playInteractionTick();
   }
 
@@ -177,7 +181,15 @@ export function PortfolioExperience({ initialProject = null, initialArchive = fa
   }
 
   return (
-    <div onClick={navigationClick} className={`portfolio-experience ${selectedProject || archiveOpen ? "is-project-mode" : "is-board-mode"} project-phase-${phase}`}>
+    <div onPointerDownCapture={(event) => { if (event.isTrusted) unlockInteractionTick(); }}
+      onPointerUpCapture={(event) => {
+        if (!event.isTrusted) return;
+        unlockInteractionTick();
+        const dragged = event.target instanceof Element ? event.target.closest("[data-peg-draggable].is-peg-dragging") : null;
+        if (dragged) droppedAudioGuard.current = { element: dragged, until: window.performance.now() + 500 };
+      }}
+      onKeyDownCapture={(event) => { if (event.isTrusted && !event.repeat && ["Enter", " "].includes(event.key)) unlockInteractionTick(); }}
+      onClickCapture={navigationClick} className={`portfolio-experience ${selectedProject || archiveOpen ? "is-project-mode" : "is-board-mode"} project-phase-${phase}`}>
       <PortfolioTitleHeader
         title={phase !== "closing" ? (selectedProject?.headline ?? (archiveOpen ? "Archive" : HOME_HEADLINE)) : HOME_HEADLINE}
         compactTitle={selectedProject?.headline ?? (archiveOpen ? "Archive" : HOME_HEADLINE)}

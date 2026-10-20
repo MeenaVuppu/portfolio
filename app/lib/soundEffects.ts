@@ -7,6 +7,40 @@ const interactionTickListeners = new Set<() => void>();
 type SoundPreference = "enabled" | "disabled";
 let soundPreference: SoundPreference | null = null;
 let soundPreferenceLoaded = false;
+type TickAudio = { context: AudioContext; gain: GainNode; buffer: AudioBuffer | null; ready: Promise<void> };
+let tickAudio: TickAudio | undefined;
+let activeTick: AudioBufferSourceNode | null = null;
+let tickRequest = 0;
+
+// Loading and interaction ticks share the context unlocked by a real gesture.
+// In particular, a settled drop runs after that gesture's event has finished.
+export function getInteractionTickAudio(): TickAudio | undefined {
+  if (tickAudio) return tickAudio;
+  const Constructor = window.AudioContext ?? (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  if (!Constructor) return;
+  try {
+    const context = new Constructor();
+    const gain = context.createGain();
+    gain.gain.value = isInteractionTickMuted() ? 0 : interactionTickVolume();
+    gain.connect(context.destination);
+    const audio: TickAudio = { context, gain, buffer: null, ready: Promise.resolve() };
+    audio.ready = fetch(INTERACTION_TICK_SRC)
+      .then(response => { if (!response.ok) throw new Error("Tick audio unavailable"); return response.arrayBuffer(); })
+      .then(bytes => context.decodeAudioData(bytes))
+      .then(buffer => { audio.buffer = buffer; })
+      .catch(() => undefined);
+    tickAudio = audio;
+    return audio;
+  } catch { /* Use the existing media player if Web Audio is unavailable. */ }
+}
+
+export function unlockInteractionTick() {
+  if (isInteractionTickMuted()) return;
+  const audio = getInteractionTickAudio();
+  if (audio && audio.context.state !== "running" && audio.context.state !== "closed") {
+    void audio.context.resume().catch(() => undefined);
+  }
+}
 
 export function getInteractionSoundPreference() {
   if (!soundPreferenceLoaded) {
@@ -24,6 +58,10 @@ export function getInteractionSoundPreference() {
 export function setInteractionSoundEnabled(enabled: boolean) {
   soundPreferenceLoaded = true;
   soundPreference = enabled ? "enabled" : "disabled";
+  tickRequest++;
+  if (tickAudio) tickAudio.gain.gain.value = enabled ? interactionTickVolume() : 0;
+  if (!enabled && activeTick) { activeTick.stop(); activeTick = null; }
+  if (enabled) unlockInteractionTick();
   if (navigationClickAudio) {
     navigationClickAudio.muted = !enabled;
     if (!enabled) navigationClickAudio.pause();
@@ -47,7 +85,7 @@ function getNavigationClickAudio() {
 
 export function preloadInteractionTick() {
   if (navigationClickPreloaded) return;
-  getNavigationClickAudio().load();
+  if (!getInteractionTickAudio()) getNavigationClickAudio().load();
   navigationClickPreloaded = true;
 }
 
@@ -62,8 +100,28 @@ export function interactionTickVolume() {
 export function playInteractionTick() {
   // Intentional interactions take priority over any remaining loading ticks.
   interactionTickListeners.forEach((listener) => listener());
-  const audio = getNavigationClickAudio();
   if (isInteractionTickMuted()) return;
+  const shared = getInteractionTickAudio();
+  if (shared) {
+    const request = ++tickRequest;
+    const requestedAt = window.performance.now();
+    const resume = shared.context.state === "running" ? Promise.resolve() : shared.context.resume();
+    void Promise.all([shared.ready, resume]).then(() => {
+      // A blocked or slow request must never replay after a later interaction.
+      if (request !== tickRequest || window.performance.now() - requestedAt > 500 ||
+          isInteractionTickMuted() || shared.context.state !== "running" || !shared.buffer) return;
+      if (activeTick) activeTick.stop();
+      const source = shared.context.createBufferSource();
+      source.buffer = shared.buffer;
+      shared.gain.gain.value = interactionTickVolume();
+      source.connect(shared.gain);
+      source.onended = () => { source.disconnect(); if (activeTick === source) activeTick = null; };
+      activeTick = source;
+      source.start();
+    }).catch(() => undefined);
+    return;
+  }
+  const audio = getNavigationClickAudio();
   audio.pause();
   audio.currentTime = 0;
   audio.volume = interactionTickVolume();

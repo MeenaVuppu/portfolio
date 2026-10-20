@@ -10,7 +10,7 @@ import { projects, type Project } from "../lib/projects";
 import { usePegboardDrag } from "../hooks/usePegboardDrag";
 import { usePegboardShuffle } from "../hooks/usePegboardShuffle";
 import { snapElementToNearestHole } from "../lib/headphoneMount";
-import { INTERACTION_TICK_SRC, interactionTickVolume, isInteractionTickMuted, playInteractionTick, subscribeToInteractionTicks } from "../lib/soundEffects";
+import { getInteractionTickAudio, unlockInteractionTick, isInteractionTickMuted, playInteractionTick, subscribeToInteractionTicks } from "../lib/soundEffects";
 
 type HomeBoardProps = {
   onOpenProject?: (project: Project, trigger: HTMLAnchorElement) => void;
@@ -27,33 +27,14 @@ const ARTWORK_IMAGES = [
 // Reveal controls: disable sound here without changing other portfolio audio.
 const HOME_REVEAL_STAGGER_MS = 160;
 const HOME_REVEAL_SOUND_ENABLED = true;
-type HomeRevealAudio = { context: AudioContext; gain: GainNode; buffer: AudioBuffer | null; ready: Promise<void> };
-type HomeImageWindow = Window & { __portfolioHomeRevealed?: boolean; __portfolioRevealAudio?: HomeRevealAudio; webkitAudioContext?: typeof AudioContext };
+type HomeImageWindow = Window & { __portfolioHomeRevealed?: boolean };
 
-function getHomeRevealAudio(): HomeRevealAudio | undefined {
-  const page = window as HomeImageWindow;
+function getHomeRevealAudio() {
   if (!HOME_REVEAL_SOUND_ENABLED || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  if (page.__portfolioRevealAudio) {
-    return page.__portfolioRevealAudio;
-  }
-  const AudioContextConstructor = window.AudioContext ?? page.webkitAudioContext;
-  if (!AudioContextConstructor) return;
-  try {
-    const context = new AudioContextConstructor();
-    // Let the browser apply its autoplay policy. Never await a blocked resume.
-    if (!isInteractionTickMuted()) void context.resume().catch(() => undefined);
-    const gain = context.createGain();
-    gain.gain.value = isInteractionTickMuted() ? 0 : interactionTickVolume();
-    gain.connect(context.destination);
-    const audio: HomeRevealAudio = { context, gain, buffer: null, ready: Promise.resolve() };
-    audio.ready = fetch(INTERACTION_TICK_SRC)
-      .then((response) => { if (!response.ok) throw new Error("Reveal audio unavailable"); return response.arrayBuffer(); })
-      .then((bytes) => context.decodeAudioData(bytes))
-      .then((buffer) => { audio.buffer = buffer; })
-      .catch(() => undefined);
-    page.__portfolioRevealAudio = audio;
-    return audio;
-  } catch { /* Unsupported or unavailable audio never blocks the board. */ }
+  const audio = getInteractionTickAudio();
+  // Autoplay may succeed for returning visitors; a blocked attempt stays silent.
+  unlockInteractionTick();
+  return audio;
 }
 const BOOK_NOTES = [
   { title: "Days at the Morisaki Bookshop", note: "Such a pleasant read. Light and easy, like a breeze.", left: "14%", top: "30%", width: "48%", height: "23%" },
@@ -196,30 +177,6 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const musicPlayingRef = useRef(false);
   usePegboardDrag(boardRef, dragPreviewRef, playInteractionTick);
   usePegboardShuffle(boardRef, projectModeActive);
-
-  useLayoutEffect(() => {
-    const portfolio = boardRef.current?.closest(".portfolio-experience");
-    if (!portfolio) return;
-    const audio = getHomeRevealAudio();
-    if (!audio) return;
-    const unlock = (event: Event) => {
-      if (isInteractionTickMuted()) return;
-      if (!event.isTrusted || (event instanceof KeyboardEvent &&
-        (event.repeat || !["Enter", " "].includes(event.key)))) return;
-      // Resume only inside a real portfolio gesture; never replay loading clicks.
-      if (audio.context.state !== "running" && audio.context.state !== "closed") void audio.context.resume().catch(() => undefined);
-    };
-    portfolio.addEventListener("pointerdown", unlock, { passive: true });
-    portfolio.addEventListener("pointerup", unlock, { passive: true });
-    portfolio.addEventListener("click", unlock, { passive: true });
-    portfolio.addEventListener("keydown", unlock);
-    return () => {
-      portfolio.removeEventListener("pointerdown", unlock);
-      portfolio.removeEventListener("pointerup", unlock);
-      portfolio.removeEventListener("click", unlock);
-      portfolio.removeEventListener("keydown", unlock);
-    };
-  }, []);
 
   useLayoutEffect(() => {
     const board = boardRef.current;
