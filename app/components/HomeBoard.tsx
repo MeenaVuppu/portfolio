@@ -676,7 +676,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
 
         <ProjectFile project={projects[1]} className="board-object p2" onOpenProject={onOpenProject} pegboardDragId="vyapar-plus" />
 
-        <ProjectFile project={{ ...projects[2], eyebrow: "Simplified scheme selection and brought returns upfront to reduce friction in the investment journey.", metric: "~85%", metricLabel: "Projected uplift · Targeted increase in investment initiations" }} className="board-object p3" onOpenProject={onOpenProject} pegboardDragId="fixed-deposit" />
+        <ProjectFile project={{ ...projects[2], eyebrow: "Muthoot · Investment journey optimization", metric: "~85%", metricLabel: "Projected uplift · Investment initiations" }} className="board-object p3" onOpenProject={onOpenProject} pegboardDragId="fixed-deposit" />
 
         <a
           className="resume-object board-object"
