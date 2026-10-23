@@ -11,6 +11,15 @@ type TickAudio = { context: AudioContext; gain: GainNode; buffer: AudioBuffer | 
 let tickAudio: TickAudio | undefined;
 let activeTick: AudioBufferSourceNode | null = null;
 let tickRequest = 0;
+let gesturePrimed = false;
+
+function loadTickBuffer(audio: TickAudio) {
+  return fetch(INTERACTION_TICK_SRC)
+    .then(response => { if (!response.ok) throw new Error("Tick audio unavailable"); return response.arrayBuffer(); })
+    .then(bytes => audio.context.decodeAudioData(bytes))
+    .then(buffer => { audio.buffer = buffer; })
+    .catch(() => undefined);
+}
 
 // Loading and interaction ticks share the context unlocked by a real gesture.
 // In particular, a settled drop runs after that gesture's event has finished.
@@ -24,11 +33,7 @@ export function getInteractionTickAudio(): TickAudio | undefined {
     gain.gain.value = isInteractionTickMuted() ? 0 : interactionTickVolume();
     gain.connect(context.destination);
     const audio: TickAudio = { context, gain, buffer: null, ready: Promise.resolve() };
-    audio.ready = fetch(INTERACTION_TICK_SRC)
-      .then(response => { if (!response.ok) throw new Error("Tick audio unavailable"); return response.arrayBuffer(); })
-      .then(bytes => context.decodeAudioData(bytes))
-      .then(buffer => { audio.buffer = buffer; })
-      .catch(() => undefined);
+    audio.ready = loadTickBuffer(audio);
     tickAudio = audio;
     return audio;
   } catch { /* Use the existing media player if Web Audio is unavailable. */ }
@@ -37,6 +42,22 @@ export function getInteractionTickAudio(): TickAudio | undefined {
 export function unlockInteractionTick() {
   if (isInteractionTickMuted()) return;
   const audio = getInteractionTickAudio();
+  if (audio && !gesturePrimed && window.navigator?.userActivation?.isActive) {
+    // Start a silent frame inside the gesture, not in the delayed drop callback.
+    // Some mobile audio engines need a source start as well as resume().
+    try {
+      const source = audio.context.createBufferSource();
+      source.buffer = audio.context.createBuffer(1, 1, audio.context.sampleRate);
+      source.connect(audio.context.destination);
+      source.onended = () => source.disconnect();
+      source.start();
+      gesturePrimed = true;
+    } catch { /* A blocked gesture can be retried on the next interaction. */ }
+  }
+  if (audio && window.navigator?.userActivation?.isActive) {
+    // A failed fetch/decode must not permanently silence later gestures.
+    audio.ready = audio.ready.then(() => audio.buffer ? undefined : loadTickBuffer(audio));
+  }
   if (audio && audio.context.state !== "running" && audio.context.state !== "closed") {
     void audio.context.resume().catch(() => undefined);
   }

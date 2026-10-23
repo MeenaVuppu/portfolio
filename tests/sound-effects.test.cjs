@@ -2,20 +2,27 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('fs'),vm=require('vm'),ts=require('typescript');
 const source=ts.transpileModule(fs.readFileSync(require('node:path').join(__dirname,'../app/lib/soundEffects.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
-function player({muted=false,mobile=false,blocked=false,slow=false}={}){
- const state={gesture:false,time:0,starts:0,stops:0,resumes:0};let release;
+function player({muted=false,mobile=false,blocked=false,slow=false,needsPrime=false,failFirst=false}={}){
+ const state={gesture:false,time:0,starts:0,stops:0,resumes:0,primes:0,fetches:0};let release;
  class Context{
   state='suspended';destination={};
   createGain(){return {gain:{value:0},connect(){}}}
   decodeAudioData(){return Promise.resolve({duration:.2})}
-  resume(){state.resumes++;if(blocked&&!state.gesture)return Promise.reject(new Error('NotAllowedError'));this.state='running';return Promise.resolve()}
-  createBufferSource(){return {connect(){},disconnect(){},start(){state.starts++},stop(){state.stops++}}}
+  createBuffer(){return {silent:true}}
+  resume(){state.resumes++;if((blocked&&!state.gesture)||(needsPrime&&!state.primes))return Promise.reject(new Error('NotAllowedError'));this.state='running';return Promise.resolve()}
+  createBufferSource(){return {connect(){},disconnect(){},start(){if(this.buffer?.silent)state.primes++;else state.starts++},stop(){state.stops++}}}
  }
  const storage=new Map(muted?[['portfolio-interaction-sound','disabled']]:[]);
- const c={exports:{},fetch:()=>slow?new Promise(r=>release=()=>r({ok:true,arrayBuffer:()=>Promise.resolve(new ArrayBuffer(1))})):Promise.resolve({ok:true,arrayBuffer:()=>Promise.resolve(new ArrayBuffer(1))}),window:{AudioContext:Context,localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},matchMedia:()=>({matches:mobile}),performance:{now:()=>state.time}}};
+ const c={exports:{},fetch:()=>{state.fetches++;return failFirst&&state.fetches===1?Promise.reject(new Error('Network failure')):slow?new Promise(r=>release=()=>r({ok:true,arrayBuffer:()=>Promise.resolve(new ArrayBuffer(1))})):Promise.resolve({ok:true,arrayBuffer:()=>Promise.resolve(new ArrayBuffer(1))})},window:{navigator:{userActivation:{get isActive(){return state.gesture}}},AudioContext:Context,localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},matchMedia:()=>({matches:mobile}),performance:{now:()=>state.time}}};
  vm.runInNewContext(source,c);return {api:c.exports,state,release:()=>release(),storage};
 }
 const settle=async()=>{for(let n=0;n<12;n++)await Promise.resolve()};
+test('gesture primes mobile audio once and a later settled drop remains audible',async()=>{
+ const {api,state}=player({needsPrime:true});api.preloadInteractionTick();await settle();state.gesture=true;api.unlockInteractionTick();await settle();state.gesture=false;state.time=240;api.playInteractionTick();await settle();assert.equal(state.primes,1);assert.equal(state.starts,1);state.gesture=true;api.unlockInteractionTick();assert.equal(state.primes,1);
+});
+test('first permitted gesture retries a failed preload without duplicating navigation audio',async()=>{
+ const {api,state}=player({failFirst:true});api.preloadInteractionTick();await settle();assert.equal(api.getInteractionTickAudio().buffer,null);state.gesture=true;api.unlockInteractionTick();api.playInteractionTick();await settle();assert.equal(state.fetches,2);assert.equal(state.starts,1);
+});
 test('gesture unlock survives until the settled drop, with one tick and unchanged volume',async()=>{
  const {api,state}=player({blocked:true});api.preloadInteractionTick();await settle();state.gesture=true;api.unlockInteractionTick();await settle();state.gesture=false;state.time=240;api.playInteractionTick();await settle();assert.equal(state.starts,1);assert.equal(api.getInteractionTickAudio().gain.gain.value,.4);
 });
