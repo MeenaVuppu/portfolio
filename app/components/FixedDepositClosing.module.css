@@ -1,3 +1,14 @@
+.introTitle {
+  font-size: clamp(24px, 2.2vw, 30px);
+  font-weight: 630;
+  line-height: 1.08;
+  margin: 14px 0 18px;
+}
+
+@media (min-width: 761px) {
+  .introStats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 .card :global(.project-story-items) {
   grid-template-columns: 1fr;
   gap: 22px;
@@ -20,7 +31,7 @@
 }
 
 .card :global(.project-story-items) > div:first-child strong {
-  font-size: clamp(36px, 4vw, 52px);
+  font-size: clamp(28px, 3vw, 40px);
 }
 
 .card :global(.project-story-items) span {
@@ -38,5 +49,35 @@
 .card :global(.project-story-footnote) {
   color: var(--project-ink);
   font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Fixed Deposit paper copy shares one hierarchy; phone presentation is unchanged. */
+.typography :global(.project-story-pin) h2 {
+  font-size: clamp(24px, 2.2vw, 30px);
+  font-weight: 630;
+  line-height: 1.2;
+}
+.typography :global(.project-story-pin) > p,
+.typography > :global(.project-board-copy) {
+  color: var(--project-muted);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+.typography :global(.section-kicker),
+.typography > :global(.project-board-label) {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.typography :global(.project-story-footnote),
+.typography :global(.project-story-items) span,
+.typography > :global(.project-board-footnote),
+.typography :global(.project-board-meta) span,
+.typography :global(.project-board-stats) span {
+  color: var(--project-muted);
+  font-size: 12px;
+  font-weight: 400;
   line-height: 1.6;
 }

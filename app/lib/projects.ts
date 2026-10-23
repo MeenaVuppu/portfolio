@@ -412,87 +412,62 @@ export const projects: Project[] = [
     pegboardTheme: { board: "#FAF7F2", holes: "#C7A2AF" },
     eyebrow: "Muthoot · Investment redesign",
     title: "Fixed Deposit",
-    description: "Redesigning Fixed Deposits around informed investment decisions.",
+    description: "Simplifying scheme selection, surfacing returns earlier, and reducing steps between exploring an FD and starting an investment.",
     metric: "5.6%",
     metricLabel: "Partner-selection baseline",
     category: "FIXED DEPOSIT · INVESTMENT EXPERIENCE",
-    headline: "Redesigning Fixed Deposits around informed investment decisions.",
-    metadata: ["Product Designer", "Launch planned", "Measurement planned post-launch"],
-    snapshotLabel: "Existing funnel · Baseline",
-    snapshotFootnote: "Existing experience baseline — not redesign outcomes. Analytics show progression, not the cause of drop-off.",
+    headline: "Making Fixed Deposit investments easier to start",
+    metadata: ["Product Designer"],
+    snapshotLabel: "Historical CleverTap funnel · 01 Aug – 01 Sept",
+    snapshotCopy: "Simplifying scheme selection, surfacing returns earlier, and reducing steps between exploring an FD and starting an investment.",
+    snapshotFootnote: "Further down the historical funnel: 91 KYC starts · 5 proceeded to pay.",
     stats: [
-      { value: "25,275", label: "FD page-view events" },
-      { value: "5.6%", label: "Selected Mahindra Finance" },
-      { value: "19.1%", label: "Of those users clicked Book Now" },
+      { value: "94.4%", label: "Drop-off: 25,275 FD page views → 1,416 Mahindra partner selections (5.6% progressed)" },
+      { value: "80.9%", label: "Drop-off: 1,416 partner selections → 271 ROI / Book Now clicks (19.1% progressed)" },
     ],
     storyPins: [
       {
-            "eyebrow": "EVIDENCE · ANALYTICS + CUSTOMER RESEARCH",
-            "title": "The funnel showed where users dropped off. Customer conversations helped us understand why.",
-            "body": "The investment journey showed significant drop-offs during scheme selection. To understand the friction, the PM and I spoke with customers who struggled to compare schemes and make investment decisions. Combining these insights with funnel analysis, we redesigned the page to simplify scheme comparison, clarify key information and make investment choices easier to navigate."
+            "eyebrow": "THE OPPORTUNITY",
+            "title": "Confusing investment choices were creating friction before users could begin investing.",
+            "body": "Historical funnel data showed that only 271 of 25,275 FD page visitors proceeded to Book Now.",
+            "footnote": "In exploratory research, 5 of 8 participants reported confusion in the existing investment-selection experience. This helped identify a usability problem worth addressing."
       },
       {
-            "eyebrow": "UX diagnosis",
-            "title": "The interface was asking for commitment before helping users compare.",
-            "body": "The existing experience distributed the decision across filters and multiple scheme cards. Customers had to interpret tenure, rate and eligibility, then choose between several Book Now actions without seeing the investment outcome together. Instead of treating this as a visual clean-up, I reframed the problem around one question: What does someone need to know before they’re comfortable continuing with an FD?",
-            "highlight": "Help users evaluate first. Ask them to commit second."
+        eyebrow: "THE DESIGN DECISION",
+        title: "Review the scheme and returns, then continue.",
+        body: "I simplified scheme selection, brought interest rates and projected returns together, and reduced navigation between choosing an FD and starting an investment.",
+        screens: [
+          { src: "/fd-iphone/before-schemes.png", alt: "Before: Scheme and tenure selection leading to a separate investment-detail screen", label: "BEFORE · CHOOSE, THEN ENTER DETAILS" },
+          { src: "/fd-iphone/after-scheme.png", alt: "After: Scheme summary, amount and returns with a clear Continue action", label: "AFTER · REVIEW & CONTINUE" },
+        ],
+        variant: "visual",
       },
       {
-            "eyebrow": "Design principles",
-            "title": "Turn scattered choices into one decision.",
+        eyebrow: "02 — SIMPLIFIED SELECTION",
+        title: "Make rate and tenure choices easier to review.",
+        body: "The old amount step sat separately from scheme selection. The redesigned selection sheet groups interest rates and tenure choices in a focused view.",
+        screens: [
+          { src: "/fd-iphone/investment-details.png", alt: "Before: A separate investment amount and returns step", label: "BEFORE · SEPARATE AMOUNT STEP" },
+          { src: "/fd-iphone/after-tenure.png", alt: "After: Interest-rate selection sheet with clear tenure choices", label: "AFTER · RATE & TENURE SHEET" },
+        ],
+        variant: "visual",
+      },
+      {
+            "eyebrow": "EXPECTED IMPACT · PROJECTED",
+            "title": "Investment Initiation Rate",
+            "body": "Exploratory research identified confusion in the existing scheme-selection experience. By simplifying tenure selection, surfacing returns earlier, and reducing navigation, the redesign targets a higher rate of investment initiation.",
             "items": [
-                  { "value": "01 — Select, don’t scan", "label": "Move tenure alternatives out of competing cards and into a focused selection sheet." },
-                  { "value": "02 — Show the consequence", "label": "Keep rate, tenure, investment amount, gains and maturity value together." },
-                  { "value": "03 — One clear next step", "label": "Replace multiple Book Now actions with one selected scheme and Continue." }
-            ],
-            "highlight": "One decision → its outcome → one next step."
-      },
-      {
-            "eyebrow": "Before → After · Launch planned",
-            "title": "Bring the scheme and its outcome together.",
-            "body": "The selected scheme now brings rate, tenure, amount and expected returns together. One Continue action follows the information needed to assess the investment.",
-            "screens": [
                   {
-                        "src": "/fd-iphone/before-schemes.png",
-                        "alt": "Before: Bring the scheme and its outcome together."
+                        "value": "271",
+                        "label": "Existing baseline · investment initiations · 1.07% conversion."
                   },
                   {
-                        "src": "/fd-iphone/after-scheme.png",
-                        "alt": "After: Bring the scheme and its outcome together."
+                        "value": "500+",
+                        "label": "Projected (Post-redesign) · investment initiations · ~2.0% conversion."
                   }
             ],
-            "variant": "visual",
-            "footnote": "The old amount step already showed maturity value and gains. The change consolidates that information rather than introducing it."
-      },
-      {
-            "eyebrow": "INVESTMENT CONFIGURATION",
-            "title": "Making investment choices easier to review.",
-            "body": "Once users enter the investment journey, they can adjust the amount, review their selected tenure and payout preferences, and see the corresponding maturity value. A dedicated tenure-selection sheet keeps alternative rates accessible without crowding the main investment screen.",
-            "screens": [
-                  {
-                        "src": "/fd-iphone/investment-details.png",
-                        "alt": "Investment details with amount, selected tenure, payout preferences, maturity amount and gains",
-                        "label": "INVESTMENT DETAILS"
-                  },
-                  {
-                        "src": "/fd-iphone/after-tenure.png",
-                        "alt": "Tenure-selection bottom sheet",
-                        "label": "TENURE SELECTION"
-                  }
-            ],
-            "variant": "visual",
-            "footnote": "Design intent: reduce the need to interpret several scheme cards. A usability improvement has not yet been measured."
-      },
-      {
-            "eyebrow": "HOW I'D MEASURE SUCCESS",
-            "title": "From clearer decisions to stronger conversion.",
-            "body": "The aim is to help more users move from selecting a scheme to starting an investment. I'd compare the redesigned journey against these existing funnel baselines.",
-            "items": [
-                  { "value": "19.1% → 25%", "label": "Primary · Mahindra selection → Book Now. Of users who select Mahindra Finance, the share who click Book Now. Existing baseline → proposed illustrative target." },
-                  { "value": "5.6% → 8%", "label": "Supporting · FD page view → Mahindra selection. The share progressing from the FD page to selecting Mahindra Finance. Existing baseline → proposed illustrative target." }
-            ],
-            "highlight": "Proposed targets · Launch planned",
-            "footnote": "Clearer choices. More confident next steps. Targets are illustrative, not achieved results.",
+            "highlight": "~85% projected relative uplift",
+            "footnote": "Assumes comparable traffic of 25,275 FD page views. Projected target; not measured production results.",
             "variant": "wide"
       }
 ],

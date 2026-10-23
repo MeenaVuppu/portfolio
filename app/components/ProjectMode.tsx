@@ -55,8 +55,9 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
       <div className={`project-view project-view--${project.slug}`}>
         <section className="project-pegboard" style={pegboardTheme} aria-label={`${project.title} case study board`}>
           <div className="project-title-pin"><PegPin />{project.title}</div>
-          <div className="project-board-intro project-reveal">
+          <div className={`project-board-intro project-reveal${project.slug === "fixed-deposit" ? ` ${fixedDepositClosing.typography}` : ""}`}>
             <span className="project-board-label">{project.snapshotLabel ?? "Project snapshot"}</span>
+            {project.slug === "fixed-deposit" && <h2 className={fixedDepositClosing.introTitle}>{project.headline}</h2>}
             {project.snapshotCopy && <p className="project-board-copy">{project.snapshotCopy}</p>}
             <div className="project-board-meta">
               {project.metadata.map((item) => <span key={item}>{item}</span>)}
@@ -66,7 +67,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
                 {project.products.map((item) => <span key={item}>{item}</span>)}
               </div>
             )}
-            <div className="project-board-stats">
+            <div className={`project-board-stats${project.slug === "fixed-deposit" ? ` ${fixedDepositClosing.introStats}` : ""}`}>
               {project.stats.map((stat) => (
                 <div className={stat.isForecast ? "is-forecast" : ""} key={stat.label}>
                   <strong>{stat.value}</strong>
@@ -101,7 +102,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
           )}
 
           {project.storyPins ? (
-            <section className={`project-story-board${project.slug === "digital-gold" ? ` ${digitalGoldStory.board}` : project.slug === "vyapar-plus" ? ` ${vyaparClosing.board}` : ""}`} aria-label={`${project.title} project story`}>
+            <section className={`project-story-board${project.slug === "digital-gold" ? ` ${digitalGoldStory.board}` : project.slug === "vyapar-plus" ? ` ${vyaparClosing.board}` : project.slug === "fixed-deposit" ? ` ${fixedDepositClosing.typography}` : ""}`} aria-label={`${project.title} project story`}>
               {project.storyPins.map((pin, index, pins) => (
                 <article
                   className={`project-story-pin project-story-pin--${pin.variant ?? "paper"} project-reveal${project.slug === "fixed-deposit" && index === pins.length - 1 ? ` ${fixedDepositClosing.card}` : ""}`}
