@@ -252,7 +252,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
               {otherProjects.map((otherProject) => (
                 <ProjectFile
                   key={otherProject.slug}
-                  project={otherProject}
+                  project={otherProject.slug === "fixed-deposit" ? { ...otherProject, eyebrow: "Muthoot · Investment journey optimization", metric: "~85%", metricLabel: "Projected uplift · Investment initiations" } : otherProject}
                   className="project-elsewhere__file"
                   compact
                   onOpenProject={onSwitchProject}
