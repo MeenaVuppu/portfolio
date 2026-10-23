@@ -344,23 +344,20 @@ export const projects: Project[] = [
             "variant": "visual"
       },
       {
-            "eyebrow": "Actual early results",
-            "title": "First two weeks",
+            "eyebrow": "PRODUCT ADOPTION · OCTOBER 2026",
+            "title": "From 0→1 launch to growing product adoption",
+            "body": "As the sole Product Designer, I designed Vyapar Plus's core journeys across onboarding, financial services, and earnings. By October 2026, the platform recorded over 17,000 monthly active users, reflecting growing adoption of the product.",
             "items": [
                   {
-                        "value": "2,500+",
-                        "label": "Kirana merchants onboarded"
+                        "value": "17K+",
+                        "label": "Monthly active users · October 1–23, 2026 (month-to-date)"
                   },
                   {
-                        "value": "1,000+",
-                        "label": "Loan leads submitted"
-                  },
-                  {
-                        "value": "600+",
-                        "label": "Gold Loan + VM loan leads converted"
+                        "value": "+164%",
+                        "label": "Increase in October month-to-date MAU compared with September 2026's full-month MAU"
                   }
             ],
-            "footnote": "Reported business results for the first two weeks. These are distinct from BRD targets and the Sep 1–11 digital-onboarding cohort; they do not isolate the effect of a particular design decision."
+            "footnote": "Last 30 days: 18,460 active users · 16,629 new app activations (not completed merchant onboardings). First two weeks: 2,500+ kirana merchants onboarded · 1,000+ loan leads submitted · 600+ Gold Loan + VM loan leads converted. Adoption metrics do not isolate design's contribution to growth."
       },
       {
             "eyebrow": "THE DESIGN DECISIONS",
