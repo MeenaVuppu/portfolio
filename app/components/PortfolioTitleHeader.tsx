@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import headerAlignment from "./PortfolioTitleHeader.module.css";
 
 type PortfolioTitleHeaderProps = {
   title: string;
@@ -89,7 +90,7 @@ export function PortfolioTitleHeader({
   );
 
   return (
-    <header ref={headerRef} className={`portfolio-title-header ${isCompact ? "is-compact" : ""} ${projectMode ? "is-project-title" : ""}`}>
+    <header ref={headerRef} className={`portfolio-title-header ${headerAlignment.aligned} ${isCompact ? "is-compact" : ""} ${projectMode ? "is-project-title" : ""}`}>
       <div className="portfolio-title-header__inner">
         <strong className="portfolio-title-header__brand">{brand}</strong>
         <h1>

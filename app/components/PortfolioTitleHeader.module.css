@@ -1,0 +1,12 @@
+@media (min-width: 761px) {
+  .aligned :global(.portfolio-title-header__inner),
+  .aligned:global(.is-compact) :global(.portfolio-title-header__inner) {
+    width: calc(100% - 2 * var(--portfolio-board-gutter));
+    max-width: none;
+    margin-inline: auto;
+  }
+
+  .aligned :global(.portfolio-title-header__brand) {
+    left: 5px;
+  }
+}
