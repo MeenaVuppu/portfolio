@@ -345,10 +345,18 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
     if (activeBook === null) return;
     function dismissBookNote(event: PointerEvent) {
       if (event.target instanceof Element && event.target.closest(".bookshelf-book-region")) return;
+      if (event.target instanceof Node && bookNoteRef.current?.contains(event.target)) return;
       setActiveBook(null);
     }
+    function dismissBookFromEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setActiveBook(null);
+    }
     document.addEventListener("pointerdown", dismissBookNote, true);
-    return () => document.removeEventListener("pointerdown", dismissBookNote, true);
+    document.addEventListener("keydown", dismissBookFromEscape);
+    return () => {
+      document.removeEventListener("pointerdown", dismissBookNote, true);
+      document.removeEventListener("keydown", dismissBookFromEscape);
+    };
   }, [activeBook]);
 
   async function copyEmailAddress() {
@@ -747,14 +755,8 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
                   data-book={book.title}
                   aria-label={`Reading note: ${book.title}`}
                   aria-expanded={activeBook === index}
+                  aria-controls="bookshelf-reading-note"
                   style={{ left: book.left, top: book.top, width: book.width, height: book.height }}
-                  onPointerEnter={(event) => { if (event.pointerType === "mouse") setActiveBook(index); }}
-                  onPointerLeave={(event) => {
-                    if (event.pointerType === "mouse") {
-                      bookTapRef.current = null;
-                      setActiveBook(null);
-                    }
-                  }}
                   onPointerDown={(event) => { bookTapRef.current = { x: event.clientX, y: event.clientY }; }}
                   onPointerMove={(event) => {
                     const start = bookTapRef.current;
@@ -762,7 +764,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
                   }}
                   onPointerCancel={() => { bookTapRef.current = null; }}
                   onClick={(event) => {
-                    if (bookTapRef.current || event.detail === 0) setActiveBook(index);
+                    if (bookTapRef.current || event.detail === 0) setActiveBook(current => current === index ? null : index);
                     bookTapRef.current = null;
                   }}
                 />
@@ -812,8 +814,9 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
 
         <div
           ref={bookNoteRef}
+          id="bookshelf-reading-note"
           className={`music-credit__popover bookshelf-book-note${activeBook !== null ? " is-open" : ""}`}
-          style={{ left: bookNotePosition.left, top: bookNotePosition.top }}
+          style={{ left: bookNotePosition.left, top: bookNotePosition.top, pointerEvents: activeBook !== null ? "auto" : "none" }}
           aria-hidden={activeBook === null}
         >
           <strong>{activeBook !== null ? BOOK_NOTES[activeBook].title : ""}</strong>
