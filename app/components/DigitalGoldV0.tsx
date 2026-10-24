@@ -9,9 +9,9 @@ export function DigitalGoldV0() {
       <div className={styles.v0Copy}>
       <span className="section-kicker">EARLY EXPLORATION · V0</span>
       <h2>The first direction that changed the scope</h2>
-      <p>With a two-day turnaround and limited development scope, I explored a lighter refresh of the existing Digital Gold experience. The investment calculator remained unchanged, while the landing page introduced clearer messaging and educational carousel cards to help users better understand Digital Gold.</p>
-      <p className={styles.v0Followup}>When the Growth team reviewed this direction, they recognised the opportunity to improve the experience beyond a surface-level refresh. We decided to shelve V0 and dedicate more time to a comprehensive revamp of the investment journey.</p>
-      <small className="project-story-footnote">A constrained first iteration helped build alignment for a more meaningful product improvement.</small>
+      <p>With two days and limited development scope, I explored a lighter landing-page refresh: clearer investment messaging and educational carousel cards, while keeping the calculator unchanged.</p>
+      <p className={styles.v0Followup}>The Growth team's review opened up a broader scope. We shelved V0 and allocated more time to redesign the investment journey, rather than relying on a messaging refresh alone.</p>
+      <small className="project-story-footnote">V0 helped align the team on changing the journey, not just its introduction.</small>
       </div>
       <div className={styles.v0Visuals}>
         <figure className={styles.v0Screen}>

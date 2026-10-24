@@ -84,14 +84,14 @@ export const projects: Project[] = [
     storyPins: [
       {
             "eyebrow": "The problem · Transaction completion",
-            "title": "The largest gap came before Buy Now.",
-            "body": "The existing Digital Gold journey attracted interest, but only 4.6% of journey entries resulted in completed transactions. The funnel showed where users were dropping off, particularly before they initiated a purchase. This led me to examine how the experience communicated digital gold, presented investment choices and guided users towards their first purchase.",
+            "title": "Interest in gold rarely became an investment.",
+            "body": "Only 3,704 of 80,554 journey entries led to a completed transaction: 4.6%. The largest loss came before Buy Now. I focused on how the page explained Digital Gold and presented investment choices; the funnel identified where to investigate, not why each customer left.",
             "footnote": "Original funnel: 80,554 journey entries → 8,502 reached Buy Now → 5,605 proceeded to payment → 3,704 completed transactions."
       },
       {
             "eyebrow": "Talking to real users · Exploratory branch research",
             "title": "Some customers saw a jewellery journey.",
-            "body": "Exploratory customer conversations revealed that some customers assumed the jewellery shown could be purchased through EMI. Some treated the calculator as a way to check gold weight or rate for a jewellery purchase. This suggested that the catalogue was shaping expectations before the page had explained Digital Gold as an investment product.",
+            "body": "In exploratory branch conversations, some customers interpreted the jewellery imagery as an EMI purchase offer. Others used the calculator to check weight or price for jewellery. These interpretations suggested the page needed to explain the investment before asking customers to enter an amount.",
             "items": [
                   {
                         "value": "Observed interpretation",
@@ -108,15 +108,15 @@ export const projects: Project[] = [
             ]
       },
       {
-            "eyebrow": "Design decision · Clear saving actions",
-            "title": "Make the next action obvious.",
-            "body": "I separated Save Monthly, Save Weekly and Buy Digital Gold into explicit entry points. Customers can choose a regular saving rhythm or a one-time purchase before entering an amount. Clear investment messaging and action labels address the jewellery-EMI assumption and explain how to begin saving in gold.",
+            "eyebrow": "Redesign · Clear saving actions",
+            "title": "Choose a saving route before an amount.",
+            "body": "V0 clarified the message but kept the calculator unchanged. The subsequent redesign separated Save Monthly, Save Weekly and Buy Digital Gold so customers could choose a saving rhythm or one-time purchase first. This addressed the product misunderstanding through the journey itself, rather than educational content alone.",
             "highlight": "Choose how to save, then decide how much."
       },
       {
             "eyebrow": "Before → after · Landing, top",
             "title": "Give saving its own front door.",
-            "body": "The previous experience prioritised balance, gold prices and the calculator. The redesign introduces clearer saving options and entry points, helping customers understand how to start investing.",
+            "body": "The previous page led with balance, gold prices and a calculator. The redesign puts the saving proposition and three investment routes first, giving customers context before asking for an amount.",
             "screens": [
                   {
                         "src": "/dg-evidence/old-landing-screen.png",
@@ -135,7 +135,7 @@ export const projects: Project[] = [
       {
             "eyebrow": "Design decision · User scenarios",
             "title": "One product. Three different starting points.",
-            "body": "New users need to understand Digital Gold and choose how to start. Returning users without a SIP need visibility into their holdings and a clear route into regular saving. Returning SIP users need to review progress and continue investing. I designed these three scenarios around those different information needs and next actions.",
+            "body": "A single starting page would give new and existing savers the same priorities. I used three scenarios instead: explain the product to new users, connect existing holdings to regular saving for users without a SIP, and prioritise progress for active SIP users.",
             "items": [
                   { "value": "New user", "label": "Explain the product, saving choices and how gold can accumulate." },
                   { "value": "Returning user without SIP", "label": "Surface current holdings and encourage a regular saving habit." },
@@ -145,7 +145,7 @@ export const projects: Project[] = [
       {
             "eyebrow": "Design decision · From intention to setup",
             "title": "Make recurring saving a concrete action.",
-            "body": "A saving choice needs a clear next step. The recurring setup exposes amount, monthly or weekly frequency and investment date before payment. One-time buying remains a separate choice rather than being removed in favour of recurring saving.",
+            "body": "The recurring setup brings amount, monthly or weekly frequency and investment date together before payment. I retained a separate one-time purchase route so encouraging a saving habit did not remove the option to buy once.",
             "screens": [
                   {
                         "src": "/dg-evidence/recurring.png",
@@ -165,15 +165,15 @@ export const projects: Project[] = [
             "variant": "visual"
       },
       {
-            "eyebrow": "Measuring success",
-            "title": "Measuring whether clearer journeys lead to more investments.",
-            "body": "I'd evaluate whether clearer product messaging and saving actions help more users move from interest to purchase and recurring saving. The funnel figures describe baseline performance; the targets below are proposed improvements, not achieved results.",
+            "eyebrow": "Expected Outcomes",
+            "title": "Turn product understanding into investment starts.",
+            "body": "The redesign aims to help more customers start and complete an investment, while making recurring saving easier to set up. The existing funnel is the baseline; the following targets are proposed, not measured redesign results.",
             "items": [
-                  { "value": "Transaction completion", "label": "Baseline: 4.6% · Illustrative target: 6–7%" },
+                  { "value": "Transaction completion", "label": "Existing baseline: 4.6% · Proposed target: 6–7%" },
                   { "value": "Buy Now engagement", "label": "Target: Increase relative to existing baseline" },
-                  { "value": "Recurring saving setup completion", "label": "Target: Establish baseline and improve after launch" }
+                  { "value": "Recurring saving setup completion", "label": "Establish a baseline before setting a numerical target" }
             ],
-            "highlight": "Good investment experiences don't just encourage the first purchase. They make it easier to understand, start and keep saving.",
+            "highlight": "Evaluate purchase completion and recurring setup separately.",
             "variant": "wide"
       }
 ],
@@ -240,8 +240,8 @@ export const projects: Project[] = [
       },
       {
             "eyebrow": "My role · Sole Product Designer",
-            "title": "One designer across the ecosystem.",
-            "body": "As sole Product Designer on this 0→1 Android / B2B fintech product, I connected discovery, merchant activity and field execution. The system spans Website — Discover; Merchant App — Join, serve customers and earn; Saathi — Assist and physical verification.",
+            "title": "Sole design ownership, from onboarding to earnings.",
+            "body": "I owned the 0→1 design across merchant onboarding, financial services, transactions and earnings. The challenge was connecting three parts of the service: Website — Discover; Merchant App — Join, serve customers and earn; Saathi — Assist and physical verification.",
             "items": [
                   {
                         "value": "Merchant experience",
@@ -255,7 +255,7 @@ export const projects: Project[] = [
       },
       {
             "eyebrow": "Early product evidence",
-            "title": "Acquisition was only the start.",
+            "title": "Onboarding completion became a follow-up priority.",
             "body": "The Sep 1–11 digital onboarding cohort showed a gap between starting and completing digital onboarding. It points to activation as a follow-up priority; it does not identify which verification step caused the loss or establish later product usage.",
             "items": [
                   { "value": "2,282", "label": "Started digital onboarding" },
@@ -266,14 +266,14 @@ export const projects: Project[] = [
       },
       {
             "eyebrow": "DESIGNING AROUND API CONSTRAINTS",
-            "title": "Going beyond what the API provides.",
-            "body": "The third-party integration supported retrieving existing beneficiaries, but that alone didn't give merchants a complete picture of their past transfers. I proposed bringing beneficiary-specific transaction history into the same experience, making it easier to review previous activity without navigating between separate flows.",
-            "highlight": "Design for the user's context, not just the API's capabilities."
+            "title": "A beneficiary list did not explain past transfers.",
+            "body": "The third-party API retrieved existing beneficiaries, but the list alone did not show past transfers. I proposed beneficiary-specific transaction history in the same experience so merchants could review activity without switching flows. This was a design proposal beyond the API's existing beneficiary retrieval.",
+            "highlight": "Keep the recipient and their transaction context together."
       },
       {
             "eyebrow": "The dashboard",
             "title": "From app home to business home.",
-            "body": "Transactions, earnings, payouts and leads risked becoming separate destinations that merchants had to reconcile. I brought them into one dashboard so the entry point reflected the business, not just a service catalogue. The screen shows this architecture; its effect on task completion was not measured here.",
+            "body": "A service catalogue would show what merchants could sell, but not how their business was doing. I organised the dashboard around transactions, earnings, payouts and leads, bringing business activity and next actions into one starting point.",
             "footnote": "What happened? What did I earn? What needs my attention? What happened to my leads?",
             "screens": [
                   {
@@ -286,7 +286,7 @@ export const projects: Project[] = [
       {
             "eyebrow": "A connected money story",
             "title": "What did I do—and what did I earn?",
-            "body": "A merchant should not have to reconstruct a transaction and its associated earnings across disconnected features. I treated transaction history, wallet movement and commission/earnings as connected parts of the business experience. The screens show that relationship without claiming every transaction earns commission.",
+            "body": "I connected transaction status and details with wallet movement and service-level earnings. This lets merchants review what happened, where money moved and what they earned, while keeping transaction amounts distinct from commission.",
             "flow": [
                   "Activity",
                   "Money movement",
@@ -318,7 +318,7 @@ export const projects: Project[] = [
       {
             "eyebrow": "Merchant → BDE · From referral to conversion",
             "title": "Submission wasn’t the finish line.",
-            "body": "Lead submission needed an operational next step. I connected the merchant confirmation with BDE work visibility and verification so the workflow continued beyond the merchant app. The screens show those interfaces, not an independently measured handoff improvement.",
+            "body": "Merchants could refer a customer without fulfilling the entire service. I connected submission confirmation with BDE work visibility and verification, giving the referral a next step beyond the merchant app.",
             "flow": [
                   "Lead submitted",
                   "Assigned",
@@ -344,9 +344,9 @@ export const projects: Project[] = [
             "variant": "visual"
       },
       {
-            "eyebrow": "PRODUCT ADOPTION · OCTOBER 2026",
+            "eyebrow": "MEASURED RESULTS · OCTOBER 2026",
             "title": "From 0→1 launch to growing product adoption",
-            "body": "As the sole Product Designer, I designed Vyapar Plus's core journeys across onboarding, financial services, and earnings. By October 2026, the platform recorded over 17,000 monthly active users, reflecting growing adoption of the product.",
+            "body": "Following the September launch, Vyapar Plus recorded over 17,000 monthly active users during October 1–23, 2026. The comparison below is October month-to-date against September's complete month; it shows product adoption, not growth attributable to design alone.",
             "items": [
                   {
                         "value": "17K+",
@@ -361,20 +361,20 @@ export const projects: Project[] = [
       },
       {
             "eyebrow": "THE DESIGN DECISIONS",
-            "title": "Designing a product, not a collection of screens.",
-            "body": "As the sole Product Designer for Vyapar Plus, I worked across onboarding, financial transactions, earnings, and lead generation. Each feature had its own requirements, but the challenge was making them feel like one connected experience. I focused on simplifying complex journeys, establishing consistent interaction patterns, and helping merchants understand what they could do next.",
-            "highlight": "Consistency wasn't just visual. It was about making different services feel like one product."
+            "title": "Connect joining, serving customers and earning.",
+            "body": "I treated onboarding as the entry into a connected merchant workflow. Shared interaction patterns across services, visible transaction states and a dashboard organised around business activity helped define one product rather than separate service journeys.",
+            "highlight": "The dashboard connects service activity to money movement and earnings."
       },
       {
-            "eyebrow": "WHAT I LEARNED",
-            "title": "Ownership taught me when to simplify, question, and compromise.",
+            "eyebrow": "MEASURED RESULTS · WHAT COMES NEXT",
+            "title": "Adoption grew; onboarding still needs attention.",
             "flow": [
                   "Merchant activity",
                   "Financial opportunity",
                   "Field execution",
                   "Conversion"
             ],
-            "body": "Designing Vyapar Plus end-to-end meant balancing merchant needs, business priorities, technical constraints, and delivery timelines. Not every decision had an obvious answer. I learned to question requirements, explain my reasoning to stakeholders, and make practical trade-offs without losing sight of the user experience. My biggest learning: Good design isn't about having complete freedom. It's about making thoughtful decisions within real constraints."
+            "body": "The reported launch results and October usage show a platform gaining adoption. The earlier digital-onboarding cohort also identifies a follow-up priority: understand why starters did not complete onboarding. MAU, app activations and completed merchant onboardings describe different behaviours and should be evaluated separately."
       }
 ],
     opportunity: {
@@ -416,23 +416,23 @@ export const projects: Project[] = [
     headline: "Making Fixed Deposit investments easier to start",
     metadata: ["Product Designer"],
     snapshotLabel: "Historical CleverTap funnel · 01 Aug – 01 Sept",
-    snapshotCopy: "Simplifying scheme selection, surfacing returns earlier, and reducing steps between exploring an FD and starting an investment.",
+    snapshotCopy: "About 81% dropped off between Mahindra partner selection and Book Now. I simplified amount, tenure, rates and returns to reduce decision friction before starting an FD.",
     snapshotFootnote: "Further down the historical funnel: 91 KYC starts · 5 proceeded to pay.",
     stats: [
-      { value: "94.4%", label: "Drop-off: 25,275 FD page views → 1,416 Mahindra partner selections (5.6% progressed)" },
       { value: "80.9%", label: "Drop-off: 1,416 partner selections → 271 ROI / Book Now clicks (19.1% progressed)" },
+      { value: "94.4%", label: "Drop-off: 25,275 FD page views → 1,416 Mahindra partner selections (5.6% progressed)" },
     ],
     storyPins: [
       {
-            "eyebrow": "THE OPPORTUNITY",
-            "title": "Confusing investment choices were creating friction before users could begin investing.",
-            "body": "Historical funnel data showed that only 271 of 25,275 FD page visitors proceeded to Book Now.",
-            "footnote": "In exploratory research, 5 of 8 participants reported confusion in the existing investment-selection experience. This helped identify a usability problem worth addressing."
+            "eyebrow": "THE PROBLEM · DECISION FRICTION",
+            "title": "Choosing a partner rarely led to starting an FD.",
+            "body": "The sharp loss after partner selection made the investment decisions a priority to investigate. Amount, tenure, rates and returns were spread across separate steps, requiring users to navigate between choices before investing.",
+            "footnote": "In exploratory research, 5 of 8 participants reported confusion in the selection experience. This supported addressing usability; it did not prove the UI caused the funnel drop-off."
       },
       {
         eyebrow: "THE DESIGN DECISION",
         title: "Review the scheme and returns, then continue.",
-        body: "I simplified scheme selection, brought interest rates and projected returns together, and reduced navigation between choosing an FD and starting an investment.",
+        body: "Instead of keeping scheme selection and amount entry on separate screens, I brought the amount, rate and projected returns into one review. Users can assess the investment together, then take a clear Continue action.",
         screens: [
           { src: "/fd-iphone/before-schemes.png", alt: "Before: Scheme and tenure selection leading to a separate investment-detail screen", label: "BEFORE · CHOOSE, THEN ENTER DETAILS" },
           { src: "/fd-iphone/after-scheme.png", alt: "After: Scheme summary, amount and returns with a clear Continue action", label: "AFTER · REVIEW & CONTINUE" },
@@ -442,7 +442,7 @@ export const projects: Project[] = [
       {
         eyebrow: "02 — SIMPLIFIED SELECTION",
         title: "Make rate and tenure choices easier to review.",
-        body: "The old amount step sat separately from scheme selection. The redesigned selection sheet groups interest rates and tenure choices in a focused view.",
+        body: "The existing journey spread tenure cards, rate choices and amount entry across steps. I used a focused rate-and-tenure sheet alongside the scheme summary, keeping those choices available without making users leave the investment review.",
         screens: [
           { src: "/fd-iphone/investment-details.png", alt: "Before: A separate investment amount and returns step", label: "BEFORE · SEPARATE AMOUNT STEP" },
           { src: "/fd-iphone/after-tenure.png", alt: "After: Interest-rate selection sheet with clear tenure choices", label: "AFTER · RATE & TENURE SHEET" },
@@ -450,9 +450,9 @@ export const projects: Project[] = [
         variant: "visual",
       },
       {
-            "eyebrow": "EXPECTED IMPACT · PROJECTED",
+            "eyebrow": "Expected Outcomes",
             "title": "Investment Initiation Rate",
-            "body": "Exploratory research identified confusion in the existing scheme-selection experience. By simplifying tenure selection, surfacing returns earlier, and reducing navigation, the redesign targets a higher rate of investment initiation.",
+            "body": "The goal is to reduce decision friction and increase investment initiations. Simpler tenure selection, earlier returns and fewer steps underpin the projected target below; they are a hypothesis to test, not a measured uplift.",
             "items": [
                   {
                         "value": "271",

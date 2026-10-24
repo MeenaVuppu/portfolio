@@ -1,3 +1,13 @@
+/* Match the opening funnel line to its accompanying body copy. */
+:global(.project-view--digital-gold) .board > :global(.project-story-pin):first-child > :global(.project-story-footnote) {
+  font-size: 14px;
+}
+@media (max-width: 760px) {
+  :global(.project-view--digital-gold) .board > :global(.project-story-pin):first-child > :global(.project-story-footnote) {
+    font-size: 13px;
+  }
+}
+
 /* Flow DG papers in reading order without making short cards reserve tall rows. */
 @media (min-width: 761px) {
   :global(.project-view--digital-gold) .board {
