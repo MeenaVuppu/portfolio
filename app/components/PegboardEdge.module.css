@@ -1,3 +1,10 @@
-/* The outer blur extends above the top border. Trim only that spill, while
-   retaining the original side/bottom shadow, border and board dimensions. */
+/* Keep the top edge clean without trimming the side and bottom shadow. */
 .surface { clip-path: inset(0 -80px -80px -80px); }
+
+/* Ivory needs a neutral, lighter shadow to retain the landing board's soft edge. */
+@media (min-width: 761px) {
+  .surface:global(.project-pegboard) {
+    box-shadow: 0 12px 26px rgba(60, 60, 60, 0.12),
+      inset 0 1px rgba(255, 255, 255, 0.6);
+  }
+}
