@@ -1,0 +1,3 @@
+/* The outer blur extends above the top border. Trim only that spill, while
+   retaining the original side/bottom shadow, border and board dimensions. */
+.surface { clip-path: inset(0 -80px -80px -80px); }
