@@ -47,6 +47,15 @@
 .v0Screen { margin: 0; width: 100%; max-width: 240px; }
 .v0Visuals img { display: block; width: 100%; height: auto; }
 .v0Cards { display: grid; gap: 16px; width: 100%; max-width: 220px; }
+@media (min-width: 761px) {
+  .v0Layout {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 3fr) minmax(0, 3fr);
+    column-gap: 16px;
+  }
+  .v0Copy { padding-right: 32px; }
+  .v0Screen { justify-self: end; }
+  .v0Cards { align-self: center; }
+}
 /* Preserve the existing recurring-setup visual after inserting V0. */
 :global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(7) :global(.project-phone) { width: 100%; }
 @media (max-width: 760px) {
