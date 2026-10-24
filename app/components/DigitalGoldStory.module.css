@@ -30,20 +30,27 @@
   }
 }
 
-.v0 > .v0Followup { margin-top: 14px; }
-.v0Visuals {
-  display: grid;
-  grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
-  gap: clamp(20px, 4vw, 48px);
-  align-items: center;
-  margin-top: 26px;
+.v0Copy > p {
+  color: var(--project-muted);
+  font-size: 14px;
+  line-height: 1.58;
+  margin: 0;
 }
-.v0Screen { margin: 0; }
+.v0Copy > .v0Followup { margin-top: 14px; }
+.v0Layout {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 3fr) minmax(0, 3fr);
+  gap: clamp(20px, 2.5vw, 32px);
+  align-items: start;
+}
+.v0Visuals { display: contents; }
+.v0Screen { margin: 0; width: 100%; max-width: 240px; }
 .v0Visuals img { display: block; width: 100%; height: auto; }
-.v0Cards { display: grid; gap: 20px; max-width: 320px; }
+.v0Cards { display: grid; gap: 16px; width: 100%; max-width: 220px; }
 /* Preserve the existing recurring-setup visual after inserting V0. */
 :global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(7) :global(.project-phone) { width: 100%; }
 @media (max-width: 760px) {
-  .v0Visuals { grid-template-columns: 1fr; }
+  .v0Layout { grid-template-columns: 1fr; gap: 26px; }
   .v0Screen { width: min(100%, 240px); margin-inline: auto; }
+  .v0Cards { margin-inline: auto; }
 }
