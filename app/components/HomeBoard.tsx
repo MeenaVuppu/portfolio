@@ -626,7 +626,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
             <Image
               className="airpods-image"
               src="/airpods-max-lavender.webp"
-              alt="Lavender AirPods Max"
+              alt="Silver AirPods Max"
               width={2892}
               height={2960}
               loading="eager"
