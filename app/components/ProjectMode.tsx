@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, type CSSProperties } from "react";
+import { Fragment, useEffect, type CSSProperties } from "react";
+import { DigitalGoldV0 } from "./DigitalGoldV0";
 import type { Project } from "../lib/projects";
 import { PaperClip, PegPin } from "./Hardware";
 import { ProjectFile } from "./ProjectFile";
@@ -104,6 +105,8 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
           {project.storyPins ? (
             <section className={`project-story-board${project.slug === "digital-gold" ? ` ${digitalGoldStory.board}` : project.slug === "vyapar-plus" ? ` ${vyaparClosing.board}` : project.slug === "fixed-deposit" ? ` ${fixedDepositClosing.typography}` : ""}`} aria-label={`${project.title} project story`}>
               {project.storyPins.map((pin, index, pins) => (
+                <Fragment key={pin.title}>
+                  {project.slug === "digital-gold" && index === 2 && <DigitalGoldV0 />}
                 <article
                   className={`project-story-pin project-story-pin--${pin.variant ?? "paper"} project-reveal${project.slug === "fixed-deposit" && index === pins.length - 1 ? ` ${fixedDepositClosing.card}` : ""}`}
                   key={pin.title}
@@ -171,6 +174,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
                   )}
                   {pin.footnote && <small className="project-story-footnote">{pin.footnote}</small>}
                 </article>
+                </Fragment>
               ))}
             </section>
           ) : <>

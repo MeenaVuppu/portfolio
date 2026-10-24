@@ -15,17 +15,35 @@
     margin-bottom: calc(clamp(44px, 6vw, 78px) - 24px);
   }
 
-  :global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(-n + 4) {
+  :global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(-n + 5) {
     display: block;
     column-span: all;
     margin-bottom: clamp(44px, 6vw, 78px);
   }
 
-  :global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(4) {
+  :global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(5) {
     margin-bottom: calc(clamp(44px, 6vw, 78px) - 24px);
   }
 
   :global(.project-view--digital-gold) .board > :global(.project-story-pin):last-child {
     margin-bottom: 0;
   }
+}
+
+.v0 > .v0Followup { margin-top: 14px; }
+.v0Visuals {
+  display: grid;
+  grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 48px);
+  align-items: center;
+  margin-top: 26px;
+}
+.v0Screen { margin: 0; }
+.v0Visuals img { display: block; width: 100%; height: auto; }
+.v0Cards { display: grid; gap: 20px; max-width: 480px; }
+/* Preserve the existing recurring-setup visual after inserting V0. */
+:global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(7) :global(.project-phone) { width: 100%; }
+@media (max-width: 760px) {
+  .v0Visuals { grid-template-columns: 1fr; }
+  .v0Screen { width: min(100%, 240px); margin-inline: auto; }
 }
