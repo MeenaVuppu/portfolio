@@ -10,7 +10,13 @@ export function DigitalGoldV0() {
       <p>With a two-day turnaround and limited development scope, I explored a lighter refresh of the existing Digital Gold experience. The investment calculator remained unchanged, while the landing page introduced clearer messaging and educational carousel cards to help users better understand Digital Gold.</p>
       <p className={styles.v0Followup}>When the Growth team reviewed this direction, they recognised the opportunity to improve the experience beyond a surface-level refresh. We decided to shelve V0 and dedicate more time to a comprehensive revamp of the investment journey.</p>
       <div className={styles.v0Visuals}>
-        <figure className={styles.v0Screen}><img src="/dg-evidence/v0-landing.png" alt="V0 Digital Gold landing page with educational carousel and the unchanged investment calculator" /></figure>
+        <figure className={styles.v0Screen}>
+          <div className="dg-phone-device">
+            <div className="dg-phone-display dg-phone-display--scroll" tabIndex={0} role="region" aria-label="V0 Digital Gold landing page — scroll to view full screen">
+              <img src="/dg-evidence/v0-landing.png" alt="V0 Digital Gold landing page with educational carousel and the unchanged investment calculator" />
+            </div>
+          </div>
+        </figure>
         <div className={styles.v0Cards}>
           <img src="/dg-evidence/v0-gold-price.png" alt="V0 educational carousel card: Gold price has grown consistently" />
           <img src="/dg-evidence/v0-jewellery.png" alt="V0 educational carousel card: Gold to Jewellery" />

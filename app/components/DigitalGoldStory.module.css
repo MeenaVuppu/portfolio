@@ -40,7 +40,7 @@
 }
 .v0Screen { margin: 0; }
 .v0Visuals img { display: block; width: 100%; height: auto; }
-.v0Cards { display: grid; gap: 20px; max-width: 480px; }
+.v0Cards { display: grid; gap: 20px; max-width: 320px; }
 /* Preserve the existing recurring-setup visual after inserting V0. */
 :global(.project-view--digital-gold) .board > :global(.project-story-pin):nth-child(7) :global(.project-phone) { width: 100%; }
 @media (max-width: 760px) {
