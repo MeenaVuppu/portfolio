@@ -107,6 +107,7 @@
   .pin .track { inset: 10.5px 32px; }
   .pin .knob { width: 30px; height: 30px; font-size: 16px; }
   .pin .label { left: 71px; right: 37px; font-size: 12px; line-height: 1.2; white-space: nowrap; }
+  .pin[aria-pressed="false"] .label { right: 46px; }
   .pin[aria-pressed="true"] .knob { transform: translateX(94px); }
   .pin[aria-pressed="true"] .label { left: 37px; right: 71px; }
   @supports (object-view-box: inset(4.54545%)) {
