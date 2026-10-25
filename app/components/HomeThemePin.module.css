@@ -74,6 +74,7 @@
   transition: transform 220ms ease;
 }
 .label {
+  font-family: "Bradley Hand", "Comic Sans MS", cursive;
   position: absolute;
   left: 66px;
   right: 25px;
