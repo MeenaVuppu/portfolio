@@ -452,7 +452,7 @@ export const projects: Project[] = [
                   }
             ],
             "highlight": "~85% projected relative uplift",
-            "footnote": "Assumes comparable traffic of 25,275 FD page views. Projected target; not measured production results.",
+            "footnote": "Assumes comparable traffic of 25,275 FD page views.",
             "variant": "wide"
       }
 ],
