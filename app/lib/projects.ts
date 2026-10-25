@@ -341,7 +341,6 @@ export const projects: Project[] = [
                   }
             ],
             "visual": "Merchant submission · BDE work queue · Physical verification",
-            "footnote": "Screens show submission and field execution; conversion is evidenced by the early results below.",
             "variant": "visual"
       },
       {
