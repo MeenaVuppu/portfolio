@@ -200,7 +200,7 @@ function setOffset(element: HTMLElement, point: Point) {
 }
 
 function hasPegAnchor(element: HTMLElement) {
-  return ["digital-gold", "vyapar-plus", "fixed-deposit", "photo", "contact", "resume", "archive", "headphones", "linkedin", "progress-note"]
+  return ["digital-gold", "vyapar-plus", "fixed-deposit", "photo", "contact", "resume", "archive", "headphones", "linkedin", "progress-note", "theme"]
     .includes(element.dataset.pegDraggable ?? "");
 }
 

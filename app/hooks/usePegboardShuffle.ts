@@ -236,6 +236,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
       linkedin: '[data-peg-draggable="linkedin"]',
       archive: '[data-peg-draggable="archive"]',
       plant: '[data-peg-draggable="plant"]',
+      theme: '[data-peg-draggable="theme"]',
     } as const;
 
     const clearCalculatedLayout = () => {
@@ -350,7 +351,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
         if (mobile) {
           const secondaryIds = shuffled([
             "photo", "headphones", "watercolor", "plant", "progress-note",
-            "resume", "contact", "linkedin", "archive",
+            "resume", "contact", "linkedin", "archive", "theme",
           ], next);
           const sequence = [
             ...secondaryIds.slice(0, 2), projectIds[0],
@@ -414,6 +415,7 @@ export function usePegboardShuffle(boardRef: RefObject<HTMLElement | null>, proj
           dimensions("headphones", DESKTOP_GENERAL_SLOTS),
           dimensions("progress-note", DESKTOP_GENERAL_SLOTS),
           dimensions("archive", DESKTOP_GENERAL_SLOTS),
+          dimensions("theme", DESKTOP_GENERAL_SLOTS),
         ].filter((item): item is ShuffleItem => item !== null);
         const rest = findAssignments(remaining, placed, boardRect.width, boardRect.height, 14, next);
         if (!rest) continue;

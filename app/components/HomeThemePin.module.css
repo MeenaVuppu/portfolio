@@ -1,0 +1,187 @@
+/* Homepage material is scoped separately from project and Archive boards. */
+:global(.portfolio-experience.is-board-mode) .board:global(.fixed-board),
+:global(.portfolio-experience.is-board-mode) .board:global(.fixed-board)::before {
+  background-color: var(--project-pegboard);
+  --pegboard-hole-interior-pattern: radial-gradient(circle calc(var(--material-hole-radius) / var(--material-hole-scale)) at center, rgba(120,118,116,.20) 0 72%, rgba(120,118,116,.10) 86%, transparent 100%);
+  --pegboard-hole-edge-pattern: radial-gradient(circle calc(var(--material-hole-edge-radius) / var(--material-hole-scale)) at center, rgba(255,255,255,.20) 0 78%, transparent 100%);
+}
+:global(.portfolio-experience.is-board-mode) .board:global(.fixed-board)[data-home-theme="pink"],
+:global(.portfolio-experience.is-board-mode) .board:global(.fixed-board)[data-home-theme="pink"]::before {
+  background-color: #ff2f8b;
+  --pegboard-hole-interior-pattern: radial-gradient(circle calc(var(--material-hole-radius) / var(--material-hole-scale)) at center, #D91670 0 60%, #CF156A 72%, rgba(217,22,112,.5) 86%, transparent 100%);
+  --pegboard-hole-edge-pattern: radial-gradient(circle calc(var(--material-hole-edge-radius) / var(--material-hole-scale)) at center, rgba(255,255,255,.035) 0 78%, transparent 100%);
+}
+/* Desktop already paints its material on ::before. Keep its container transparent. */
+@media (min-width: 761px) {
+  :global(.portfolio-experience.is-board-mode) .board:global(.fixed-board) { background-color: transparent; }
+  :global(.portfolio-experience.is-board-mode) .board:global(.fixed-board)[data-home-theme="pink"] { background-color: transparent; }
+}
+:global(.portfolio-experience.is-board-mode) .board:global(.fixed-board)[data-home-theme="neutral"] {
+  border-color: rgba(100,75,85,.14);
+}
+@media (min-width: 761px) {
+  :global(.portfolio-experience.is-board-mode) .board:global(.fixed-board)[data-home-theme="neutral"] { border-color: transparent; }
+  :global(.portfolio-experience.is-board-mode) .board:global(.fixed-board)[data-home-theme="neutral"]::before {
+    border-color: rgba(100,75,85,.14);
+    box-shadow: 0 calc(12px / var(--home-fit, 1)) calc(26px / var(--home-fit, 1)) rgba(60,60,60,.12), inset 0 1px rgba(255,255,255,.6);
+    /* Trim only the material's top shadow spill, never the board's objects. */
+    clip-path: inset(0 -80px -80px -80px);
+  }
+}
+.board > .pin {
+  position: absolute;
+  left: 60%;
+  top: 3%;
+  width: 200px;
+  height: 64px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 32px;
+  background: transparent;
+  color: #25221e;
+  box-shadow: none;
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+/* Retain the former attachment measurement without rendering pushpin hardware. */
+.pin > .mount { position: absolute; left: 50%; top: -10px; width: 22px; height: 15px; transform: translateX(-50%); pointer-events: none; }
+.track {
+  position: absolute;
+  inset: 8px 20px;
+  border: 1px solid #e4e0da;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #fffefa, #f3f0e9);
+  box-shadow: inset 0 1px 1px #fff, inset 0 -1px 2px rgba(70,65,55,.08), 0 3px 6px rgba(48,48,48,.14);
+  pointer-events: none;
+}
+.knob {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e9e4dd;
+  border-radius: 50%;
+  background: #fffefa;
+  box-shadow: inset 0 1px 1px #fff, 0 2px 4px rgba(48,48,48,.18);
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 220ms ease;
+}
+.label {
+  position: absolute;
+  left: 66px;
+  right: 25px;
+  top: 50%;
+  transform: translateY(-50%);
+  line-height: 1.25;
+  text-align: center;
+  white-space: nowrap;
+  text-shadow: none;
+  pointer-events: none;
+}
+.pin[aria-pressed="true"] .knob { transform: translateX(112px); }
+.pin[aria-pressed="true"] .label { left: 25px; right: 66px; }
+.pin:focus-visible { outline: none; }
+.pin:focus-visible .track { outline: 2px solid #514b45; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .knob { transition: none; } }
+@media (min-width: 761px) {
+  .pin .track { inset: 8px 32px; }
+  .pin .knob { left: 4px; }
+  .pin[aria-pressed="true"] .knob { transform: translateX(88px); }
+  .pin[aria-pressed="true"] .label { left: 33px; }
+}
+
+/* Zoom only the painted content through its transparent margin. The image box,
+   hook, collision measurements and mobile packing footprint stay unchanged. */
+@media (max-width: 760px) {
+  :global(.portfolio-experience.is-board-mode) .board:global(.fixed-board) :global(.money-plant) { width: 44%; }
+  /* Smaller paint inside the same 200×64 touch and placement footprint. */
+  .pin .track { inset: 10.5px 32px; }
+  .pin .knob { width: 30px; height: 30px; font-size: 16px; }
+  .pin .label { left: 71px; right: 37px; font-size: 12px; line-height: 1.2; white-space: nowrap; }
+  .pin[aria-pressed="true"] .knob { transform: translateX(94px); }
+  .pin[aria-pressed="true"] .label { left: 37px; right: 71px; }
+  @supports (object-view-box: inset(4.54545%)) {
+    .board :global(.headphones-object .airpods-image) { object-view-box: inset(4.54545%); }
+  }
+}
+
+/* The hook uses the pushpins' ivory face, with a neutral shaded underside. */
+.board :global(.headphones-object .board-hook),
+.board :global(.headphones-object .board-hook)::before {
+  background-color: #fffdfc;
+  border-color: rgba(105,105,105,.20);
+}
+.board :global(.headphones-object .board-hook)::after {
+  background-color: #eeebe6;
+  border-color: rgba(105,105,105,.16);
+}
+
+/* Neutral-only colour corrections. Geometry, alpha and existing highlights match
+   the original shadows; the scoped drop-shadow corrections follow below. */
+.board[data-home-theme="neutral"] :global(.project-file__back-sheet) { box-shadow: 0 9px 16px rgba(48,48,48,.09); }
+.board[data-home-theme="neutral"] :global(.project-file__document) { box-shadow: 0 10px 18px rgba(48,48,48,.15), inset 0 1px 0 rgba(255,255,255,.78); }
+.board[data-home-theme="neutral"] :global(.project-file:hover .project-file__document),
+.board[data-home-theme="neutral"] :global(.project-file:focus-visible .project-file__document),
+.board[data-home-theme="neutral"] :global(.project-file.is-opening .project-file__document) { box-shadow: 0 18px 28px rgba(48,48,48,.20), inset 0 1px 0 rgba(255,255,255,.72); }
+.board[data-home-theme="neutral"] :global(.project-holder)::before,
+.board[data-home-theme="neutral"] :global(.project-holder)::after { box-shadow: 2px 5px 8px rgba(48,48,48,.12); }
+.board[data-home-theme="neutral"] :global(.project-holder__mesh) { box-shadow: 0 12px 20px rgba(48,48,48,.12), inset 0 1px 0 rgba(255,255,255,.85); }
+.board[data-home-theme="neutral"] :global(.project-holder__lip) { box-shadow: 0 4px 7px rgba(48,48,48,.14), inset 0 1px 0 #fff; }
+.board[data-home-theme="neutral"] :global(.photo-object) { box-shadow: 0 18px 28px rgba(48,48,48,.22), 0 3px 5px rgba(48,48,48,.12); }
+.board[data-home-theme="neutral"] :global(.peg-pin):not(.mount) { box-shadow: 0 4px 6px rgba(48,48,48,.24), inset -2px -2px 3px #e9dfe3, inset 2px 2px 2px #fff; }
+.board[data-home-theme="neutral"] :global(.peg-pin):not(.mount)::before { box-shadow: 1px 1px 2px rgba(48,48,48,.18); }
+.board[data-home-theme="neutral"] :global(.paper-clip) { box-shadow: 1px 2px 3px rgba(48,48,48,.18), inset 1px 0 0 rgba(255,255,255,.7); }
+.board[data-home-theme="neutral"] > :global(.resume-object),
+.board[data-home-theme="neutral"] > :global(.contact-note),
+.board[data-home-theme="neutral"] > :global(.linkedin-note) { box-shadow: 0 13px 20px rgba(48,48,48,.16), inset 0 1px 0 #fff; }
+.board[data-home-theme="neutral"] > :global(.resume-object:not(.is-peg-dragging):hover),
+.board[data-home-theme="neutral"] > :global(.resume-object:focus-visible),
+.board[data-home-theme="neutral"] > :global(.linkedin-note:not(.is-peg-dragging):hover),
+.board[data-home-theme="neutral"] > :global(.linkedin-note:focus-visible) { box-shadow: 0 17px 24px rgba(48,48,48,.20), inset 0 1px 0 #fff; }
+.board[data-home-theme="neutral"] > :global(.contact-note)::before { box-shadow: 0 2px 3px rgba(48,48,48,.09); }
+.board[data-home-theme="neutral"] > :global(.linkedin-note)::before { box-shadow: 0 2px 3px rgba(48,48,48,.08); }
+.board[data-home-theme="neutral"] :global(.headphones-object .board-hook) { box-shadow: 0 5px 7px rgba(48,48,48,.16), inset 0 2px 1px #fff; }
+.board[data-home-theme="neutral"] :global(.headphones-object .board-hook)::before { box-shadow: inset 1px 0 0 #fff, 0 2px 3px rgba(48,48,48,.12); }
+.board[data-home-theme="neutral"] :global(.archive-object) { box-shadow: 0 7px 12px rgba(48,48,48,.09); }
+.board[data-home-theme="neutral"] :global(.archive-object:not(.is-peg-dragging):hover),
+.board[data-home-theme="neutral"] :global(.archive-object:not(.is-peg-dragging):focus-visible) { box-shadow: 0 12px 22px rgba(48,48,48,.16); }
+.board[data-home-theme="neutral"] :global(.peg-drag-preview) { box-shadow: 0 8px 20px rgba(48,48,48,.10), inset 0 0 0 1px rgba(48,48,48,.08); }
+.board[data-home-theme="neutral"] :global(.progress-note) { box-shadow: 5px 7px 9px rgba(48,48,48,.18); }
+.board[data-home-theme="neutral"] :global(.music-credit__popover),
+.board[data-home-theme="neutral"] :global(.archive-context-note) { box-shadow: 0 10px 20px rgba(48,48,48,.16); }
+.board[data-home-theme="neutral"] :global(.watercolor-artwork) { box-shadow: 0 4px 8px rgba(48,48,48,.08); }
+.board[data-home-theme="neutral"] :global(.brushes-object.is-open.is-positioned .watercolor-artwork:hover),
+.board[data-home-theme="neutral"] :global(.brushes-object.is-open.is-positioned .watercolor-artwork:focus-visible) { box-shadow: 0 12px 22px rgba(48,48,48,.18); }
+.board[data-home-theme="neutral"] :global(.brushes-object.is-open.is-positioned .watercolor-artwork.is-selected),
+.board[data-home-theme="neutral"] :global(.brushes-object.is-open.is-positioned .watercolor-artwork.is-selected:hover),
+.board[data-home-theme="neutral"] :global(.brushes-object.is-open.is-positioned .watercolor-artwork.is-selected:focus-visible) { box-shadow: 0 18px 30px rgba(48,48,48,.22); }
+
+/* Neutral stationery keeps its existing texture, border and attachment details. */
+.board[data-home-theme="neutral"] > :global(.archive-object),
+.board[data-home-theme="neutral"] > :global(.linkedin-note),
+.board[data-home-theme="neutral"] > :global(.contact-note),
+.board[data-home-theme="neutral"] > :global(.resume-object) { background-color: #fff; }
+
+/* Only shadow RGB changes. Existing blur, offsets, alpha and asset pixels remain. */
+.board[data-home-theme="neutral"]:not(:global(.is-artwork-open)) :global(.headphones-object:not(.is-peg-dragging)) { filter: drop-shadow(0 12px 9px rgba(48,48,48,.20)); }
+.board[data-home-theme="neutral"] :global(.headphones-button),
+.board[data-home-theme="neutral"] :global(.headphones-button:hover),
+.board[data-home-theme="neutral"] :global(.headphones-button:focus-visible) { filter: drop-shadow(0 12px 9px rgba(48,48,48,.18)); }
+.board[data-home-theme="neutral"] :global(.brush-holder__hover),
+.board[data-home-theme="neutral"] :global(.brushes-object:not(.is-peg-dragging):hover .brush-holder__hover),
+.board[data-home-theme="neutral"] :global(.brushes-object.is-open:not(.is-peg-dragging):hover .brush-holder__hover) { filter: drop-shadow(0 5px 4px rgba(48,48,48,.13)); }
+.board[data-home-theme="neutral"] :global(.brush-holder__image) { filter: drop-shadow(0 3px 3px rgba(48,48,48,.12)); }
+.board[data-home-theme="neutral"] :global(.money-plant img) { filter: drop-shadow(0 11px 8px rgba(48,48,48,.15)); }
+.board[data-home-theme="neutral"] :global(.project-file:hover .project-holder),
+.board[data-home-theme="neutral"] :global(.project-file:focus-visible .project-holder) { filter: drop-shadow(0 5px 6px rgba(48,48,48,.10)); }
+.board[data-home-theme="neutral"] :global(.music-credit__trigger) { text-shadow: 0 2px 5px rgba(48,48,48,.28); }
+@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+  .board[data-home-theme="neutral"] :global([data-peg-draggable].is-peg-dragging) { filter: drop-shadow(0 18px 18px rgba(48,48,48,.20)) brightness(1.02); }
+}

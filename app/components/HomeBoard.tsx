@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import polaroid from "./HomePolaroid.module.css";
+import themePin from "./HomeThemePin.module.css";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BoardHook, PegPin } from "./Hardware";
 import { ProjectFile } from "./ProjectFile";
@@ -159,6 +160,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const [isArtworkPositioned, setIsArtworkPositioned] = useState(false);
   const [isMusicCreditOpen, setIsMusicCreditOpen] = useState(false);
   const [activeBook, setActiveBook] = useState<number | null>(null);
+  const [isPinkBoard, setIsPinkBoard] = useState(false);
   const bookNoteRef = useRef<HTMLDivElement>(null);
   const bookTapRef = useRef<{ x: number; y: number } | null>(null);
   const [artworkPositions, setArtworkPositions] = useState<ArtworkPosition[]>([]);
@@ -225,7 +227,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
       window.clearTimeout(timeout);
       removeListeners.forEach((remove) => remove());
       page.__portfolioHomeRevealed = true;
-      const objects = [...board.querySelectorAll<HTMLElement>(":scope > .board-object:not(.home-project-space)")]
+      const objects = [...board.querySelectorAll<HTMLElement>(':scope > .board-object:not(.home-project-space):not([data-peg-draggable="theme"])')]
         .sort((a, b) => {
           const first = a.getBoundingClientRect();
           const second = b.getBoundingClientRect();
@@ -315,7 +317,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
         ]);
         // These two cards use their visible attachment hardware as the final snap anchor.
         // Resolve them after the rest of the initial board has settled.
-        alignElements(["resume"]);
+        alignElements(["resume", "theme"]);
       });
     };
     const observer = new MutationObserver(scheduleAlignment);
@@ -593,7 +595,8 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
       <section
         ref={boardRef}
         data-home-reveal="pending"
-        className={isArtworkOpen ? "fixed-board is-artwork-open" : "fixed-board"}
+        data-home-theme={isPinkBoard ? "pink" : "neutral"}
+        className={`fixed-board ${themePin.board}${isArtworkOpen ? " is-artwork-open" : ""}`}
         aria-label="Meena Vuppu portfolio pegboard"
       >
         <ProjectFile project={projects[0]} className="board-object p1" onOpenProject={onOpenProject} pegboardDragId="digital-gold" />
@@ -861,6 +864,17 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
         </div>
 
         <MoneyPlant />
+        <button
+          type="button"
+          className={`board-object ${themePin.pin}`}
+          data-peg-draggable="theme"
+          aria-pressed={isPinkBoard}
+          onClick={() => setIsPinkBoard(pink => !pink)}
+        >
+          <span className={themePin.mount} data-headphone-mount-anchor aria-hidden="true" />
+          <span className={themePin.track} aria-hidden="true"><span className={themePin.knob}>{isPinkBoard ? "😌" : "😉"}</span></span>
+          <span className={themePin.label}>{isPinkBoard ? "Make it subtle" : "Make it pop"}</span>
+        </button>
         <div ref={dragPreviewRef} className="peg-drag-preview" aria-hidden="true" />
       </section>
     </main>
