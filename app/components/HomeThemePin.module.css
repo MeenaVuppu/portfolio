@@ -94,6 +94,7 @@
 @media (min-width: 761px) {
   .pin .track { inset: 8px 32px; }
   .pin .knob { left: 4px; }
+  .pin[aria-pressed="false"] .label { left: 74px; right: 42px; }
   .pin[aria-pressed="true"] .knob { transform: translateX(88px); }
   .pin[aria-pressed="true"] .label { left: 33px; }
 }
