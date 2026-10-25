@@ -5,6 +5,16 @@
   margin: 14px 0 18px;
 }
 
+.introStats .stageLabel {
+  display: block;
+  color: var(--project-ink);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+.introStats > div > span { white-space: pre-line; }
+
 @media (min-width: 761px) {
   .introStats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -80,4 +90,8 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 1.6;
+}
+
+.typography > :global(.project-story-pin):first-child > :global(.project-story-footnote) {
+  font-size: 14px;
 }

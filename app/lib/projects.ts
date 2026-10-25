@@ -1,6 +1,7 @@
 export type ProjectStat = {
   value: string;
   label: string;
+  stageLabel?: string;
   isForecast?: boolean;
 };
 
@@ -344,37 +345,26 @@ export const projects: Project[] = [
             "variant": "visual"
       },
       {
-            "eyebrow": "MEASURED RESULTS · OCTOBER 2026",
-            "title": "From 0→1 launch to growing product adoption",
-            "body": "Following the September launch, Vyapar Plus recorded over 17,000 monthly active users during October 1–23, 2026. The comparison below is October month-to-date against September's complete month; it shows product adoption, not growth attributable to design alone.",
-            "items": [
-                  {
-                        "value": "17K+",
-                        "label": "Monthly active users · October 1–23, 2026 (month-to-date)"
-                  },
-                  {
-                        "value": "+164%",
-                        "label": "Increase in October month-to-date MAU compared with September 2026's full-month MAU"
-                  }
-            ],
-            "footnote": "Last 30 days: 18,460 active users · 16,629 new app activations (not completed merchant onboardings). First two weeks: 2,500+ kirana merchants onboarded · 1,000+ loan leads submitted · 600+ Gold Loan + VM loan leads converted. Adoption metrics do not isolate design's contribution to growth."
-      },
-      {
             "eyebrow": "THE DESIGN DECISIONS",
             "title": "Connect joining, serving customers and earning.",
             "body": "I treated onboarding as the entry into a connected merchant workflow. Shared interaction patterns across services, visible transaction states and a dashboard organised around business activity helped define one product rather than separate service journeys.",
             "highlight": "The dashboard connects service activity to money movement and earnings."
       },
       {
-            "eyebrow": "MEASURED RESULTS · WHAT COMES NEXT",
-            "title": "Adoption grew; onboarding still needs attention.",
-            "flow": [
-                  "Merchant activity",
-                  "Financial opportunity",
-                  "Field execution",
-                  "Conversion"
+            "eyebrow": "MEASURED RESULTS · OCTOBER 2026",
+            "title": "From launch to growing product adoption",
+            "body": "October 1–23, 2026 · Compared with September's full-month MAU",
+            "items": [
+                  {
+                        "value": "17K+",
+                        "label": "Monthly active users"
+                  },
+                  {
+                        "value": "+164%",
+                        "label": "MAU growth vs September"
+                  }
             ],
-            "body": "The reported launch results and October usage show a platform gaining adoption. The earlier digital-onboarding cohort also identifies a follow-up priority: understand why starters did not complete onboarding. MAU, app activations and completed merchant onboardings describe different behaviours and should be evaluated separately."
+            "footnote": "2,500+ merchants onboarded · 1,000+ loan leads submitted · 600+ loan lead conversions"
       }
 ],
     opportunity: {
@@ -417,10 +407,9 @@ export const projects: Project[] = [
     metadata: ["Product Designer"],
     snapshotLabel: "Historical CleverTap funnel · 01 Aug – 01 Sept",
     snapshotCopy: "About 81% dropped off between Mahindra partner selection and Book Now. I simplified amount, tenure, rates and returns to reduce decision friction before starting an FD.",
-    snapshotFootnote: "Further down the historical funnel: 91 KYC starts · 5 proceeded to pay.",
     stats: [
-      { value: "80.9%", label: "Drop-off: 1,416 partner selections → 271 ROI / Book Now clicks (19.1% progressed)" },
-      { value: "94.4%", label: "Drop-off: 25,275 FD page views → 1,416 Mahindra partner selections (5.6% progressed)" },
+      { value: "94.4%", stageLabel: "Drop-off: FD page → Mahindra selection", label: "25,275 FD page views → 1,416 Mahindra selections\nOnly 5.6% progressed" },
+      { value: "80.9%", stageLabel: "Drop-off: Mahindra selection → Book Now", label: "1,416 Mahindra selections → 271 Book Now clicks\nOnly 19.1% progressed" },
     ],
     storyPins: [
       {

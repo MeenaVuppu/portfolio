@@ -73,6 +73,7 @@ export function ProjectMode({ project, otherProjects, phase, onSwitchProject }: 
               {project.stats.map((stat) => (
                 <div className={stat.isForecast ? "is-forecast" : ""} key={stat.label}>
                   <strong>{stat.value}</strong>
+                  {project.slug === "fixed-deposit" && stat.stageLabel && <b className={fixedDepositClosing.stageLabel}>{stat.stageLabel}</b>}
                   <span>{stat.label}</span>
                 </div>
               ))}
