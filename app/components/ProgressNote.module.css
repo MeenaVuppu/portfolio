@@ -1,0 +1,19 @@
+.note { cursor: pointer; }
+.note:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+.note[aria-checked="true"] :global(.progress-note__task) > i { position: relative; }
+.note[aria-checked="true"] :global(.progress-note__task) > i::after {
+  content: "✓";
+  color: #2E9B57;
+  position: absolute;
+  left: -1px;
+  top: -0.35em;
+  font-family: "Bradley Hand", "Comic Sans MS", cursive;
+  font-size: 1.35em;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+  transform: rotate(-8deg);
+}
+.note[aria-checked="true"] :global(.progress-note__task) > span {
+  opacity: 0.5;
+}

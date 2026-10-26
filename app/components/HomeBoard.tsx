@@ -3,6 +3,7 @@
 import Image from "next/image";
 import polaroid from "./HomePolaroid.module.css";
 import themePin from "./HomeThemePin.module.css";
+import progressNote from "./ProgressNote.module.css";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BoardHook, PegPin } from "./Hardware";
 import { ProjectFile } from "./ProjectFile";
@@ -161,6 +162,7 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
   const [isMusicCreditOpen, setIsMusicCreditOpen] = useState(false);
   const [activeBook, setActiveBook] = useState<number | null>(null);
   const [isPinkBoard, setIsPinkBoard] = useState(false);
+  const [isTaskChecked, setIsTaskChecked] = useState(false);
   const bookNoteRef = useRef<HTMLDivElement>(null);
   const bookTapRef = useRef<{ x: number; y: number } | null>(null);
   const [artworkPositions, setArtworkPositions] = useState<ArtworkPosition[]>([]);
@@ -847,10 +849,19 @@ export function HomeBoard({ onOpenProject, onOpenArchive, projectModeActive = fa
         </div>
 
         <div
-          className="progress-note board-object"
+          className={`progress-note board-object ${progressNote.note}`}
           data-peg-draggable="progress-note"
-          role="note"
+          role="checkbox"
+          tabIndex={0}
+          aria-checked={isTaskChecked}
           aria-label="In progress: Make digital journeys feel simpler."
+          onClick={() => setIsTaskChecked(checked => !checked)}
+          onKeyDown={event => {
+            if (event.key === " " || event.key === "Enter") {
+              event.preventDefault();
+              if (!event.repeat) setIsTaskChecked(checked => !checked);
+            }
+          }}
         >
           <strong>In progress</strong>
           <span className="progress-note__task">

@@ -27,6 +27,6 @@
   text-shadow: 0 0 2px rgba(255, 164, 60, 0.25);
   pointer-events: none;
 }
-.digits { display: flex; align-items: baseline; gap: 3cqw; white-space: nowrap; font-size: 13cqw; font-weight: 600; line-height: 1; }
+.digits { display: flex; align-items: baseline; gap: 2cqw; white-space: nowrap; font-size: 12cqw; font-weight: 600; line-height: 1; }
 .separator { margin: 0 1cqw; }
 .label { font-size: 4.5cqw; letter-spacing: 0.06em; white-space: nowrap; line-height: 1; }

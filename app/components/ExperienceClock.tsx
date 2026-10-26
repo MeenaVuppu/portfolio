@@ -29,11 +29,11 @@ export function ExperienceClock() {
       <Image src="/experience-clock.webp" alt="" width={1774} height={887} unoptimized draggable={false} />
       <div className={styles.display} aria-hidden="true">
         <div className={styles.digits}>
-          <span>{experience?.years ?? "--"}</span>
+          <span>{experience?.years ?? "--"}y</span>
           <span className={styles.separator}>:</span>
-          <span>{experience?.months ?? "--"}</span>
+          <span>{experience?.months ?? "--"}m</span>
         </div>
-        <span className={styles.label}>YRS · MOS</span>
+        <span className={styles.label}>experience</span>
       </div>
     </div>
   );
